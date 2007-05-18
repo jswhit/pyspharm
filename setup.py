@@ -55,5 +55,5 @@ if __name__ == "__main__":
           url               = "http://code.google.com/p/pyspharm",
           ext_modules       = [ext],
 	  packages          = ['spharm'],
-	  package_dir       = {'spharm':'lib'}
+	  package_dir       = {'spharm':'Lib'}
           )
