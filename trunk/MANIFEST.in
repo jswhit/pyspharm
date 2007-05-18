@@ -1,8 +1,8 @@
 include README
 include MANIFEST.in
 include setup.py
-include lib/__init__.py
-include lib/spharm.py
+include Lib/__init__.py
+include Lib/spharm.py
 recursive-include html *
 include examples/FortranFormat.py
 include examples/README
