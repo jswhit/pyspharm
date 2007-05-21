@@ -20,6 +20,9 @@ Installation
  - run C{python setup.py install} (as root if necessary).
  The SPHERPACK fortran source files will be downloaded automatically by the
  setup.py script, since the SPHEREPACK license prohibits redistribution.
+ To specify the fortran compiler to use (e.g. g95) run
+ C{python setup.py config_fc --fcompiler=g95 install}. C{f2py -c --help-fcompiler}
+ will show you what fortran compilers are available.
 
 Usage
 =====
