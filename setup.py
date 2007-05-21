@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # rm MANIFEST, use --no-defaults when making sdist
+# use "config_fc --fcompiler=gnu95 install" to build and install with
+# another fortran compiler (e.g. gfortran).
 
 from numpy.distutils.core  import setup, Extension
 import os, sys
