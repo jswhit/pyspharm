@@ -428,11 +428,13 @@ prevent deletion of read-only instance variables.
                 a,b,ierror = _spherepack.shags(datagrid,self.wshags,lwork)
                 if ierror != 0:
                     msg = 'In return from call to shags in Spharmt.grdtospec ierror =  %d' % ierror
+                    raise ValueError, msg
             else:
                 lwork = nlat*(nlon*nt+max(3*n2,nlon))
                 a,b,ierror = _spherepack.shagc(datagrid,self.wshagc,lwork)
                 if ierror != 0:
                     msg = 'In return from call to shagc in Spharmt.grdtospec ierror =  %d' % ierror
+                    raise ValueError, msg
 
 # convert 2d real and imag spectral arrays into 1d complex array.
 
