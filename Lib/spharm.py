@@ -924,7 +924,7 @@ def regrid(grdin, grdout, datagrid, ntrunc=None, smooth=None):
  datagrid is rank 3, last dimension is the number of grids to interpolate.
  
  @keyword ntrunc:  optional spectral truncation limit for datagrid
- (default grdin.nlat-1).
+ (default min(grdin.nlat-1,grdout.nlat-1)).
 
  @keyword smooth: rank 1 array of length grdout.nlat containing smoothing 
  factors as a function of total wavenumber (default is no smoothing).
@@ -948,7 +948,7 @@ def regrid(grdin, grdout, datagrid, ntrunc=None, smooth=None):
         msg = 'smooth must be rank 1 size grdout.nlat in regrid!'
         raise ValueError, msg
 
-    if not ntrunc:
+    if ntrunc is None:
         ntrunc = min(grdout.nlat-1,grdin.nlat-1)
 
     dataspec = grdin.grdtospec(datagrid,ntrunc)
