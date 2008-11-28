@@ -125,7 +125,7 @@ import _spherepack, numpy, math, sys
 # define a list of instance variables that cannot be rebound
 # or unbound.
 _private_vars = ['nlon','nlat','gridtype','legfunc','rsphere']
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 class Spharmt:
     """
@@ -944,7 +944,7 @@ def regrid(grdin, grdout, datagrid, ntrunc=None, smooth=None):
         msg = 'grdtospec needs an array of size %d by %d, got %d by %d' % (grdin.nlat, grdin.nlon, datagrid.shape[0], datagrid.shape[1],)
         raise ValueError, msg
 
-    if smooth and (len(smooth.shape) !=1 or smooth.shape[0] != grdout.nlat):
+    if smooth is not None and (len(smooth.shape) !=1 or smooth.shape[0] != grdout.nlat):
         msg = 'smooth must be rank 1 size grdout.nlat in regrid!'
         raise ValueError, msg
 
@@ -953,7 +953,7 @@ def regrid(grdin, grdout, datagrid, ntrunc=None, smooth=None):
 
     dataspec = grdin.grdtospec(datagrid,ntrunc)
 
-    if smooth:
+    if smooth is not None:
         dataspec = _spherepack.multsmoothfact(dataspec, smooth)
 
     return grdout.spectogrd(dataspec)
