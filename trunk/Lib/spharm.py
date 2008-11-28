@@ -105,7 +105,7 @@ will always be faster.
 
 @contact: U{Jeff Whitaker<mailto:jeffrey.s.whitaker@noaa.gov>}
 
-@version: 1.0      
+@version: 1.0.4      
 
 @license: Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
