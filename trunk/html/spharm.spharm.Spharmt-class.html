@@ -50,8 +50,8 @@
   </tr>
 </table>
 <!-- ==================== CLASS DESCRIPTION ==================== -->
-<h1 class="epydoc">Class Spharmt</h1><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt">source&nbsp;code</a></span><br /><br />
-spherical harmonic transform class.<br /><br />
+<h1 class="epydoc">Class Spharmt</h1><p class="nomargin-top"><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt">source&nbsp;code</a></span></p>
+<p>spherical harmonic transform class.</p>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
@@ -187,7 +187,7 @@ spherical harmonic transform class.<br /><br />
           <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#getuv" class="summary-sig-name">getuv</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">vrtspec</span>,
         <span class="summary-sig-arg">divspec</span>)</span><br />
-      compute vector wind on grid given complex spectral coefficients of
+      compute vector wind on grid given complex spectral coefficients of 
       vorticity and divergence.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getuv">source&nbsp;code</a></span>
@@ -208,7 +208,7 @@ spherical harmonic transform class.<br /><br />
         <span class="summary-sig-arg">ugrid</span>,
         <span class="summary-sig-arg">vgrid</span>,
         <span class="summary-sig-arg">ntrunc</span>)</span><br />
-      compute streamfunction and velocity potential on grid given vector
+      compute streamfunction and velocity potential on grid given vector 
       wind.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getpsichi">source&nbsp;code</a></span>
@@ -227,8 +227,7 @@ spherical harmonic transform class.<br /><br />
         <tr>
           <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#getgrad" class="summary-sig-name">getgrad</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">chispec</span>)</span><br />
-      compute vector gradient on grid given complex spectral 
-      coefficients.</td>
+      compute vector gradient on grid given complex spectral coefficients.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getgrad">source&nbsp;code</a></span>
             
@@ -271,7 +270,7 @@ spherical harmonic transform class.<br /><br />
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="spharm.spharm.Spharmt-class.html#gridtype" class="summary-name">gridtype</a><br />
-      'regular' (equally spaced in longitude and latitude) or 'gaussian'
+      'regular' (equally spaced in longitude and latitude) or 'gaussian' 
       (equally spaced in longitude, latitudes located at roots of ordinary 
       Legendre polynomial of degree nlat).
     </td>
@@ -289,7 +288,7 @@ spherical harmonic transform class.<br /><br />
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a name="nlat"></a><span class="summary-name">nlat</span><br />
-      number of latitudes (set when class instance is created, cannot be
+      number of latitudes (set when class instance is created, cannot be 
       changed).
     </td>
   </tr>
@@ -298,8 +297,8 @@ spherical harmonic transform class.<br /><br />
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a name="nlon"></a><span class="summary-name">nlon</span><br />
-      number of longitudes (set when class instance is created, cannot 
-      be changed).
+      number of longitudes (set when class instance is created, cannot be 
+      changed).
     </td>
   </tr>
 <tr>
@@ -339,9 +338,9 @@ spherical harmonic transform class.<br /><br />
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.__init__">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  create a Spharmt class instance.
+  <p>create a Spharmt class instance.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -354,7 +353,7 @@ spherical harmonic transform class.<br /><br />
           south. If nlat is odd the equator is included. If nlat is even 
           the equator will lie half way between points points nlat/2 and 
           (nlat/2)+1. Must be &gt;=3.</li>
-        <li><strong class="pname"><code>rsphere</code></strong> - The radius of the sphere in meters. Default 6371200 (the value
+        <li><strong class="pname"><code>rsphere</code></strong> - The radius of the sphere in meters. Default 6371200 (the value 
           for Earth).</li>
         <li><strong class="pname"><code>legfunc</code></strong> - 'stored' (default) or 'computed'.  If 'stored', associated 
           legendre functions are precomputed and stored when the class 
@@ -363,10 +362,9 @@ spherical harmonic transform class.<br /><br />
           functions are computed on the fly when transforms are requested.
           This uses O(nlat**2) memory, but slows down the spectral 
           transforms a bit.</li>
-        <li><strong class="pname"><code>gridtype</code></strong> - 'regular' (default) or 'gaussian'. Regular grids will include 
-          the poles and equator if nlat is odd.  Gaussian grids never 
-          include the poles, but will include the equator if nlat is 
-          odd.</li>
+        <li><strong class="pname"><code>gridtype</code></strong> - 'regular' (default) or 'gaussian'. Regular grids will include the
+          poles and equator if nlat is odd.  Gaussian grids never include 
+          the poles, but will include the equator if nlat is odd.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -385,9 +383,9 @@ spherical harmonic transform class.<br /><br />
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.grdtospec">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  grid to spectral transform (spherical harmonic analysis).
+  <p>grid to spectral transform (spherical harmonic analysis).</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -397,7 +395,7 @@ spherical harmonic transform class.<br /><br />
         <li><strong class="pname"><code>ntrunc</code></strong> - spherical harmonic triangular truncation limit.</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd><code><b>dataspec</b></code> - rank 1 or 2 numpy complex array
+        <dd><code><b>dataspec</b></code> - rank 1 or 2 numpy complex array 
           with shape (ntrunc+1)*(ntrunc+2)/2 or 
           ((ntrunc+1)*(ntrunc+2)/2,nt) containing complex spherical 
           harmonic coefficients resulting from the spherical harmonic 
@@ -418,9 +416,9 @@ spherical harmonic transform class.<br /><br />
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.spectogrd">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  spectral to grid transform (spherical harmonic synthesis).
+  <p>spectral to grid transform (spherical harmonic synthesis).</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -432,10 +430,9 @@ spherical harmonic transform class.<br /><br />
           assumed to be 1.</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd><code><b>datagrid</b></code> - rank 2 or 3 numpy float32 array
+        <dd><code><b>datagrid</b></code> - rank 2 or 3 numpy float32 array 
           with shape (nlat,nlon) or (nlat,nlon,nt) containing the gridded 
-          data resulting from the spherical harmonic synthesis of 
-          dataspec.</dd>
+          data resulting from the spherical harmonic synthesis of dataspec.</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -454,17 +451,17 @@ spherical harmonic transform class.<br /><br />
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getvrtdivspec">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  compute spectral coefficients of vorticity and divergence given vector
-  wind.
+  <p>compute spectral coefficients of vorticity and divergence given vector
+  wind.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>ugrid</code></strong> - rank 2 or 3 numpy float32 array containing grid of zonal 
-          winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt 
-          is the number of grids to be transformed.  If ugrid is rank 2, nt
-          is assumed to be 1.</li>
+        <li><strong class="pname"><code>ugrid</code></strong> - rank 2 or 3 numpy float32 array containing grid of zonal winds.  
+          Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the 
+          number of grids to be transformed.  If ugrid is rank 2, nt is 
+          assumed to be 1.</li>
         <li><strong class="pname"><code>vgrid</code></strong> - rank 2 or 3 numpy float32 array containing grid of meridional 
           winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt 
           is the number of grids to be transformed.  Both ugrid and vgrid 
@@ -472,8 +469,8 @@ spherical harmonic transform class.<br /><br />
         <li><strong class="pname"><code>ntrunc</code></strong> - spherical harmonic triangular truncation limit.</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd><code><b>vrtspec, divspec</b></code> - rank 1 or 2 numpy 
-          complex arrays of vorticity and divergence spherical harmonic 
+        <dd><code><b>vrtspec, divspec</b></code> - rank 1 or 2 numpy complex 
+          arrays of vorticity and divergence spherical harmonic 
           coefficients with shape shape (ntrunc+1)*(ntrunc+2)/2 or 
           ((ntrunc+1)*(ntrunc+2)/2,nt).</dd>
   </dl>
@@ -493,10 +490,10 @@ spherical harmonic transform class.<br /><br />
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getuv">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  compute vector wind on grid given complex spectral coefficients of 
-  vorticity and divergence.
+  <p>compute vector wind on grid given complex spectral coefficients of 
+  vorticity and divergence.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -509,8 +506,7 @@ spherical harmonic transform class.<br /><br />
           coefficients, with shape (ntrunc+1)*(ntrunc+2)/2 or 
           ((ntrunc+1)*(ntrunc+2)/2,nt) (where ntrunc is the triangular 
           truncation and nt is the number of spectral arrays to be 
-          transformed). Both vrtspec and divspec must have the same 
-          shape.</li>
+          transformed). Both vrtspec and divspec must have the same shape.</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd><code><b>ugrid, vgrid</b></code> - rank 2 or 3 numpy float32 
@@ -534,26 +530,26 @@ spherical harmonic transform class.<br /><br />
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getpsichi">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  compute streamfunction and velocity potential on grid given vector 
-  wind.
+  <p>compute streamfunction and velocity potential on grid given vector 
+  wind.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>ugrid</code></strong> - rank 2 or 3 numpy float32 array containing grid of zonal 
-          winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt 
-          is the number of grids to be transformed.  If ugrid is rank 2, nt
-          is assumed to be 1.</li>
+        <li><strong class="pname"><code>ugrid</code></strong> - rank 2 or 3 numpy float32 array containing grid of zonal winds.  
+          Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the 
+          number of grids to be transformed.  If ugrid is rank 2, nt is 
+          assumed to be 1.</li>
         <li><strong class="pname"><code>vgrid</code></strong> - rank 2 or 3 numpy float32 array containing grid of meridional 
           winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt 
           is the number of grids to be transformed.  Both ugrid and vgrid 
           must have the same shape.</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd><code><b>psigrid, chigrid</b></code> - rank 2 or 3 numpy 
-          float32 arrays of gridded streamfunction and velocity potential. 
-          Shapes are either (nlat,nlon) or (nlat,nlon,nt).</dd>
+        <dd><code><b>psigrid, chigrid</b></code> - rank 2 or 3 numpy float32 
+          arrays of gridded streamfunction and velocity potential. Shapes 
+          are either (nlat,nlon) or (nlat,nlon,nt).</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -570,10 +566,10 @@ spherical harmonic transform class.<br /><br />
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getgrad">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  compute vector gradient on grid given complex spectral 
-  coefficients.
+  <p>compute vector gradient on grid given complex spectral 
+  coefficients.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -585,10 +581,9 @@ spherical harmonic transform class.<br /><br />
           assumed to be 1.</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd><code><b>uchi, vchi</b></code> - rank 2 or 3 numpy float32 
-          arrays containing gridded zonal and meridional components of the 
-          vector gradient. Shapes are either (nlat,nlon) or 
-          (nlat,nlon,nt).</dd>
+        <dd><code><b>uchi, vchi</b></code> - rank 2 or 3 numpy float32 arrays
+          containing gridded zonal and meridional components of the vector 
+          gradient. Shapes are either (nlat,nlon) or (nlat,nlon,nt).</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -606,9 +601,9 @@ spherical harmonic transform class.<br /><br />
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.specsmooth">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  isotropic spectral smoothing on a sphere.
+  <p>isotropic spectral smoothing on a sphere.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -619,7 +614,7 @@ spherical harmonic transform class.<br /><br />
           function of total wavenumber.</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd><code><b>datagrid</b></code> - rank 2 or 3 numpy float32 array
+        <dd><code><b>datagrid</b></code> - rank 2 or 3 numpy float32 array 
           with shape (nlat,nlon) or (nlat,nlon,nt) containing the smoothed 
           grids.</dd>
   </dl>
@@ -655,8 +650,8 @@ spherical harmonic transform class.<br /><br />
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <h3 class="epydoc">legfunc</h3>
-  'stored' or 'computed'.  If 'stored', associated legendre functions 
-  are precomputed and stored when the class instance is created.  If 
+  'stored' or 'computed'.  If 'stored', associated legendre functions are 
+  precomputed and stored when the class instance is created.  If 
   'computed', associated legendre functions are computed on the fly when 
   transforms are requested. Set when class instance is created, cannot be 
   changed.
@@ -691,10 +686,11 @@ spherical harmonic transform class.<br /><br />
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Mon May 21 11:16:06 2007
+    Generated by Epydoc 3.0.1 on Fri Nov 28 08:21:39 2008
     </td>
     <td align="right" class="footer">
-      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
     </td>
   </tr>
 </table>
@@ -705,9 +701,8 @@ spherical harmonic transform class.<br /><br />
   // javascript is turned off then we want them to be
   // visible); but by default, we want to hide them.  So hide
   // them unless we have a cookie that says to show them.
-  checkCookie()
+  checkCookie();
   // -->
 </script>
-  
 </body>
 </html>

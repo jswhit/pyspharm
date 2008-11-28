@@ -49,19 +49,19 @@
   </tr>
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
-<h1 class="epydoc">Module spharm</h1><span class="codelink"><a href="spharm.spharm-pysrc.html">source&nbsp;code</a></span><br /><br />
+<h1 class="epydoc">Module spharm</h1><p class="nomargin-top"><span class="codelink"><a href="spharm.spharm-pysrc.html">source&nbsp;code</a></span></p>
 <h1 class="heading">Introduction</h1>
-    This module provides a python interface to the NCAR <a 
+    <p>This module provides a python interface to the NCAR <a 
     href="http://www.scd.ucar.edu/softlib/SPHERE.html" 
     target="_top">SPHEREPACK</a> library. It is not a one-to-one wrapper 
     for the SPHEREPACK routines, rather it provides a simple interface 
     oriented toward working with atmospheric general circulation model 
-    (GCM) data.
+    (GCM) data.</p>
   <h1 class="heading">Requirements</h1>
     <ul>
       <li>
-        <a href="http://numeric.scipy.org" target="_top">numpy</a>, and 
-        a fortran compiler supported by numpy.f2py.
+        <a href="http://numeric.scipy.org" target="_top">numpy</a>, and a 
+        fortran compiler supported by numpy.f2py.
       </li>
     </ul>
   <h1 class="heading">Installation</h1>
@@ -71,7 +71,7 @@
         target="_top">Download</a> module source, untar.
       </li>
       <li>
-        run <code>python setup.py install</code> (as root if necessary).
+        run <code>python setup.py install</code> (as root if necessary). 
         The SPHERPACK fortran source files will be downloaded automatically
         by the setup.py script, since the SPHEREPACK license prohibits 
         redistribution. To specify the fortran compiler to use (e.g. g95) 
@@ -84,12 +84,12 @@
 <pre class="py-doctest">
 <span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">import</span> spharm
 <span class="py-prompt">&gt;&gt;&gt; </span>x=spharm.Spharmt(144,72,rsphere=8e6,gridtype=<span class="py-string">'gaussian'</span>,legfunc=<span class="py-string">'computed'</span>)</pre>
-    creates a class instance for spherical harmonic calculations on a 
+    <p>creates a class instance for spherical harmonic calculations on a 
     144x72 gaussian grid on a sphere with radius 8000 km. The associated 
     legendre functions are recomputed on the fly (instead of pre-computed 
     and stored). Default values of rsphere, gridtype and legfunc are 
     6.3712e6, 'regular' and 'stored'. Real-world examples are included in 
-    the source distribution.
+    the source distribution.</p>
   <h1 class="heading">Class methods</h1>
     <ul>
       <li>
@@ -109,8 +109,7 @@
         divergence from u and v winds.
       </li>
       <li>
-        getgrad: compute the vector gradient given spectral 
-        coefficients.
+        getgrad: compute the vector gradient given spectral coefficients.
       </li>
       <li>
         getpsichi: compute streamfunction and velocity potential from 
@@ -137,7 +136,7 @@
         legendre: compute associated legendre functions.
       </li>
       <li>
-        getgeodesicpts: computes the points on the surface of the sphere
+        getgeodesicpts: computes the points on the surface of the sphere 
         corresponding to a twenty-sided (icosahedral) geodesic.
       </li>
       <li>
@@ -175,13 +174,13 @@
     <p>The default grid type is regular (equally spaced latitude points). 
     Set gridtype='gaussian' when creating a class instance for gaussian 
     latitude points.</p>
-    Quantities needed to compute spherical harmonics are precomputed and
+    <p>Quantities needed to compute spherical harmonics are precomputed and
     stored when the class instance is created with legfunc='stored' (the 
     default). If legfunc='computed', they are recomputed on the fly on each
     method call. The storage requirements for legfunc=&quot;stored&quot; 
     increase like nlat**2, while those for legfunc='stored' increase like 
     nlat**3.  However, for repeated method invocations on a single class 
-    instance, legfunc=&quot;stored&quot; will always be faster.<br /><br />
+    instance, legfunc=&quot;stored&quot; will always be faster.</p>
 
 <hr />
 <div class="fields">      <p><strong>Contact:</strong>
@@ -192,8 +191,8 @@
         1.0
       </p>
       <p><strong>License:</strong>
-        Permission to use, copy, modify, and distribute this software 
-        and its documentation for any purpose and without fee is hereby 
+        Permission to use, copy, modify, and distribute this software and 
+        its documentation for any purpose and without fee is hereby 
         granted, provided that the above copyright notice appear in all 
         copies and that both that copyright notice and this permission 
         notice appear in supporting documentation. THE AUTHOR DISCLAIMS ALL
@@ -241,8 +240,8 @@
         <span class="summary-sig-arg">datagrid</span>,
         <span class="summary-sig-arg">ntrunc</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">smooth</span>=<span class="summary-sig-default">None</span>)</span><br />
-      regrid data using spectral interpolation, while performing 
-      optional spectral smoothing and/or truncation.</td>
+      regrid data using spectral interpolation, while performing optional 
+      spectral smoothing and/or truncation.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spharm.spharm-pysrc.html#regrid">source&nbsp;code</a></span>
             
@@ -259,8 +258,7 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="spharm.spharm-module.html#gaussian_lats_wts" class="summary-sig-name">gaussian_lats_wts</a>(<span class="summary-sig-arg">nlat</span>)</span><br />
-      compute the gaussian latitudes (in degrees) and quadrature 
-      weights.</td>
+      compute the gaussian latitudes (in degrees) and quadrature weights.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spharm.spharm-pysrc.html#gaussian_lats_wts">source&nbsp;code</a></span>
             
@@ -277,7 +275,7 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="spharm.spharm-module.html#getspecindx" class="summary-sig-name">getspecindx</a>(<span class="summary-sig-arg">ntrunc</span>)</span><br />
-      compute indices of zonal wavenumber (indxm) and degree (indxn) for
+      compute indices of zonal wavenumber (indxm) and degree (indxn) for 
       complex spherical harmonic coefficients.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spharm.spharm-pysrc.html#getspecindx">source&nbsp;code</a></span>
@@ -357,7 +355,7 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a name="__version__"></a><span class="summary-name">__version__</span> = <code title="'1.0.3'"><code class="variable-quote">'</code><code class="variable-string">1.0.3</code><code class="variable-quote">'</code></code>
+        <a name="__version__"></a><span class="summary-name">__version__</span> = <code title="'1.0.4'"><code class="variable-quote">'</code><code class="variable-string">1.0.4</code><code class="variable-quote">'</code></code>
     </td>
   </tr>
 </table>
@@ -386,22 +384,21 @@
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#regrid">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  regrid data using spectral interpolation, while performing optional 
-  spectral smoothing and/or truncation.
+  <p>regrid data using spectral interpolation, while performing optional 
+  spectral smoothing and/or truncation.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>grdin</code></strong> - Spharmt class instance describing input grid.</li>
         <li><strong class="pname"><code>grdout</code></strong> - Spharmt class instance describing output grid.</li>
-        <li><strong class="pname"><code>datagrid</code></strong> - data on input grid (grdin.nlat x grdin.nlon). If datagrid is 
-          rank 3, last dimension is the number of grids to interpolate.</li>
+        <li><strong class="pname"><code>datagrid</code></strong> - data on input grid (grdin.nlat x grdin.nlon). If datagrid is rank
+          3, last dimension is the number of grids to interpolate.</li>
         <li><strong class="pname"><code>ntrunc</code></strong> - optional spectral truncation limit for datagrid (default 
-          grdin.nlat-1).</li>
-        <li><strong class="pname"><code>smooth</code></strong> - rank 1 array of length grdout.nlat containing smoothing 
-          factors as a function of total wavenumber (default is no 
-          smoothing).</li>
+          min(grdin.nlat-1,grdout.nlat-1)).</li>
+        <li><strong class="pname"><code>smooth</code></strong> - rank 1 array of length grdout.nlat containing smoothing factors 
+          as a function of total wavenumber (default is no smoothing).</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd><code><b>datagrid</b></code> - interpolated (and optionally 
@@ -421,10 +418,10 @@
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#gaussian_lats_wts">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  compute the gaussian latitudes (in degrees) and quadrature 
-  weights.
+  <p>compute the gaussian latitudes (in degrees) and quadrature 
+  weights.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -449,10 +446,10 @@
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#getspecindx">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  compute indices of zonal wavenumber (indxm) and degree (indxn) for 
-  complex spherical harmonic coefficients.
+  <p>compute indices of zonal wavenumber (indxm) and degree (indxn) for 
+  complex spherical harmonic coefficients.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -477,16 +474,16 @@
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#getgeodesicpts">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  computes the lat/lon values of the points on the surface of the sphere
-  corresponding to a twenty-sided (icosahedral) geodesic.
+  <p>computes the lat/lon values of the points on the surface of the sphere
+  corresponding to a twenty-sided (icosahedral) geodesic.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>m</code></strong> - the number of points on the edge of a single geodesic 
-          triangle. There are 10*(m-1)**2+2 total geodesic points, 
-          including the poles.</li>
+        <li><strong class="pname"><code>m</code></strong> - the number of points on the edge of a single geodesic triangle. 
+          There are 10*(m-1)**2+2 total geodesic points, including the 
+          poles.</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd><code><b>lats, lons</b></code> - rank 1 numpy float32 arrays 
@@ -509,10 +506,10 @@
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#legendre">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  calculate associated legendre functions for triangular truncation 
-  T(ntrunc), at a given latitude.
+  <p>calculate associated legendre functions for triangular truncation 
+  T(ntrunc), at a given latitude.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -521,8 +518,8 @@
         <li><strong class="pname"><code>ntrunc</code></strong> - the triangular truncation limit.</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd><code><b>pnm</b></code> - rank 1 numpy float32 array 
-          containing the 
+        <dd><code><b>pnm</b></code> - rank 1 numpy float32 array containing 
+          the 
           (<code><b>ntrunc</b></code>+1)*(<code><b>ntrunc</b></code>+2)/2 
           associated legendre functions at latitude 
           <code><b>lat</b></code>.</dd>
@@ -543,17 +540,16 @@
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="spharm.spharm-pysrc.html#specintrp">source&nbsp;code</a></span>&nbsp;
     </td>
-  </table>
+  </tr></table>
   
-  spectral interpolation given spherical harmonic coefficients.
+  <p>spectral interpolation given spherical harmonic coefficients.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>lon</code></strong> - longitude (in degrees) of point on a sphere to interpolate 
-          to.</li>
+        <li><strong class="pname"><code>lon</code></strong> - longitude (in degrees) of point on a sphere to interpolate to.</li>
         <li><strong class="pname"><code>dataspec</code></strong> - spectral coefficients of function to interpolate.</li>
-        <li><strong class="pname"><code>legfuncs</code></strong> - associated legendre functions with same triangular truncation 
-          as <code><b>dataspec</b></code> (computed using <a 
+        <li><strong class="pname"><code>legfuncs</code></strong> - associated legendre functions with same triangular truncation as 
+          <code><b>dataspec</b></code> (computed using <a 
           href="spharm.spharm-module.html#legendre" 
           class="link">legendre</a>), computed at latitude of interpolation
           point.</li>
@@ -590,10 +586,11 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Mon May 21 11:16:06 2007
+    Generated by Epydoc 3.0.1 on Fri Nov 28 08:21:39 2008
     </td>
     <td align="right" class="footer">
-      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
     </td>
   </tr>
 </table>
@@ -604,9 +601,8 @@
   // javascript is turned off then we want them to be
   // visible); but by default, we want to hide them.  So hide
   // them unless we have a cookie that says to show them.
-  checkCookie()
+  checkCookie();
   // -->
 </script>
-  
 </body>
 </html>
