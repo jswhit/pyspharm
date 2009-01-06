@@ -105,7 +105,7 @@ will always be faster.
 
 @contact: U{Jeff Whitaker<mailto:jeffrey.s.whitaker@noaa.gov>}
 
-@version: 1.0.4      
+@version: 1.0.5      
 
 @license: Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
@@ -125,7 +125,7 @@ import _spherepack, numpy, math, sys
 # define a list of instance variables that cannot be rebound
 # or unbound.
 _private_vars = ['nlon','nlat','gridtype','legfunc','rsphere']
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 
 class Spharmt:
     """
