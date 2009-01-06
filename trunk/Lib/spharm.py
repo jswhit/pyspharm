@@ -352,7 +352,7 @@ prevent deletion of read-only instance variables.
                     raise ValueError, msg
                 self.wvhsgc = wvhsgc
 
-    def grdtospec(self, datagrid, ntrunc):
+    def grdtospec(self, datagrid, ntrunc=None):
         """
  grid to spectral transform (spherical harmonic analysis).
 
@@ -534,7 +534,7 @@ prevent deletion of read-only instance variables.
         else:
             return datagrid
 
-    def getvrtdivspec(self, ugrid, vgrid, ntrunc):
+    def getvrtdivspec(self, ugrid, vgrid, ntrunc=None):
 
         """
  compute spectral coefficients of vorticity and divergence given vector wind.
