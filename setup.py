@@ -50,7 +50,7 @@ if havefiles.count(False):
 
 if __name__ == "__main__":
     setup(name = 'pyspharm',
-          version           = "1.0.4",
+          version           = "1.0.5",
           description       = "Python Spherical Harmonic Transform Module",
           author            = "Jeff Whitaker",
           author_email      = "jeffrey.s.whitaker@noaa.gov",

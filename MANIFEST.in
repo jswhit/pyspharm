@@ -20,3 +20,10 @@ include src/twodtooned.f
 include src/twodtooned_vrtdiv.f
 include src/getlegfunc.f
 include src/specintrp.f
+exclude src/vh*f
+exclude src/sh*f
+exclude src/gaqd.f
+exclude src/sphcom.f
+exclude src/*fft*f
+exclude src/ih*f
+exclude src/alf.f
