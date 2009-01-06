@@ -413,7 +413,7 @@
 <a name="L361"></a><tt class="py-lineno"> 361</tt>  <tt class="py-line"><tt class="py-docstring"> datagrid is rank 2, nt is assumed to be 1.</tt> </tt>
 <a name="L362"></a><tt class="py-lineno"> 362</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L363"></a><tt class="py-lineno"> 363</tt>  <tt class="py-line"><tt class="py-docstring"> @keyword ntrunc:  optional spectral truncation limit.</tt> </tt>
-<a name="L364"></a><tt class="py-lineno"> 364</tt>  <tt class="py-line"><tt class="py-docstring"> (default datagrdin.nlat-1)</tt> </tt>
+<a name="L364"></a><tt class="py-lineno"> 364</tt>  <tt class="py-line"><tt class="py-docstring"> (default self.nlat-1)</tt> </tt>
 <a name="L365"></a><tt class="py-lineno"> 365</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L366"></a><tt class="py-lineno"> 366</tt>  <tt class="py-line"><tt class="py-docstring"> @return: C{B{dataspec}} - rank 1 or 2 numpy complex array with shape</tt> </tt>
 <a name="L367"></a><tt class="py-lineno"> 367</tt>  <tt class="py-line"><tt class="py-docstring"> (ntrunc+1)*(ntrunc+2)/2 or ((ntrunc+1)*(ntrunc+2)/2,nt) containing</tt> </tt>
@@ -435,7 +435,7 @@
 <a name="L383"></a><tt class="py-lineno"> 383</tt>  <tt class="py-line"><tt class="py-comment"># check ntrunc.</tt> </tt>
 <a name="L384"></a><tt class="py-lineno"> 384</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
 <a name="L385"></a><tt class="py-lineno"> 385</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">ntrunc</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
-<a name="L386"></a><tt class="py-lineno"> 386</tt>  <tt class="py-line">            <tt class="py-name">ntrunc</tt> <tt class="py-op">=</tt> <tt class="py-name">datagrid</tt><tt class="py-op">.</tt><tt class="py-name">nlat</tt><tt class="py-op">-</tt><tt class="py-number">1</tt> </tt>
+<a name="L386"></a><tt class="py-lineno"> 386</tt>  <tt class="py-line">            <tt class="py-name">ntrunc</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nlat</tt><tt class="py-op">-</tt><tt class="py-number">1</tt> </tt>
 <a name="L387"></a><tt class="py-lineno"> 387</tt>  <tt class="py-line">   </tt>
 <a name="L388"></a><tt class="py-lineno"> 388</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">ntrunc</tt> <tt class="py-op">&lt;</tt> <tt class="py-number">0</tt> <tt class="py-keyword">or</tt> <tt class="py-name">ntrunc</tt><tt class="py-op">+</tt><tt class="py-number">1</tt> <tt class="py-op">&gt;</tt> <tt class="py-name">datagrid</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
 <a name="L389"></a><tt class="py-lineno"> 389</tt>  <tt class="py-line">            <tt class="py-name">msg</tt> <tt class="py-op">=</tt> <tt class="py-string">'ntrunc must be between 0 and %d'</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">datagrid</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-op">)</tt> </tt>
@@ -600,7 +600,7 @@
 <a name="L548"></a><tt class="py-lineno"> 548</tt>  <tt class="py-line"><tt class="py-docstring"> of grids to be transformed.  Both ugrid and vgrid must have the same shape.</tt> </tt>
 <a name="L549"></a><tt class="py-lineno"> 549</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L550"></a><tt class="py-lineno"> 550</tt>  <tt class="py-line"><tt class="py-docstring"> @keyword ntrunc:  optional spectral truncation limit.</tt> </tt>
-<a name="L551"></a><tt class="py-lineno"> 551</tt>  <tt class="py-line"><tt class="py-docstring"> (default ugrdin.nlat-1 = vgrid.nlat-1)</tt> </tt>
+<a name="L551"></a><tt class="py-lineno"> 551</tt>  <tt class="py-line"><tt class="py-docstring"> (default self.nlat-1)</tt> </tt>
 <a name="L552"></a><tt class="py-lineno"> 552</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L553"></a><tt class="py-lineno"> 553</tt>  <tt class="py-line"><tt class="py-docstring"> @return: C{B{vrtspec, divspec}} - rank 1 or 2 numpy complex arrays</tt> </tt>
 <a name="L554"></a><tt class="py-lineno"> 554</tt>  <tt class="py-line"><tt class="py-docstring"> of vorticity and divergence spherical harmonic coefficients with shape</tt> </tt>
@@ -613,7 +613,7 @@
 <a name="L561"></a><tt class="py-lineno"> 561</tt>  <tt class="py-line">        <tt class="py-name">shapev</tt> <tt class="py-op">=</tt> <tt class="py-name">vgrid</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> </tt>
 <a name="L562"></a><tt class="py-lineno"> 562</tt>  <tt class="py-line"> </tt>
 <a name="L563"></a><tt class="py-lineno"> 563</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">ntrunc</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
-<a name="L564"></a><tt class="py-lineno"> 564</tt>  <tt class="py-line">            <tt class="py-name">ntrunc</tt> <tt class="py-op">=</tt> <tt class="py-name">ugrid</tt><tt class="py-op">.</tt><tt class="py-name">nlat</tt><tt class="py-op">-</tt><tt class="py-number">1</tt> </tt>
+<a name="L564"></a><tt class="py-lineno"> 564</tt>  <tt class="py-line">            <tt class="py-name">ntrunc</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nlat</tt><tt class="py-op">-</tt><tt class="py-number">1</tt> </tt>
 <a name="L565"></a><tt class="py-lineno"> 565</tt>  <tt class="py-line"> </tt>
 <a name="L566"></a><tt class="py-lineno"> 566</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">shapeu</tt> <tt class="py-op">!=</tt> <tt class="py-name">shapev</tt><tt class="py-op">:</tt> </tt>
 <a name="L567"></a><tt class="py-lineno"> 567</tt>  <tt class="py-line">            <tt class="py-name">msg</tt> <tt class="py-op">=</tt> <tt class="py-string">'getvrtdivspec input arrays must be same shape!'</tt> </tt>
@@ -822,7 +822,7 @@
 <a name="L770"></a><tt class="py-lineno"> 770</tt>  <tt class="py-line"><tt class="py-docstring"> of grids to be transformed.  Both ugrid and vgrid must have the same shape.</tt> </tt>
 <a name="L771"></a><tt class="py-lineno"> 771</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L772"></a><tt class="py-lineno"> 772</tt>  <tt class="py-line"><tt class="py-docstring"> @keyword ntrunc:  optional spectral truncation limit.</tt> </tt>
-<a name="L773"></a><tt class="py-lineno"> 773</tt>  <tt class="py-line"><tt class="py-docstring"> (default ugrdin.nlat-1 = vgrid.nlat-1)</tt> </tt>
+<a name="L773"></a><tt class="py-lineno"> 773</tt>  <tt class="py-line"><tt class="py-docstring"> (default self.nlat-1)</tt> </tt>
 <a name="L774"></a><tt class="py-lineno"> 774</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L775"></a><tt class="py-lineno"> 775</tt>  <tt class="py-line"><tt class="py-docstring"> @return: C{B{psigrid, chigrid}} - rank 2 or 3 numpy float32 arrays</tt> </tt>
 <a name="L776"></a><tt class="py-lineno"> 776</tt>  <tt class="py-line"><tt class="py-docstring"> of gridded streamfunction and velocity potential. Shapes are either</tt> </tt>
@@ -835,7 +835,7 @@
 <a name="L783"></a><tt class="py-lineno"> 783</tt>  <tt class="py-line">        <tt class="py-name">shapev</tt> <tt class="py-op">=</tt> <tt class="py-name">vgrid</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> </tt>
 <a name="L784"></a><tt class="py-lineno"> 784</tt>  <tt class="py-line"> </tt>
 <a name="L785"></a><tt class="py-lineno"> 785</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">ntrunc</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
-<a name="L786"></a><tt class="py-lineno"> 786</tt>  <tt class="py-line">            <tt class="py-name">ntrunc</tt> <tt class="py-op">=</tt> <tt class="py-name">ugrid</tt><tt class="py-op">.</tt><tt class="py-name">nlat</tt><tt class="py-op">-</tt><tt class="py-number">1</tt> </tt>
+<a name="L786"></a><tt class="py-lineno"> 786</tt>  <tt class="py-line">            <tt class="py-name">ntrunc</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nlat</tt><tt class="py-op">-</tt><tt class="py-number">1</tt> </tt>
 <a name="L787"></a><tt class="py-lineno"> 787</tt>  <tt class="py-line"> </tt>
 <a name="L788"></a><tt class="py-lineno"> 788</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">shapeu</tt> <tt class="py-op">!=</tt> <tt class="py-name">shapev</tt><tt class="py-op">:</tt> </tt>
 <a name="L789"></a><tt class="py-lineno"> 789</tt>  <tt class="py-line">            <tt class="py-name">msg</tt> <tt class="py-op">=</tt> <tt class="py-string">'getvrtdivspec input arrays must be same shape!'</tt> </tt>
@@ -1169,7 +1169,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Jan  6 11:52:16 2009
+    Generated by Epydoc 3.0.1 on Tue Jan  6 12:01:33 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

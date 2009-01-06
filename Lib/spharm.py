@@ -361,7 +361,7 @@ prevent deletion of read-only instance variables.
  datagrid is rank 2, nt is assumed to be 1.
 
  @keyword ntrunc:  optional spectral truncation limit.
- (default datagrdin.nlat-1)
+ (default self.nlat-1)
 
  @return: C{B{dataspec}} - rank 1 or 2 numpy complex array with shape
  (ntrunc+1)*(ntrunc+2)/2 or ((ntrunc+1)*(ntrunc+2)/2,nt) containing
@@ -383,7 +383,7 @@ prevent deletion of read-only instance variables.
 # check ntrunc.
 
         if ntrunc is None:
-            ntrunc = datagrid.nlat-1
+            ntrunc = self.nlat-1
   
         if ntrunc < 0 or ntrunc+1 > datagrid.shape[0]:
             msg = 'ntrunc must be between 0 and %d' % (datagrid.shape[0]-1,)
@@ -548,7 +548,7 @@ prevent deletion of read-only instance variables.
  of grids to be transformed.  Both ugrid and vgrid must have the same shape.
 
  @keyword ntrunc:  optional spectral truncation limit.
- (default ugrdin.nlat-1 = vgrid.nlat-1)
+ (default self.nlat-1)
 
  @return: C{B{vrtspec, divspec}} - rank 1 or 2 numpy complex arrays
  of vorticity and divergence spherical harmonic coefficients with shape
@@ -561,7 +561,7 @@ prevent deletion of read-only instance variables.
         shapev = vgrid.shape
 
         if ntrunc is None:
-            ntrunc = ugrid.nlat-1
+            ntrunc = self.nlat-1
 
         if shapeu != shapev:
             msg = 'getvrtdivspec input arrays must be same shape!'
@@ -770,7 +770,7 @@ prevent deletion of read-only instance variables.
  of grids to be transformed.  Both ugrid and vgrid must have the same shape.
 
  @keyword ntrunc:  optional spectral truncation limit.
- (default ugrdin.nlat-1 = vgrid.nlat-1)
+ (default self.nlat-1)
 
  @return: C{B{psigrid, chigrid}} - rank 2 or 3 numpy float32 arrays
  of gridded streamfunction and velocity potential. Shapes are either
@@ -783,7 +783,7 @@ prevent deletion of read-only instance variables.
         shapev = vgrid.shape
 
         if ntrunc is None:
-            ntrunc = ugrid.nlat-1
+            ntrunc = self.nlat-1
 
         if shapeu != shapev:
             msg = 'getvrtdivspec input arrays must be same shape!'
