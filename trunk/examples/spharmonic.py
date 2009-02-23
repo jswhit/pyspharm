@@ -1,4 +1,4 @@
-from matplotlib.toolkits.basemap import Basemap, addcyclic
+from mpl_toolkits.basemap import Basemap, addcyclic
 from spharm import Spharmt, getspecindx
 import pylab as p
 # set up orthographic map projection.
