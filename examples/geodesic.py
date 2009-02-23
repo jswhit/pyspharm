@@ -1,4 +1,4 @@
-from matplotlib.toolkits.basemap import Basemap
+from mpl_toolkits.basemap import Basemap
 from spharm import getgeodesicpts
 import pylab as p
 # set up orthographic map projection.
@@ -17,4 +17,3 @@ lats, lons = getgeodesicpts(m)
 x, y = map(lons, lats)
 map.scatter(x,y,marker='o',c='b',s=20,zorder=10)
 p.show()
-
