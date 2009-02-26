@@ -870,9 +870,7 @@ prevent deletion of read-only instance variables.
  
 # call getuv, with vrtspec=0, to get uchi,vchi.
 
-        chispec[:,:] = 0.
-
-        uchi, vchi = self.getuv(chispec, divspec)
+        uchi, vchi = self.getuv(numpy.zeros(chispec.shape, chispec.dtype), divspec)
 
         return uchi, vchi
 
