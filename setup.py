@@ -31,7 +31,7 @@ if havefiles.count(False):
     if download not in ['Y','y','yes','Yes','YES']:
         sys.exit(0)
     import urllib, tarfile
-    tarfname = 'spherepack3.1.tar'
+    tarfname = 'spherepack3.2.tar'
     URL="http://www.cisl.ucar.edu/css/software/spherepack/"+tarfname
     urllib.urlretrieve(URL,tarfname)
     if not os.path.isfile(tarfname):
