@@ -1,9 +1,9 @@
 """
 Introduction
 ============
-    
-This module provides a python interface to the NCAR 
-U{SPHEREPACK<http://www.scd.ucar.edu/softlib/SPHERE.html>} library.  
+
+This module provides a python interface to the NCAR
+U{SPHEREPACK<http://www.scd.ucar.edu/softlib/SPHERE.html>} library.
 It is not a one-to-one wrapper for the SPHEREPACK routines, rather
 it provides a simple interface oriented toward working with
 atmospheric general circulation model (GCM) data.
@@ -31,7 +31,7 @@ Usage
 >>> x=spharm.Spharmt(144,72,rsphere=8e6,gridtype='gaussian',legfunc='computed')
 
 creates a class instance for spherical harmonic calculations on a 144x72
-gaussian grid on a sphere with radius 8000 km. The associated legendre 
+gaussian grid on a sphere with radius 8000 km. The associated legendre
 functions are recomputed on the fly (instead of pre-computed and stored).
 Default values of rsphere, gridtype and legfunc are 6.3712e6, 'regular'
 and 'stored'. Real-world examples are included in the source distribution.
@@ -62,15 +62,15 @@ Functions
 
 Conventions
 ===========
-    
-The gridded data is assumed to be oriented such that i=1 is the 
+
+The gridded data is assumed to be oriented such that i=1 is the
 Greenwich meridian and j=1 is the northernmost point. Grid indices
 increase eastward and southward. If nlat is odd the equator is included.
 If nlat is even the equator will lie half way between points nlat/2
-and (nlat/2)+1. nlat must be at least 3. For regular grids 
+and (nlat/2)+1. nlat must be at least 3. For regular grids
 (gridtype='regular') the poles will be included when nlat is odd.
 The grid increment in longitude is 2*pi/nlon radians. For example,
-nlon = 72 for a five degree grid. nlon must be greater than or 
+nlon = 72 for a five degree grid. nlon must be greater than or
 equal to 4. The efficiency of the computation is improved when nlon
 is a product of small prime numbers.
 
@@ -78,8 +78,8 @@ The spectral data is assumed to be in a complex array of dimension
 (ntrunc+1)*(ntrunc+2)/2. ntrunc is the triangular truncation limit
 (ntrunc = 42 for T42). ntrunc must be <= nlat-1. Coefficients are
 ordered so that first (nm=0) is m=0,n=0, second is m=0,n=1,
-nm=ntrunc is m=0,n=ntrunc, nm=ntrunc+1 is m=1,n=1, etc. 
-The values of m (degree) and n (order) as a function of the index 
+nm=ntrunc is m=0,n=ntrunc, nm=ntrunc+1 is m=1,n=1, etc.
+The values of m (degree) and n (order) as a function of the index
 nm are given by the arrays indxm, indxn returned by getspecindx.
 
 The associated legendre polynomials are normalized so that the
@@ -91,7 +91,7 @@ theta = pi/2 - phi, where phi is latitude and theta is colatitude.
 Therefore, cos(theta) = sin(phi) and sin(theta) = cos(phi).
 Note that pbar(0,0,theta)=sqrt(2)/2, and pbar(1,0,theta)=.5*sqrt(6)*sin(lat).
 
-The default grid type is regular (equally spaced latitude points).  
+The default grid type is regular (equally spaced latitude points).
 Set gridtype='gaussian' when creating a class instance
 for gaussian latitude points.
 
@@ -105,7 +105,7 @@ will always be faster.
 
 @contact: U{Jeff Whitaker<mailto:jeffrey.s.whitaker@noaa.gov>}
 
-@version: 1.0.6      
+@version: 1.0.6
 
 @license: Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
@@ -140,9 +140,9 @@ class Spharmt:
  @ivar rsphere: The radius of the sphere in meters (set when class
  instance is created, cannot be changed).
 
- @ivar legfunc: 'stored' or 'computed'.  If 'stored', 
+ @ivar legfunc: 'stored' or 'computed'.  If 'stored',
  associated legendre functions are precomputed and stored when the
- class instance is created.  If 'computed', associated 
+ class instance is created.  If 'computed', associated
  legendre functions are computed on the fly when transforms are
  requested. Set when class instance is created, cannot be changed.
 
@@ -156,42 +156,42 @@ class Spharmt:
         """
 prevent modification of read-only instance variables.
         """
-	if self.__dict__.has_key(key) and key in _private_vars:
-	    raise AttributeError, 'Attempt to rebind read-only instance variable '+key
+        if key in self.__dict__ and key in _private_vars:
+            raise AttributeError('Attempt to rebind read-only instance variable '+key)
         else:
             self.__dict__[key] = val
 
     def __delattr__(self, key):
         """
 prevent deletion of read-only instance variables.
-	"""
-	if self.__dict__.has_key(key) and key in _private_vars:
-	    raise AttributeError, 'Attempt to unbind read-only instance variable '+key
+        """
+        if key in self.__dict__ and key in _private_vars:
+            raise AttributeError('Attempt to unbind read-only instance variable '+key)
         else:
             del self.__dict__[key]
 
     def __init__(self, nlon, nlat, rsphere=6.3712e6, gridtype='regular', legfunc='stored'):
         """
  create a Spharmt class instance.
-    
+
  @param nlon: Number of longitudes. The grid must be oriented from
  east to west, with the first point at the Greenwich meridian
  and the last point at 360-delta degrees east
  (where delta = 360/nlon degrees). Must be >= 4. Transforms will
  be faster when nlon is the product of small primes.
-            
+
  @param nlat: Number of latitudes.  The grid must be oriented from north
  to south. If nlat is odd the equator is included.
  If nlat is even the equator will lie half way between points
  points nlat/2 and (nlat/2)+1. Must be >=3.
 
- @keyword rsphere: The radius of the sphere in meters.  
+ @keyword rsphere: The radius of the sphere in meters.
  Default 6371200 (the value for Earth).
 
- @keyword legfunc: 'stored' (default) or 'computed'.  If 'stored', 
+ @keyword legfunc: 'stored' (default) or 'computed'.  If 'stored',
  associated legendre functions are precomputed and stored when the
  class instance is created.  This uses O(nlat**3) memory, but
- speeds up the spectral transforms.  If 'computed', associated 
+ speeds up the spectral transforms.  If 'computed', associated
  legendre functions are computed on the fly when transforms are
  requested.  This uses O(nlat**2) memory, but slows down the spectral
  transforms a bit.
@@ -200,33 +200,33 @@ prevent deletion of read-only instance variables.
  will include the poles and equator if nlat is odd.  Gaussian
  grids never include the poles, but will include the equator if
  nlat is odd.
-   
+
         """
 # sanity checks.
         if rsphere > 0.0:
             self.rsphere= rsphere
         else:
             msg = 'Spharmt.__init__ illegal value of rsphere (%s) - must be postitive' % (rsphere)
-            raise ValueError, msg
+            raise ValueError(msg)
         if nlon > 3:
             self.nlon = nlon
         else:
             msg = 'Spharmt.__init__ illegal value of nlon (%s) - must be at least 4' % (nlon,)
-            raise ValueError, msg
+            raise ValueError(msg)
         if nlat > 2:
             self.nlat = nlat
         else:
             msg = 'Spharmt.__init__ illegal value of nlat (%s) - must be at least 3' % (nlat,)
-            raise ValueError, msg
+            raise ValueError(msg)
         if gridtype != 'regular' and gridtype != 'gaussian':
             msg = 'Spharmt.__init__ illegal value of gridtype (%s) - must be either "gaussian" or "regular"' % gridtype
-            raise ValueError, msg
+            raise ValueError(msg)
         else:
             self.gridtype = gridtype
 
         if legfunc != 'computed' and legfunc != 'stored':
             msg = 'Spharmt.__init__ illegal value of legfunc (%s) - must be either "computed" or "stored"' % legfunc
-            raise ValueError, msg
+            raise ValueError(msg)
         else:
             self.legfunc = legfunc
 
@@ -242,59 +242,59 @@ prevent deletion of read-only instance variables.
         if gridtype == 'regular':
             if legfunc == 'stored':
                 lshaes = (n1*n2*(nlat + nlat - n1 + 1))/2 + nlon + 15
-                lwork = 5*nlat*n2 + 3*((n1 - 2)*(nlat + nlat - n1 -1))/2 
+                lwork = 5*nlat*n2 + 3*((n1 - 2)*(nlat + nlat - n1 -1))/2
                 wshaes, ierror = _spherepack.shaesi(nlat, nlon, lshaes, lwork, nlat+1)
                 if ierror != 0:
                     msg = 'In return from call to shaesi in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wshaes = wshaes
                 lshses = lshaes
                 wshses, ierror = _spherepack.shsesi(nlat, nlon, lshses, lwork, nlat+1)
                 if ierror != 0:
                     msg = 'In return from call to shsesi in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wshses = wshses
                 lvhaes = n1*n2*(nlat + nlat - n1 + 1) + nlon + 15
                 lwork = 3*(max(n1 -2,0)*(nlat + nlat - n1 - 1))/2 + 5*n2*nlat
                 wvhaes, ierror = _spherepack.vhaesi(nlat, nlon, lvhaes, lwork, 2*(nlat+1))
                 if ierror != 0:
                     msg = 'In return from call to vhaesi in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wvhaes = wvhaes
                 lwork = 3*(max(n1 - 2,0)*(nlat + nlat - n1 -1))/2 + 5*n2*nlat
                 lvhses = n1*n2*(nlat + nlat - n1 + 1) + nlon + 15
                 wvhses, ierror = _spherepack.vhsesi(nlat,nlon,lvhses,lwork,2*(nlat+1))
                 if ierror != 0:
                     msg = 'In return from call to vhsesi in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wvhses = wvhses
-            else: 
+            else:
                 lshaec = 2*nlat*n2+3*((n1-2)*(nlat+nlat-n1-1))/2+nlon+15
                 wshaec, ierror = _spherepack.shaeci(nlat, nlon, lshaec, 2*(nlat+1))
                 if ierror != 0:
                     msg = 'In return from call to shaeci in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
-                self.wshaec = wshaec               
+                    raise ValueError(msg)
+                self.wshaec = wshaec
                 lshsec = lshaec
                 wshsec, ierror = _spherepack.shseci(nlat, nlon, lshsec, 2*(nlat+1))
                 if ierror != 0:
                     msg = 'In return from call to shseci in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wshsec = wshsec
                 lvhaec = 4*nlat*n2+3*max(n1-2,0)*(2*nlat-n1-1)+nlon+15
                 wvhaec, ierror = _spherepack.vhaeci(nlat, nlon, lvhaec,  2*(nlat+1))
                 if ierror != 0:
                     msg = 'In return from call to vhaeci in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wvhaec = wvhaec
                 lvhsec = lvhaec
                 wvhsec, ierror = _spherepack.vhseci(nlat, nlon, lvhsec,  2*(nlat+1))
                 if ierror != 0:
                     msg = 'In return from call to vhseci in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wvhsec = wvhsec
-                
-                 
+
+
         elif gridtype == 'gaussian':
             if legfunc == 'stored':
                 lshags = nlat*(3*(n1 + n2) - 2) + (n1 - 1)*(n2*(2*nlat - n1) - 3*n1)/2 + nlon + 15
@@ -303,53 +303,53 @@ prevent deletion of read-only instance variables.
                 wshags, ierror = _spherepack.shagsi(nlat, nlon, lshags, lwork, ldwork)
                 if ierror != 0:
                     msg = 'In return from call to shagsi in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wshags = wshags
                 lshsgs = lshags
                 wshsgs, ierror = _spherepack.shsgsi(nlat, nlon, lshsgs, lwork, ldwork)
                 if ierror != 0:
                     msg = 'In return from call to shsgsi in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wshsgs = wshsgs
                 lvhags = (nlat +1)*(nlat + 1)*nlat/2 +nlon + 15
                 ldwork = (3*nlat*(nlat + 3) + 2)/2
                 wvhags, ierror = _spherepack.vhagsi(nlat, nlon, lvhags, ldwork)
                 if ierror != 0:
                     msg = 'In return from call to vhagsi in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wvhags = wvhags
                 lvhsgs = n1*n2*(nlat + nlat - n1 +1) + nlon + 15 + 2*nlat
-                ldwork = (3*nlat*(nlat + 3) + 2)/2 
+                ldwork = (3*nlat*(nlat + 3) + 2)/2
                 wvhsgs, ierror = _spherepack.vhsgsi(nlat, nlon, lvhsgs, ldwork)
                 if ierror != 0:
                     msg = 'In return from call to vhsgsi in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wvhsgs = wvhsgs
             else:
                 lshagc = nlat*(2*n2+3*n1-2)+3*n1*(1-n1)/2+nlon+15
                 wshagc, ierror = _spherepack.shagci(nlat, nlon, lshagc, nlat*(nlat+4))
                 if ierror != 0:
                     msg = 'In return from call to shagci in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wshagc = wshagc
                 lshsgc = lshagc
                 wshsgc, ierror = _spherepack.shsgci(nlat, nlon, lshsgc, nlat*(nlat+4))
                 if ierror != 0:
                     msg = 'In return from call to shsgci in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wshsgc = wshsgc
                 lvhagc = 4*nlat*n2+3*max(n1-2,0)*(2*nlat-n1-1)+nlon+n2+15
                 ldwork = 2*nlat*(nlat+1)+1
                 wvhagc, ierror = _spherepack.vhagci(nlat, nlon, lvhagc, ldwork)
                 if ierror != 0:
                     msg = 'In return from call to vhagci in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wvhagc = wvhagc
                 lvhsgc = 4*nlat*n2+3*max(n1-2,0)*(2*nlat-n1-1)+nlon+15
                 wvhsgc, ierror = _spherepack.vhsgci(nlat, nlon, lvhsgc, ldwork)
                 if ierror != 0:
                     msg = 'In return from call to vhsgci in Spharmt.__init__ ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.wvhsgc = wvhsgc
 
     def grdtospec(self, datagrid, ntrunc=None):
@@ -374,20 +374,20 @@ prevent deletion of read-only instance variables.
 
         if len(datagrid.shape) > 3:
             msg = 'grdtospec needs a rank two or three array, got %d' % (len(datagrid.shape),)
-            raise ValueError, msg
+            raise ValueError(msg)
 
         if datagrid.shape[0] != self.nlat or datagrid.shape[1] != self.nlon:
             msg = 'grdtospec needs an array of size %d by %d, got %d by %d' % (self.nlat, self.nlon, datagrid.shape[0], datagrid.shape[1],)
-            raise ValueError, msg
+            raise ValueError(msg)
 
 # check ntrunc.
 
         if ntrunc is None:
             ntrunc = self.nlat-1
-  
+
         if ntrunc < 0 or ntrunc+1 > datagrid.shape[0]:
             msg = 'ntrunc must be between 0 and %d' % (datagrid.shape[0]-1,)
-            raise ValueError, msg
+            raise ValueError(msg)
 
 
         nlat = self.nlat
@@ -406,20 +406,20 @@ prevent deletion of read-only instance variables.
         if self.gridtype == 'regular':
 
 # do grid to spectral transform.
-         
+
             if self.legfunc == 'stored':
                 lwork = (nt+1)*nlat*nlon
                 a,b,ierror = _spherepack.shaes(datagrid,self.wshaes,lwork)
                 if ierror != 0:
                     msg = 'In return from call to shaes in Spharmt.grdtospec ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
             else:
                 lwork = nlat*(nt*nlon+max(3*n2,nlon))
                 a,b,ierror = _spherepack.shaec(datagrid,self.wshaec,lwork)
                 if ierror != 0:
                     msg = 'In return from call to shaec in Spharmt.grdtospec ierror =  %d' % ierror
 
-                    raise ValueError, msg
+                    raise ValueError(msg)
 
 # gaussian grid.
 
@@ -432,13 +432,13 @@ prevent deletion of read-only instance variables.
                 a,b,ierror = _spherepack.shags(datagrid,self.wshags,lwork)
                 if ierror != 0:
                     msg = 'In return from call to shags in Spharmt.grdtospec ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
             else:
                 lwork = nlat*(nlon*nt+max(3*n2,nlon))
                 a,b,ierror = _spherepack.shagc(datagrid,self.wshagc,lwork)
                 if ierror != 0:
                     msg = 'In return from call to shagc in Spharmt.grdtospec ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
 
 # convert 2d real and imag spectral arrays into 1d complex array.
 
@@ -469,7 +469,7 @@ prevent deletion of read-only instance variables.
 
         if len(dataspec.shape) > 2:
             msg = 'spectogrd needs a rank one or two array, got %d' % (len(dataspec.shape),)
-            raise ValueError, msg
+            raise ValueError(msg)
 
         nlat = self.nlat
         nlon = self.nlon
@@ -487,7 +487,7 @@ prevent deletion of read-only instance variables.
         ntrunc = int(-1.5 + 0.5*math.sqrt(9.-8.*(1.-dataspec.shape[0])))
         if ntrunc > nlat-1:
             msg = 'ntrunc too large - can be max of %d, got %d' % (nlat-1,ntrunc)
-            raise ValueError, msg
+            raise ValueError(msg)
 
         a, b = _spherepack.onedtotwod(dataspec,nlat)
 
@@ -502,13 +502,13 @@ prevent deletion of read-only instance variables.
                 datagrid, ierror = _spherepack.shses(nlon,a,b,self.wshses,lwork)
                 if ierror != 0:
                     msg = 'In return from call to shses in Spharmt.spectogrd ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
             else:
                 lwork = nlat*(nt*nlon+max(3*n2,nlon))
                 datagrid, ierror = _spherepack.shsec(nlon,a,b,self.wshsec,lwork)
                 if ierror != 0:
                     msg = 'In return from call to shsec in Spharmt.spectogrd ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
 
 # gaussian grid.
 
@@ -521,13 +521,13 @@ prevent deletion of read-only instance variables.
                 datagrid, ierror = _spherepack.shsgs(nlon,a,b,self.wshsgs,lwork)
                 if ierror != 0:
                     msg = 'In return from call to shsgs in Spharmt.spectogrd ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
             else:
                 lwork = nlat*(nlon*nt+max(3*n2,nlon))
                 datagrid, ierror = _spherepack.shsgc(nlon,a,b,self.wshsgc,lwork)
                 if ierror != 0:
                     msg = 'In return from call to shsgc in Spharmt.spectogrd ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
 
         if nt==1:
             return numpy.squeeze(datagrid)
@@ -540,11 +540,11 @@ prevent deletion of read-only instance variables.
  compute spectral coefficients of vorticity and divergence given vector wind.
 
  @param ugrid: rank 2 or 3 numpy float32 array containing grid of zonal
- winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number 
+ winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number
  of grids to be transformed.  If ugrid is rank 2, nt is assumed to be 1.
 
  @param vgrid: rank 2 or 3 numpy float32 array containing grid of meridional
- winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number 
+ winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number
  of grids to be transformed.  Both ugrid and vgrid must have the same shape.
 
  @keyword ntrunc:  optional spectral truncation limit.
@@ -565,23 +565,23 @@ prevent deletion of read-only instance variables.
 
         if shapeu != shapev:
             msg = 'getvrtdivspec input arrays must be same shape!'
-            raise ValueError, msg
+            raise ValueError(msg)
 
 
         if len(shapeu) !=2 and len(shapeu) !=3:
             msg = 'getvrtdivspec needs rank two or three arrays!'
-            raise ValueError, msg
+            raise ValueError(msg)
 
         if shapeu[0] != self.nlat or shapeu[1] != self.nlon:
             msg = 'getvrtdivspec needs input arrays whose first two dimensions are si%d and %d, got %d and %d' % (self.nlat, self.nlon, ugrid.shape[0], ugrid.shape[1],)
-            raise ValueError, msg
+            raise ValueError(msg)
 
 
 # check ntrunc.
 
         if ntrunc < 0 or ntrunc+1 > shapeu[0]:
             msg = 'ntrunc must be between 0 and %d' % (ugrid.shape[0]-1,)
-            raise ValueError, msg
+            raise ValueError(msg)
 
         nlat = self.nlat
         nlon = self.nlon
@@ -614,13 +614,13 @@ prevent deletion of read-only instance variables.
                 br,bi,cr,ci,ierror = _spherepack.vhaes(v,w,self.wvhaes,lwork)
                 if ierror != 0:
                     msg = 'In return from call to vhaes in Spharmt.getvrtdivspec ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
             else:
                 lwork = nlat*(2*nt*nlon+max(6*n2,nlon))
                 br,bi,cr,ci,ierror = _spherepack.vhaec(v,w,self.wvhaec,lwork)
                 if ierror != 0:
                     msg = 'In return from call to vhaec in Spharmt.getvrtdivspec ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
 
 # gaussian grid.
 
@@ -633,13 +633,13 @@ prevent deletion of read-only instance variables.
                 br,bi,cr,ci,ierror = _spherepack.vhags(v,w,self.wvhags,lwork)
                 if ierror != 0:
                     msg = 'In return from call to vhags in Spharmt.getvrtdivspec ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
             else:
                 lwork = 2*nlat*(2*nlon*nt+3*n2)
                 br,bi,cr,ci,ierror = _spherepack.vhagc(v,w,self.wvhagc,lwork)
                 if ierror != 0:
                     msg = 'In return from call to vhagc in Spharmt.getvrtdivspec ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
 
 # convert vector harmonic coeffs to 1d complex coefficients
 # of vorticity and divergence.
@@ -647,7 +647,7 @@ prevent deletion of read-only instance variables.
         vrtspec, divspec = _spherepack.twodtooned_vrtdiv(br,bi,cr,ci,ntrunc,rsphere)
 
         if nt==1:
- 	    return numpy.squeeze(vrtspec), numpy.squeeze(divspec)
+            return numpy.squeeze(vrtspec), numpy.squeeze(divspec)
         else:
             return vrtspec, divspec
 
@@ -681,11 +681,11 @@ prevent deletion of read-only instance variables.
 
         if shapevrt != shapediv:
             msg = 'vrtspec, divspec must be same size in getuv!'
-            raise ValueError, msg
+            raise ValueError(msg)
 
         if len(shapevrt) !=1 and len(shapevrt) !=2:
             msg = 'getuv needs rank one or two input arrays!'
-            raise ValueError, msg
+            raise ValueError(msg)
 
 # infer ntrunc from size of dataspec (dataspec must be rank 1!)
 # dataspec is assumed to have size (ntrunc+1)*(ntrunc+2)/2
@@ -722,13 +722,13 @@ prevent deletion of read-only instance variables.
                 v, w, ierror = _spherepack.vhses(nlon,br,bi,cr,ci,self.wvhses,lwork)
                 if ierror != 0:
                     msg = 'In return from call to vhses in Spharmt.getuv ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
             else:
                 lwork = nlat*(2*nt*nlon+max(6*n2,nlon))
                 v, w, ierror = _spherepack.vhsec(nlon,br,bi,cr,ci,self.wvhsec,lwork)
                 if ierror != 0:
                     msg = 'In return from call to vhsec in Spharmt.getuv ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
 
 # gaussian grid.
 
@@ -741,18 +741,18 @@ prevent deletion of read-only instance variables.
                 v, w, ierror = _spherepack.vhsgs(nlon,br,bi,cr,ci,self.wvhsgs,lwork)
                 if ierror != 0:
                     msg = 'In return from call to vhsgs in Spharmt.getuv ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
             else:
                 lwork = nlat*(2*nt*nlon+max(6*n2,nlon))
                 v, w, ierror = _spherepack.vhsgc(nlon,br,bi,cr,ci,self.wvhsgc,lwork)
                 if ierror != 0:
                     msg = 'In return from call to vhsgc in Spharmt.getuv ierror =  %d' % ierror
-                    raise ValueError, msg
+                    raise ValueError(msg)
 
 # convert to u and v in geographical coordinates.
 
         if nt == 1:
-    	    return numpy.reshape(w, (nlat,nlon)), -numpy.reshape(v, (nlat,nlon))
+            return numpy.reshape(w, (nlat,nlon)), -numpy.reshape(v, (nlat,nlon))
         else:
             return w,-v
 
@@ -762,11 +762,11 @@ prevent deletion of read-only instance variables.
  compute streamfunction and velocity potential on grid given vector wind.
 
  @param ugrid: rank 2 or 3 numpy float32 array containing grid of zonal
- winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number 
+ winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number
  of grids to be transformed.  If ugrid is rank 2, nt is assumed to be 1.
 
  @param vgrid: rank 2 or 3 numpy float32 array containing grid of meridional
- winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number 
+ winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number
  of grids to be transformed.  Both ugrid and vgrid must have the same shape.
 
  @keyword ntrunc:  optional spectral truncation limit.
@@ -787,22 +787,22 @@ prevent deletion of read-only instance variables.
 
         if shapeu != shapev:
             msg = 'getvrtdivspec input arrays must be same shape!'
-            raise ValueError, msg
+            raise ValueError(msg)
 
 
         if len(shapeu) !=2 and len(shapeu) !=3:
             msg = 'getvrtdivspec needs rank two or three arrays!'
-            raise ValueError, msg
+            raise ValueError(msg)
 
         if shapeu[0] != self.nlat or shapeu[1] != self.nlon:
             msg = 'getpsichi needs input arrays whose first two dimensions are si%d and %d, got %d and %d' % (self.nlat, self.nlon, ugrid.shape[0], ugrid.shape[1],)
-            raise ValueError, msg
+            raise ValueError(msg)
 
 # check ntrunc.
 
         if ntrunc < 0 or ntrunc+1 > ugrid.shape[0]:
             msg = 'ntrunc must be between 0 and %d' % (ugrid.shape[0]-1,)
-            raise ValueError, msg
+            raise ValueError(msg)
 
 # compute spectral coeffs of vort, div.
 
@@ -849,7 +849,7 @@ prevent deletion of read-only instance variables.
 
         if len(chispec.shape) !=1 and len(chispec.shape) !=2:
             msg = 'getgrad needs rank one or two arrays!'
-            raise ValueError, msg
+            raise ValueError(msg)
 
 # infer ntrunc from size of chispec (chispec must be rank 1!)
 # chispec is assumed to have size (ntrunc+1)*(ntrunc+2)/2
@@ -867,7 +867,7 @@ prevent deletion of read-only instance variables.
 # convert chispec to divspec.
 
         divspec = _spherepack.lap(chispec,self.rsphere)
- 
+
 # call getuv, with vrtspec=0, to get uchi,vchi.
 
         uchi, vchi = self.getuv(numpy.zeros(chispec.shape, chispec.dtype), divspec)
@@ -895,18 +895,18 @@ prevent deletion of read-only instance variables.
 
         if len(datagrid.shape) > 3:
             msg = 'specsmooth needs a rank two or three array, got %d' % (len(datagrid.shape),)
-            raise ValueError, msg
+            raise ValueError(msg)
 
         if datagrid.shape[0] != self.nlat or datagrid.shape[1] != self.nlon:
             msg = 'specsmooth needs an array of size %d by %d, got %d by %d' % (self.nlat, self.nlon, datagrid.shape[0], datagrid.shape[1],)
-            raise ValueError, msg
+            raise ValueError(msg)
 
 
 # make sure smooth is rank 1, same size as datagrid.shape[0]
 
         if len(smooth.shape) !=1 or smooth.shape[0] != datagrid.shape[0]:
             msg = 'smooth must be rank 1 and same size as datagrid.shape[0] in specsmooth!'
-            raise ValueError, msg
+            raise ValueError(msg)
 
 # grid to spectral transform.
 
@@ -918,9 +918,9 @@ prevent deletion of read-only instance variables.
         dataspec = _spherepack.multsmoothfact(dataspec, smooth)
 
 # spectral to grid transform.
- 
+
         datagrid = self.spectogrd(dataspec)
- 
+
         return datagrid
 
 def regrid(grdin, grdout, datagrid, ntrunc=None, smooth=None):
@@ -934,11 +934,11 @@ def regrid(grdin, grdout, datagrid, ntrunc=None, smooth=None):
 
  @param datagrid: data on input grid (grdin.nlat x grdin.nlon). If
  datagrid is rank 3, last dimension is the number of grids to interpolate.
- 
+
  @keyword ntrunc:  optional spectral truncation limit for datagrid
  (default min(grdin.nlat-1,grdout.nlat-1)).
 
- @keyword smooth: rank 1 array of length grdout.nlat containing smoothing 
+ @keyword smooth: rank 1 array of length grdout.nlat containing smoothing
  factors as a function of total wavenumber (default is no smoothing).
 
  @return: C{B{datagrid}} - interpolated (and optionally smoothed) array(s)
@@ -950,15 +950,15 @@ def regrid(grdin, grdout, datagrid, ntrunc=None, smooth=None):
 
     if len(datagrid.shape) > 3:
         msg = 'regrid needs a rank two or three array, got %d' % (len(datagrid.shape),)
-        raise ValueError, msg
+        raise ValueError(msg)
 
     if datagrid.shape[0] != grdin.nlat or datagrid.shape[1] != grdin.nlon:
         msg = 'grdtospec needs an array of size %d by %d, got %d by %d' % (grdin.nlat, grdin.nlon, datagrid.shape[0], datagrid.shape[1],)
-        raise ValueError, msg
+        raise ValueError(msg)
 
     if smooth is not None and (len(smooth.shape) !=1 or smooth.shape[0] != grdout.nlat):
         msg = 'smooth must be rank 1 size grdout.nlat in regrid!'
-        raise ValueError, msg
+        raise ValueError(msg)
 
     if ntrunc is None:
         ntrunc = min(grdout.nlat-1,grdin.nlat-1)
@@ -972,7 +972,7 @@ def regrid(grdin, grdout, datagrid, ntrunc=None, smooth=None):
 
 def gaussian_lats_wts(nlat):
 
-    """     
+    """
  compute the gaussian latitudes (in degrees) and quadrature weights.
 
  @param nlat: number of gaussian latitudes desired.
@@ -987,7 +987,7 @@ def gaussian_lats_wts(nlat):
 
     if ierror != 0:
         msg = 'In return from call to gaqd ierror =  %d' % ierror
-        raise ValueError, msg
+        raise ValueError(msg)
 
 # convert to degrees north latitude.
 
@@ -1003,7 +1003,7 @@ def getspecindx(ntrunc):
 
  @param ntrunc: spherical harmonic triangular truncation limit.
 
- @return: C{B{indxm, indxn}} - rank 1 numpy Int32 arrays 
+ @return: C{B{indxm, indxn}} - rank 1 numpy Int32 arrays
  containing zonal wavenumber (indxm) and degree (indxn) of
  spherical harmonic coefficients.
     """
@@ -1029,11 +1029,11 @@ def getgeodesicpts(m):
  points are nearly evenly distributed on the surface of the sphere.
     """
     x,y,z = _spherepack.ihgeod(m)
-# convert cartesian coords to lat/lon.    
+# convert cartesian coords to lat/lon.
     rad2dg = 180./math.pi
     r1 = x*x+y*y
     r = numpy.sqrt(r1+z*z)
-    r1 = numpy.sqrt(r1) 
+    r1 = numpy.sqrt(r1)
     xtmp = numpy.where(numpy.logical_or(x,y),x,numpy.ones(x.shape,numpy.float32))
     ztmp = numpy.where(numpy.logical_or(r1,z),z,numpy.ones(z.shape,numpy.float32))
     lons = rad2dg*numpy.arctan2(y,xtmp)+180.
@@ -1057,9 +1057,9 @@ def legendre(lat,ntrunc):
 
  @param ntrunc:  the triangular truncation limit.
 
- @return: C{B{pnm}} - rank 1 numpy float32 array containing the 
- (C{B{ntrunc}}+1)*(C{B{ntrunc}}+2)/2 associated legendre functions at 
- latitude C{B{lat}}. 
+ @return: C{B{pnm}} - rank 1 numpy float32 array containing the
+ (C{B{ntrunc}}+1)*(C{B{ntrunc}}+2)/2 associated legendre functions at
+ latitude C{B{lat}}.
     """
     return _spherepack.getlegfunc(lat,ntrunc)
 
@@ -1080,5 +1080,5 @@ def specintrp(lon,dataspec,legfuncs):
     ntrunc1 = int(-1.5 + 0.5*math.sqrt(9.-8.*(1.-dataspec.shape[0])))
     ntrunc2 = int(-1.5 + 0.5*math.sqrt(9.-8.*(1.-legfuncs.shape[0])))
     if ntrunc1 != ntrunc2:
-       raise ValueError, 'first dimensions of dataspec and legfuncs in Spharmt.specintrp imply inconsistent spectral truncations - they must be the same!'
+        raise ValueError('first dimensions of dataspec and legfuncs in Spharmt.specintrp imply inconsistent spectral truncations - they must be the same!')
     return _spherepack.specintrp((math.pi/180.)*lon,ntrunc1,dataspec,legfuncs)
