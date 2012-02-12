@@ -126,11 +126,12 @@ for ncycle in range(itmax+1):
     divspec = divspec + dt*( \
     (23./12.)*ddivdtspec[:,nnew] - (16./12.)*ddivdtspec[:,nnow]+ \
     (5./12.)*ddivdtspec[:,nold] )
-    vrtspec = hyperdiff_fact*vrtspec
-    divspec = hyperdiff_fact*divspec
     phispec = phispec + dt*( \
     (23./12.)*dpdtspec[:,nnew] - (16./12.)*dpdtspec[:,nnow]+ \
     (5./12.)*dpdtspec[:,nold] )
+    # implicit hyperdiffusion for vort and div.
+    vrtspec = hyperdiff_fact*vrtspec
+    divspec = hyperdiff_fact*divspec
 # switch indices, do next time step.
     nsav1 = nnew
     nsav2 = nnow
