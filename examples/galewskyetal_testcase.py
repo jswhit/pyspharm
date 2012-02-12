@@ -10,13 +10,13 @@ import time
 # shallow-water equations"
 # http://www-vortex.mcs.st-and.ac.uk/~rks/reprints/galewsky_etal_tellus_2004.pdf
 
-nlon = 512 
-nlat = 256
-ntrunc = 170
+nlon = 256 
+nlat = 128
+ntrunc = 85  
 gridtype = 'gaussian'
 legfunc = 'stored'
 rsphere = 6.37122e6
-dt = 60 # time step in seconds
+dt = 120 # time step in seconds
 itmax = 6*(86400/dt) # 6 day integration
 
 pi = np.pi
@@ -32,6 +32,8 @@ en = np.exp(-4.0/(phi1-phi0)**2)
 alpha = 1./3.
 beta = 1./15.
 hamp = 120.
+efold = 6.*3600.
+ndiss = 8
 
 # setup up spherical harmonic instance, set lats/lons of grid
 
@@ -66,6 +68,7 @@ indxm, indxn = getspecindx(ntrunc)
 lap = -(indxn*(indxn+1.0)/rsphere**2).astype(np.float32)
 ilap = np.zeros(lap.shape, np.float32)
 ilap[1:] = 1./lap[1:]
+hyperdiff_fact = np.exp((-dt/efold)*(indxn/float(ntrunc))**ndiss)
 
 # solve nonlinear balance to get initial geopotential
 vrtg = x.spectogrd(vrtspec)
@@ -117,10 +120,10 @@ for ncycle in range(itmax+1):
         dvrtdtspec[:,nold] = dvrtdtspec[:,nnew]
         ddivdtspec[:,nold] = ddivdtspec[:,nnew]
         dpdtspec[:,nold] = dpdtspec[:,nnew]
-    vrtspec = vrtspec + dt*( \
+    vrtspec = vrtspec + dt*hyperdiff_fact*( \
     (23./12.)*dvrtdtspec[:,nnew] - (16./12.)*dvrtdtspec[:,nnow]+ \
     (5./12.)*dvrtdtspec[:,nold] )
-    divspec = divspec + dt*( \
+    divspec = divspec + dt*hyperdiff_fact*( \
     (23./12.)*ddivdtspec[:,nnew] - (16./12.)*ddivdtspec[:,nnow]+ \
     (5./12.)*ddivdtspec[:,nold] )
     phispec = phispec + dt*( \
