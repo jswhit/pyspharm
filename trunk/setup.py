@@ -32,7 +32,7 @@ if havefiles.count(False):
         sys.exit(0)
     import urllib, tarfile
     tarfname = 'spherepack3.2.tar'
-    URL="http://www.cisl.ucar.edu/css/software/spherepack/"+tarfname
+    URL="https://www2.cisl.ucar.edu/sites/default/files/"+tarfname
     urllib.urlretrieve(URL,tarfname)
     if not os.path.isfile(tarfname):
         raise IOError('Sorry, download failed')
