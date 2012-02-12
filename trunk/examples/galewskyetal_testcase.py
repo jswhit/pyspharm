@@ -1,5 +1,8 @@
 import numpy as np
 from spharm import Spharmt, getspecindx, gaussian_lats_wts
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap, addcyclic
+import time
 
 # non-linear baroptropically unstable test case
 # of Galewsky et al (2004, Tellus, 56A, 429-440).
@@ -13,11 +16,11 @@ ntrunc = 170
 gridtype = 'gaussian'
 legfunc = 'stored'
 rsphere = 6.37122e6
-dt = 30 # 30 second time step
+dt = 60 # time step in seconds
 itmax = 6*(86400/dt) # 6 day integration
 
 pi = np.pi
-dtr = pi/180.
+d2r = pi/180.
 omega = 7.292e-5
 grav = 9.80616
 hbar = 10.e3
@@ -34,8 +37,8 @@ hamp = 120.
 
 x = Spharmt(nlon,nlat,rsphere,gridtype=gridtype,legfunc=legfunc)
 gaulats,weights = gaussian_lats_wts(nlat)
-gaulats = dtr*gaulats
-gaulons = (2.*pi/nlon)*np.arange(0,2.*pi,nlon)
+gaulats = d2r*gaulats
+gaulons = np.arange(-pi,pi,2.*pi/nlon)
 lons,lats = np.meshgrid(gaulons,gaulats)
 f = 2.*omega*np.sin(lats) # coriolis
 
@@ -88,6 +91,7 @@ for ncycle in range(itmax+1):
     vrtg = x.spectogrd(vrtspec)
     ug,vg = x.getuv(vrtspec,divspec)
     phig = x.spectogrd(phispec)
+    print ncycle,vg.min(), vg.max()
 # compute tendencies.
     scrg1 = ug*(vrtg+f)
     scrg2 = vg*(vrtg+f)
@@ -131,3 +135,14 @@ for ncycle in range(itmax+1):
 
 time2 = time.clock()
 print 'CPU time = ',time2-time1
+
+# make a NH plot.
+m = Basemap(projection='npstere',boundinglat=20,lon_0=270,round=True)
+vrtg,gaulons2 = addcyclic(vrtg,gaulons/d2r)
+lons, lats = np.meshgrid(gaulons2,gaulats/d2r)
+x,y = m(lons,lats)
+levs = np.arange(-2.e-4,2.01e-4,2.e-5)
+print vrtg.min(), vrtg.max()
+CS=m.contourf(x,y,vrtg,levs,extend='both')
+m.colorbar()
+plt.show()
