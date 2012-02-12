@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap, addcyclic
 import time
 
-# non-linear baroptropically unstable test case
+# non-linear barotropically unstable shallow water test case
 # of Galewsky et al (2004, Tellus, 56A, 429-440).
 # "An initial-value problem for testing numerical models of the global
 # shallow-water equations"
