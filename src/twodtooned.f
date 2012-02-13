@@ -5,8 +5,8 @@
 
       scale = 0.5
 
-      nmstrt = 0
       do i=1,nt
+      nmstrt = 0
       do m=1,ntrunc+1
       do n=m,ntrunc+1
          nm = nmstrt + n - m + 1
