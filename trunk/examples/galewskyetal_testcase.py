@@ -10,17 +10,20 @@ import time
 # shallow-water equations"
 # http://www-vortex.mcs.st-and.ac.uk/~rks/reprints/galewsky_etal_tellus_2004.pdf
 
+# grid size
 nlon = 256 
 nlat = 128
+# spectral truncation
 ntrunc = 85  
 gridtype = 'gaussian'
 legfunc = 'stored'
 rsphere = 6.37122e6
-dt = 120 # time step in seconds
-itmax = 6*(86400/dt) # 6 day integration
+dt = 150 # time step in seconds
+itmax = 6*(86400/dt) # integration length in days
 
 pi = np.pi
 d2r = pi/180.
+# parameters for test
 omega = 7.292e-5
 grav = 9.80616
 hbar = 10.e3
@@ -32,8 +35,8 @@ en = np.exp(-4.0/(phi1-phi0)**2)
 alpha = 1./3.
 beta = 1./15.
 hamp = 120.
-efold = 3.*3600.
-ndiss = 8
+efold = 3.*3600. # efolding timescale at ntrunc for hyperdiffusion
+ndiss = 8 # order for hyperdiffusion
 
 # setup up spherical harmonic instance, set lats/lons of grid
 
@@ -63,21 +66,22 @@ dvrtdtspec =\
 np.array(np.zeros(((ntrunc+1)*(ntrunc+2)/2,3)),np.complex64)
 dpdtspec = np.array(np.zeros(((ntrunc+1)*(ntrunc+2)/2,3)),np.complex64)
 
-# create spectral indexing arrays, laplacian operator and it's inverse.
+# create spectral indexing arrays, laplacian operator and its inverse.
 indxm, indxn = getspecindx(ntrunc)
 lap = -(indxn*(indxn+1.0)/rsphere**2).astype(np.float32)
 ilap = np.zeros(lap.shape, np.float32)
 ilap[1:] = 1./lap[1:]
 hyperdiff_fact = np.exp((-dt/efold)*(lap/lap[-1])**(ndiss/2))
 
-# solve nonlinear balance to get initial geopotential
+# solve nonlinear balance eqn to get initial zonal geopotential,
+# add localized bump (not balanced).
 vrtg = x.spectogrd(vrtspec)
 scrg1 = ug*(vrtg+f)
 scrg2 = vg*(vrtg+f)
-tmphispec1,tmphispec2 = x.getvrtdivspec(scrg1,scrg2,ntrunc)
+tmpspec1,tmpspec2 = x.getvrtdivspec(scrg1,scrg2,ntrunc)
 scrg1 = 0.5*(ug**2+vg**2)
-tmphispec2 = x.grdtospec(scrg1,ntrunc)
-phispec = ilap*tmphispec1 - tmphispec2
+tmpspec2 = x.grdtospec(scrg1,ntrunc)
+phispec = ilap*tmpspec1 - tmpspec2
 phig = grav*(hbar + hbump) + x.spectogrd(phispec)
 phispec = x.grdtospec(phig,ntrunc)
 
@@ -94,19 +98,16 @@ for ncycle in range(itmax+1):
     vrtg = x.spectogrd(vrtspec)
     ug,vg = x.getuv(vrtspec,divspec)
     phig = x.spectogrd(phispec)
-    print ncycle,vg.min(), vg.max()
+    print 't=%6.2f hours: min/max %6.2f, %6.2f' % (t/3600.,vg.min(), vg.max())
 # compute tendencies.
-    scrg1 = ug*(vrtg+f)
-    scrg2 = vg*(vrtg+f)
+    scrg1 = ug*(vrtg+f); scrg2 = vg*(vrtg+f)
     ddivdtspec[:,nnew],dvrtdtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
-    dvrtdtspec[:,nnew]=-dvrtdtspec[:,nnew]
-    scrg1 = ug*phig
-    scrg2 = vg*phig
-    tmphispec, dpdtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
-    dpdtspec[:,nnew]=-dpdtspec[:,nnew]
-    scrg1 = phig+0.5*(ug**2+vg**2)
-    tmphispec = x.grdtospec(scrg1,ntrunc)
-    ddivdtspec[:,nnew]=ddivdtspec[:,nnew]-lap*tmphispec
+    dvrtdtspec[:,nnew] *= -1
+    scrg1 = ug*phig; scrg2 = vg*phig
+    tmpspec, dpdtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
+    dpdtspec[:,nnew] *= -1
+    tmpspec = x.grdtospec(phig+0.5*(ug**2+vg**2),ntrunc)
+    ddivdtspec[:,nnew] += -lap*tmpspec
 # update vort,div,phiv with third-order adams-bashforth.
 # forward euler, then 2nd-order adams-bashforth time steps to start.
     if ncycle == 0:
@@ -120,18 +121,18 @@ for ncycle in range(itmax+1):
         dvrtdtspec[:,nold] = dvrtdtspec[:,nnew]
         ddivdtspec[:,nold] = ddivdtspec[:,nnew]
         dpdtspec[:,nold] = dpdtspec[:,nnew]
-    vrtspec = vrtspec + dt*( \
+    vrtspec += dt*( \
     (23./12.)*dvrtdtspec[:,nnew] - (16./12.)*dvrtdtspec[:,nnow]+ \
     (5./12.)*dvrtdtspec[:,nold] )
-    divspec = divspec + dt*( \
+    divspec += dt*( \
     (23./12.)*ddivdtspec[:,nnew] - (16./12.)*ddivdtspec[:,nnow]+ \
     (5./12.)*ddivdtspec[:,nold] )
-    phispec = phispec + dt*( \
+    phispec += dt*( \
     (23./12.)*dpdtspec[:,nnew] - (16./12.)*dpdtspec[:,nnow]+ \
     (5./12.)*dpdtspec[:,nold] )
     # implicit hyperdiffusion for vort and div.
-    vrtspec = hyperdiff_fact*vrtspec
-    divspec = hyperdiff_fact*divspec
+    vrtspec *= hyperdiff_fact
+    divspec *= hyperdiff_fact
 # switch indices, do next time step.
     nsav1 = nnew
     nsav2 = nnow
@@ -142,12 +143,15 @@ for ncycle in range(itmax+1):
 time2 = time.clock()
 print 'CPU time = ',time2-time1
 
-# make a NH plot.
-m = Basemap(projection='npstere',boundinglat=20,lon_0=270,round=True)
+# make a NH Lambert aziumthal plot.
+m = Basemap(projection='nplaea',boundinglat=1,lon_0=270,round=True)
 vrtg,gaulons2 = addcyclic(vrtg,gaulons/d2r)
 lons, lats = np.meshgrid(gaulons2,gaulats/d2r)
 x,y = m(lons,lats)
-levs = np.arange(-2.e-4,2.01e-4,2.e-5)
+levs = np.arange(-1.5e-4,1.501e-4,1.5e-5)
+m.drawmeridians(np.arange(-180,181,60))
+m.drawparallels(np.arange(20,81,20))
 CS=m.contourf(x,y,vrtg,levs,cmap=plt.cm.spectral,extend='both')
 m.colorbar()
+plt.title('vorticity (T%s with hyperdiffusion, hour %6.2f)' % (ntrunc,t/3600.))
 plt.show()

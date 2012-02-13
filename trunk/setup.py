@@ -25,7 +25,7 @@ if havefiles.count(False):
  
  WARNING: By downloading the SPHEREPACK source files, you are agreeing to
  the terms of the SPHEREPACK license at
- http://www.cisl.ucar.edu/css/software/spherepack/sp.form.html\n
+ http://www2.cisl.ucar.edu/resources/legacy/spherepack/license\n
  """)
     download = raw_input('Do you want to download SPHEREPACK now? (yes or no)')
     if download not in ['Y','y','yes','Yes','YES']:
