@@ -60,11 +60,9 @@ hbump = hamp*np.cos(lats)*np.exp(-(lons/alpha)**2)*np.exp(-(phi2-lats)**2/beta)
 vrtspec, divspec =  x.getvrtdivspec(ug,vg,ntrunc)
 
 # create spectral tendency arrays
-ddivdtspec =\
-np.array(np.zeros(((ntrunc+1)*(ntrunc+2)/2,3)),np.complex64)
-dvrtdtspec =\
-np.array(np.zeros(((ntrunc+1)*(ntrunc+2)/2,3)),np.complex64)
-dpdtspec = np.array(np.zeros(((ntrunc+1)*(ntrunc+2)/2,3)),np.complex64)
+ddivdtspec = np.array(np.zeros(vrtspec.shape, np.complex64)
+dvrtdtspec = np.array(np.zeros(vrtspec.shape, np.complex64)
+dphidtspec = np.array(np.zeros(vrtspec.shape, np.complex64)
 
 # create spectral indexing arrays, laplacian operator and its inverse.
 indxm, indxn = getspecindx(ntrunc)
@@ -76,11 +74,9 @@ hyperdiff_fact = np.exp((-dt/efold)*(lap/lap[-1])**(ndiss/2))
 # solve nonlinear balance eqn to get initial zonal geopotential,
 # add localized bump (not balanced).
 vrtg = x.spectogrd(vrtspec)
-scrg1 = ug*(vrtg+f)
-scrg2 = vg*(vrtg+f)
+scrg1 = ug*(vrtg+f); scrg2 = vg*(vrtg+f)
 tmpspec1,tmpspec2 = x.getvrtdivspec(scrg1,scrg2,ntrunc)
-scrg1 = 0.5*(ug**2+vg**2)
-tmpspec2 = x.grdtospec(scrg1,ntrunc)
+tmpspec2 = x.grdtospec(0.5*(ug**2+vg**2),ntrunc)
 phispec = ilap*tmpspec1 - tmpspec2
 phig = grav*(hbar + hbump) + x.spectogrd(phispec)
 phispec = x.grdtospec(phig,ntrunc)
@@ -104,8 +100,8 @@ for ncycle in range(itmax+1):
     ddivdtspec[:,nnew],dvrtdtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
     dvrtdtspec[:,nnew] *= -1
     scrg1 = ug*phig; scrg2 = vg*phig
-    tmpspec, dpdtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
-    dpdtspec[:,nnew] *= -1
+    tmpspec, dphidtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
+    dphidtspec[:,nnew] *= -1
     tmpspec = x.grdtospec(phig+0.5*(ug**2+vg**2),ntrunc)
     ddivdtspec[:,nnew] += -lap*tmpspec
 # update vort,div,phiv with third-order adams-bashforth.
@@ -115,12 +111,12 @@ for ncycle in range(itmax+1):
         dvrtdtspec[:,nold] = dvrtdtspec[:,nnew]
         ddivdtspec[:,nnow] = ddivdtspec[:,nnew]
         ddivdtspec[:,nold] = ddivdtspec[:,nnew]
-        dpdtspec[:,nnow] = dpdtspec[:,nnew]
-        dpdtspec[:,nold] = dpdtspec[:,nnew]
+        dphidtspec[:,nnow] = dphidtspec[:,nnew]
+        dphidtspec[:,nold] = dphidtspec[:,nnew]
     elif ncycle == 1:
         dvrtdtspec[:,nold] = dvrtdtspec[:,nnew]
         ddivdtspec[:,nold] = ddivdtspec[:,nnew]
-        dpdtspec[:,nold] = dpdtspec[:,nnew]
+        dphidtspec[:,nold] = dphidtspec[:,nnew]
     vrtspec += dt*( \
     (23./12.)*dvrtdtspec[:,nnew] - (16./12.)*dvrtdtspec[:,nnow]+ \
     (5./12.)*dvrtdtspec[:,nold] )
@@ -128,8 +124,8 @@ for ncycle in range(itmax+1):
     (23./12.)*ddivdtspec[:,nnew] - (16./12.)*ddivdtspec[:,nnow]+ \
     (5./12.)*ddivdtspec[:,nold] )
     phispec += dt*( \
-    (23./12.)*dpdtspec[:,nnew] - (16./12.)*dpdtspec[:,nnow]+ \
-    (5./12.)*dpdtspec[:,nold] )
+    (23./12.)*dphidtspec[:,nnew] - (16./12.)*dphidtspec[:,nnow]+ \
+    (5./12.)*dphidtspec[:,nold] )
     # implicit hyperdiffusion for vort and div.
     vrtspec *= hyperdiff_fact
     divspec *= hyperdiff_fact
