@@ -127,16 +127,18 @@ for ncycle in range(itmax+1):
 time2 = time.clock()
 print 'CPU time = ',time2-time1
 
-# make a NH Lambert azimuthal plot.
+# make a NH Lambert azimuthal plot of potential vorticity.
 m = Basemap(projection='nplaea',boundinglat=1,lon_0=270,round=True)
 r2d = 180./np.pi
-vrtg,lons1d = addcyclic(vrtg,lons1d*r2d)
+pvg = grav*(vrtg+f)/phig
+pvg,lons1d = addcyclic(vrtg,lons1d*r2d)
 lons, lats = np.meshgrid(lons1d,lats1d*r2d)
 x,y = m(lons,lats)
-levs = np.arange(-1.5e-4,1.501e-4,1.5e-5)
+levs = np.arange(-1.25e-4,1.26e-4,2.0e-5)
 m.drawmeridians(np.arange(-180,180,60),labels=[1,1,1,1])
 m.drawparallels(np.arange(20,81,20))
-CS=m.contourf(x,y,vrtg,levs,cmap=plt.cm.spectral,extend='both')
+print 'max/min PV',pvg.min(), pvg.max()
+CS=m.contourf(x,y,pvg,levs,cmap=plt.cm.spectral,extend='both')
 m.colorbar(pad='5%')
-plt.title('vorticity (T%s with hyperdiffusion, hour %6.2f)' % (ntrunc,t/3600.))
+plt.title('PV (T%s with hyperdiffusion, hour %6.2f)' % (ntrunc,t/3600.))
 plt.show()
