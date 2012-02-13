@@ -5,33 +5,33 @@ from mpl_toolkits.basemap import Basemap, addcyclic
 import time
 
 # modification of Galewsky et al test case for two-layer
-# baroclinically unstable jet.
+# baroclinically unstable jet using model from
+# Keppenne, Christian L., Steven L. Marcus, Masahide Kimoto, Michael Ghil,
+# 2000: Intraseasonal Variability in a Two-Layer Model and Observations. J.
+# Atmos. Sci., 57, 1010-1028.
 
 # grid, time step info
 nlons = 256  # number of longitudes
 ntrunc = nlons/3 # spectral truncation (for alias-free computations)
 nlats = (nlons/2)+1 # for regular grid.
 gridtype = 'regular'
-dt = 150 # time step in seconds
-itmax = 6*(86400/dt) # integration length in days
+dt = 60 # time step in seconds
+itmax = 5*(86400/dt) # integration length in days
 
 # parameters for test
 rsphere = 6.37122e6 # earth radius
 omega = 7.292e-5 # rotation rate
 grav = 9.80616 # gravity
-hbar = 5.e3 # resting depth of each layer
-umax = 80. # jet speed
+hbar1 = 5.e3 # resting depth of each layer
+hbar2 = 15.e3 # resting depth of each layer
+umax = 30. # jet speed
 phi0 = np.pi/7.; phi1 = 0.5*np.pi - phi0; phi2 = 0.25*np.pi
 en = np.exp(-4.0/(phi1-phi0)**2)
 alpha = 1./3.; beta = 1./15.
-hamp = 120. # amplitude of height perturbation to zonal jet
+hamp = 150. # amplitude of height perturbation to zonal jet
 efold = 3.*3600. # efolding timescale at ntrunc for hyperdiffusion
 ndiss = 8 # order for hyperdiffusion
 densityratio = 0.9 # density of upper layer/lower layer
-phiwts1 = np.ones((nlats,nlons,2),np.float32)
-phiwts2 = np.zeros((nlats,nlons,2),np.float32)
-phiwts1[:,:,0] = 1.-densityratio
-phiwts2[:,:,0] = densityratio
 
 # setup up spherical harmonic instance, set lats/lons of grid
 
@@ -51,7 +51,9 @@ ug.shape = (nlats,1,1)
 # broadcast to shape (nlats,nlons,2)
 ug = ug*np.ones((nlats,nlons,2),dtype=np.float32)
 ug[:,:,0] = 0. # state of rest in lower layer.
-# barotropic height perturbation.
+# simpler jet
+ug[:,:,1] = umax*(np.sin(2.*lats))**2
+# height perturbation.
 hbump = hamp*np.cos(lats)*np.exp(-(lons/alpha)**2)*np.exp(-(phi2-lats)**2/beta)
 
 # initial vorticity, divergence in spectral space
@@ -72,24 +74,16 @@ tmpg1 = ug*(vrtg+f[:,:,np.newaxis]); tmpg2 = vg*(vrtg+f[:,:,np.newaxis])
 tmpspec1, tmpspec2 = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
 tmpspec2 = x.grdtospec(0.5*(ug**2+vg**2),ntrunc)
 phispec = ilap*tmpspec1 - tmpspec2
-# PGF layer 1 is densityration(phi2-phi1)+phi1 
-#               = (1.-densityfact1)*phi1 + densityfact1*phi2
-# PGF layer 2 is phi2
-#               = (1.-densityfact2)*phi1 + densityfact2*phi2
-# where densityfact1 = densityratio; densityfact2 = 1
-# or, PGF = phiwts1*phi + phiwts2*phi[::-1]
+# lower layer at rest implies this
+phispec[:,1] = phispec[:,1]/(1.-densityratio)
+phispec[:,0] = -densityratio*phispec[:,1]
 phig = x.spectogrd(phispec)
-# lower layer at rest implies:
-phig[:,:,0] = phig[:,:,1]*densityratio/(densityratio-1.0)
-# add global mean.
-phig += grav*hbar
-print 'lower layer depth'
-print phig[:,0,0]
-print 'upper layer depth'
-print phig[:,0,1]
-raise SystemExit
-# add barotropic perturbation
-phig =+ grav*hbump[:,:,np.newaxis]
+# add basic state of rest.
+phig[:,:,0] += grav*hbar1
+phig[:,:,1] += grav*hbar2
+# add geopotential pertubation to upper layer.
+phig[:,:,1] += grav*hbump
+# grid to spectral
 phispec = x.grdtospec(phig,ntrunc)
 
 # initialize spectral tendency arrays
@@ -115,7 +109,10 @@ for ncycle in range(itmax+1):
     tmpg1 = ug*phig; tmpg2 = vg*phig
     tmpspec, dphidtspec[:,:,nnew] = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
     dphidtspec[:,:,nnew] *= -1
-    tmpspec = x.grdtospec(phiwts1*phig+phiwts2*phig[:,:,::-1]+0.5*(ug**2+vg**2),ntrunc)
+    pgf = np.empty(phig.shape, phig.dtype)
+    pgf[:,:,0] = phig[:,:,0] + densityratio*phig[:,:,1]
+    pgf[:,:,1] = phig[:,:,0] + phig[:,:,1]
+    tmpspec = x.grdtospec(pgf+0.5*(ug**2+vg**2),ntrunc)
     ddivdtspec[:,:,nnew] += -lap*tmpspec
 # update vort,div,phiv with third-order adams-bashforth.
 # forward euler, then 2nd-order adams-bashforth time steps to start.
@@ -152,7 +149,7 @@ print 'CPU time = ',time2-time1
 # make a orthographic plot of potential vorticity.
 m = Basemap(projection='ortho',lat_0=45,lon_0=-100)
 # dimensionless upper layer PV
-pvg = (0.5*hbar*grav/omega)*(vrtg+f[:,:,np.newaxis])/phig
+pvg = (0.5*hbar2*grav/omega)*(vrtg+f[:,:,np.newaxis])/phig
 pvg,lons1d = addcyclic(pvg[:,:,1],lons1d*180./np.pi)
 print 'max/min PV',pvg.min(), pvg.max()
 lons, lats = np.meshgrid(lons1d,lats1d*180./np.pi)
