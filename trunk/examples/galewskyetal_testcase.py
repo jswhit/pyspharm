@@ -18,14 +18,13 @@ gridtype = 'regular'
 dt = 150 # time step in seconds
 itmax = 6*(86400/dt) # integration length in days
 
-pi = np.pi; d2r = pi/180.
 # parameters for test
 rsphere = 6.37122e6 # earth radius
 omega = 7.292e-5 # rotation rate
 grav = 9.80616 # gravity
 hbar = 10.e3 # resting depth
 umax = 80. # jet speed
-phi0 = pi/7.; phi1 = 0.5*pi - phi0; phi2 = 0.25*pi
+phi0 = np.pi/7.; phi1 = 0.5*np.pi - phi0; phi2 = 0.25*np.pi
 en = np.exp(-4.0/(phi1-phi0)**2)
 alpha = 1./3.; beta = 1./15.
 hamp = 120. # amplitude of height perturbation to zonal jet
@@ -35,9 +34,9 @@ ndiss = 8 # order for hyperdiffusion
 # setup up spherical harmonic instance, set lats/lons of grid
 
 x = Spharmt(nlons,nlats,rsphere,gridtype=gridtype)
-delta = 2.*pi/nlons
-lats1d = 0.5*pi-delta*np.arange(nlats)
-lons1d = np.arange(-pi,pi,delta)
+delta = 2.*np.pi/nlons
+lats1d = 0.5*np.pi-delta*np.arange(nlats)
+lons1d = np.arange(-np.pi,np.pi,delta)
 lons,lats = np.meshgrid(lons1d,lats1d)
 f = 2.*omega*np.sin(lats) # coriolis
 
@@ -65,7 +64,7 @@ hyperdiff_fact = np.exp((-dt/efold)*(lap/lap[-1])**(ndiss/2))
 # add localized bump (not balanced).
 vrtg = x.spectogrd(vrtspec)
 scrg1 = ug*(vrtg+f); scrg2 = vg*(vrtg+f)
-tmpspec1,tmpspec2 = x.getvrtdivspec(scrg1,scrg2,ntrunc)
+tmpspec1, tmpspec2 = x.getvrtdivspec(scrg1,scrg2,ntrunc)
 tmpspec2 = x.grdtospec(0.5*(ug**2+vg**2),ntrunc)
 phispec = ilap*tmpspec1 - tmpspec2
 phig = grav*(hbar + hbump) + x.spectogrd(phispec)
@@ -77,7 +76,7 @@ dvrtdtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
 dphidtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
 nnew = 0; nnow = 1; nold = 2
 
-# time step loop.
+# time loop.
 
 time1 = time.clock()
 for ncycle in range(itmax+1):
@@ -89,7 +88,7 @@ for ncycle in range(itmax+1):
     print 't=%6.2f hours: min/max %6.2f, %6.2f' % (t/3600.,vg.min(), vg.max())
 # compute tendencies.
     scrg1 = ug*(vrtg+f); scrg2 = vg*(vrtg+f)
-    ddivdtspec[:,nnew],dvrtdtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
+    ddivdtspec[:,nnew], dvrtdtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
     dvrtdtspec[:,nnew] *= -1
     scrg1 = ug*phig; scrg2 = vg*phig
     tmpspec, dphidtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
@@ -122,24 +121,22 @@ for ncycle in range(itmax+1):
     vrtspec *= hyperdiff_fact
     divspec *= hyperdiff_fact
 # switch indices, do next time step.
-    nsav1 = nnew
-    nsav2 = nnow
-    nnew = nold
-    nnow = nsav1
-    nold = nsav2
+    nsav1 = nnew; nsav2 = nnow
+    nnew = nold; nnow = nsav1; nold = nsav2
 
 time2 = time.clock()
 print 'CPU time = ',time2-time1
 
 # make a NH Lambert azimuthal plot.
 m = Basemap(projection='nplaea',boundinglat=1,lon_0=270,round=True)
-vrtg,lons1d = addcyclic(vrtg,lons1d/d2r)
-lons, lats = np.meshgrid(lons1d,lats1d/d2r)
+r2d = 180./np.pi
+vrtg,lons1d = addcyclic(vrtg,lons1d*r2d)
+lons, lats = np.meshgrid(lons1d,lats1d*r2d)
 x,y = m(lons,lats)
 levs = np.arange(-1.5e-4,1.501e-4,1.5e-5)
-m.drawmeridians(np.arange(-180,181,60))
+m.drawmeridians(np.arange(-180,180,60),labels=[1,1,1,1])
 m.drawparallels(np.arange(20,81,20))
 CS=m.contourf(x,y,vrtg,levs,cmap=plt.cm.spectral,extend='both')
-m.colorbar()
+m.colorbar(pad='5%')
 plt.title('vorticity (T%s with hyperdiffusion, hour %6.2f)' % (ntrunc,t/3600.))
 plt.show()
