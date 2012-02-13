@@ -63,8 +63,8 @@ hyperdiff_fact = np.exp((-dt/efold)*(lap/lap[-1])**(ndiss/2))
 # solve nonlinear balance eqn to get initial zonal geopotential,
 # add localized bump (not balanced).
 vrtg = x.spectogrd(vrtspec)
-scrg1 = ug*(vrtg+f); scrg2 = vg*(vrtg+f)
-tmpspec1, tmpspec2 = x.getvrtdivspec(scrg1,scrg2,ntrunc)
+tmpg1 = ug*(vrtg+f); tmpg2 = vg*(vrtg+f)
+tmpspec1, tmpspec2 = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
 tmpspec2 = x.grdtospec(0.5*(ug**2+vg**2),ntrunc)
 phispec = ilap*tmpspec1 - tmpspec2
 phig = grav*(hbar + hbump) + x.spectogrd(phispec)
@@ -87,11 +87,11 @@ for ncycle in range(itmax+1):
     phig = x.spectogrd(phispec)
     print 't=%6.2f hours: min/max %6.2f, %6.2f' % (t/3600.,vg.min(), vg.max())
 # compute tendencies.
-    scrg1 = ug*(vrtg+f); scrg2 = vg*(vrtg+f)
-    ddivdtspec[:,nnew], dvrtdtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
+    tmpg1 = ug*(vrtg+f); tmpg2 = vg*(vrtg+f)
+    ddivdtspec[:,nnew], dvrtdtspec[:,nnew] = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
     dvrtdtspec[:,nnew] *= -1
-    scrg1 = ug*phig; scrg2 = vg*phig
-    tmpspec, dphidtspec[:,nnew] = x.getvrtdivspec(scrg1,scrg2,ntrunc)
+    tmpg1 = ug*phig; tmpg2 = vg*phig
+    tmpspec, dphidtspec[:,nnew] = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
     dphidtspec[:,nnew] *= -1
     tmpspec = x.grdtospec(phig+0.5*(ug**2+vg**2),ntrunc)
     ddivdtspec[:,nnew] += -lap*tmpspec
