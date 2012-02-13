@@ -1,8 +1,8 @@
-shallow_test.py tests using spharm to integrate a shallow water model.
+galewskyetal_testcase.py tests using spharm to integrate a shallow water model.
 
 regrid_test.py tests regrid and spectral interpolation functions.
 
-geodesic.py and spharmonic.py use matplotlib (http://matplotlib.sf.net).
+geodesic.py, galewskyetal_testcase.py and spharmonic.py use matplotlib (http://matplotlib.sf.net).
 
 geodesic.py plots the locations on a sphere
 corresponding to a twenty-sided (icosahedral) geodesic with
