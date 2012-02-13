@@ -131,7 +131,7 @@ for ncycle in range(itmax+1):
 time2 = time.clock()
 print 'CPU time = ',time2-time1
 
-# make a NH Lambert aziumthal plot.
+# make a NH Lambert azimuthal plot.
 m = Basemap(projection='nplaea',boundinglat=1,lon_0=270,round=True)
 vrtg,lons1d = addcyclic(vrtg,lons1d/d2r)
 lons, lats = np.meshgrid(lons1d,lats1d/d2r)
