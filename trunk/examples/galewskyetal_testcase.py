@@ -60,9 +60,9 @@ hbump = hamp*np.cos(lats)*np.exp(-(lons/alpha)**2)*np.exp(-(phi2-lats)**2/beta)
 vrtspec, divspec =  x.getvrtdivspec(ug,vg,ntrunc)
 
 # create spectral tendency arrays
-ddivdtspec = np.array(np.zeros(vrtspec.shape, np.complex64)
-dvrtdtspec = np.array(np.zeros(vrtspec.shape, np.complex64)
-dphidtspec = np.array(np.zeros(vrtspec.shape, np.complex64)
+ddivdtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
+dvrtdtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
+dphidtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
 
 # create spectral indexing arrays, laplacian operator and its inverse.
 indxm, indxn = getspecindx(ntrunc)
