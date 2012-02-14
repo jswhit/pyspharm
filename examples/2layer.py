@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap, addcyclic
 import time
 
-# two-layer baroclinically unstable jet case
+# two-layer baroclinically unstable jet test case
 
 # grid, time step info
 nlons = 256  # number of longitudes
 ntrunc = nlons/3 # spectral truncation (for alias-free computations)
 nlats = (nlons/2)+1 # for regular grid.
 gridtype = 'regular'
-dt = 60 # time step in seconds
+dt = 90 # time step in seconds
 itmax = 5*(86400/dt) # integration length in days
 
 # parameters for test
@@ -24,10 +24,10 @@ zmid = 5.e3
 ztop = 15.e3
 exnftop = cp - grav*ztop/theta1
 exnfmid = cp  - grav*zmid/theta1
-efold = 3.*3600. # efolding timescale at ntrunc for hyperdiffusion
+efold = 6.*3600. # efolding timescale at ntrunc for hyperdiffusion
 ndiss = 8 # order for hyperdiffusion
-umax = 20. # jet speed
-jetexp = 2 # parameter controlling jet width
+umax = 40. # jet speed
+jetexp = 6 # parameter controlling jet width
 
 # setup up spherical harmonic instance, set lats/lons of grid
 
@@ -47,8 +47,8 @@ ilap = ilap[:,np.newaxis]; lap = lap[:,np.newaxis]
 hyperdiff_fact = np.exp((-dt/efold)*(lap/lap[-1])**(ndiss/2))
 
 # initial conditions
-psibump = 1.e7*np.sin((lons-np.pi))**12*np.sin(2.*lats)**12
-psibump = np.ones((nlats,nlons,2),np.float32)*psibump[:,:,np.newaxis]
+psibump = np.zeros((nlats,nlons,2),np.float32)
+psibump[:,:,1] = 1.e7*np.sin((lons-np.pi))**12*np.sin(2.*lats)**12
 psibump = np.where(lons[:,:,np.newaxis] > 0., 0, psibump)
 psibump = np.where(lats[:,:,np.newaxis] < 0., psibump, -psibump)
 ug = np.zeros((nlats,nlons,2),np.float32)
