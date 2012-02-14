@@ -83,7 +83,7 @@ class TwoLayer(object):
         return dvrtdtspec,ddivdtspec,dlyrthkdtspec
 
     def rk4step(self,vrtspec,divspec,lyrthkspec):
-        # update state using 4th order runge-kutta time step
+        # update state using 4th order runge-kutta
         dt = self.dt
         k1vrt,k1div,k1thk = \
         self.gettend(vrtspec,divspec,lyrthkspec)
@@ -110,8 +110,8 @@ if __name__ == "__main__":
     gridtype = 'regular'
     #nlats = nlons/2 # for gaussian grid.
     #gridtype = 'gaussian'
-    dt = 240 # time step in seconds
-    itmax = 7*(86400/dt) # integration length in days
+    dt = 360 # time step in seconds
+    itmax = 6*(86400/dt) # integration length in days
     
     # parameters for test
     rsphere = 6.37122e6 # earth radius
@@ -124,8 +124,8 @@ if __name__ == "__main__":
     ztop = 15.e3
     efold = 3.*3600. # efolding timescale at ntrunc for hyperdiffusion
     ndiss = 8 # order for hyperdiffusion
-    umax = 30. # jet speed
-    jetexp = 4 # parameter controlling jet width
+    umax = 45. # jet speed
+    jetexp = 8 # parameter controlling jet width
 
     # create spherical harmonic instance.
     sp = Spharmt(nlons,nlats,rsphere,gridtype=gridtype)
@@ -138,7 +138,7 @@ if __name__ == "__main__":
     psipert = np.zeros((sp.nlat,sp.nlon,2),np.float32)
     psipert[:,:,1] = 5.e6*np.sin((model.lons-np.pi))**12*np.sin(2.*model.lats)**12
     psipert = np.where(model.lons[:,:,np.newaxis] > 0., 0, psipert)
-    psipert = np.where(model.lats[:,:,np.newaxis] < 0., psipert, -psipert)
+    #psipert = np.where(model.lats[:,:,np.newaxis] < 0., psipert, -psipert)
     ug = np.zeros((sp.nlat,sp.nlon,2),np.float32)
     vg = np.zeros((sp.nlat,sp.nlon,2),np.float32)
     ug[:,:,1] = umax*np.sin(2.*model.lats)**jetexp
@@ -150,25 +150,7 @@ if __name__ == "__main__":
     print lyrthkg[:,:,1].min(), lyrthkg[:,:,1].max()
     if lyrthkg.min() < 0:
         raise ValueError('negative layer thickness! adjust jet parameters')
-    
-    
-    # to double check, recompute zonal wind from layer thickness.
-    #s = np.sin(model.lats); c = np.cos(model.lats)
-    #if sp.gridtype == 'regular': s[sp.nlat/2,:]=1
-    #ct = c/s
-    #mstrm = model.grav*(lyrthkg[:,:,0] + lyrthkg[:,:,1]) +\
-    #(model.grav*model.delth/model.theta1)*lyrthkg[:,:,1] 
-    #mspec = sp.grdtospec(mstrm)
-    #mgradx, mgrady = sp.getgrad(mspec)
-    #rad = (model.rsphere*model.omega*c)**2 - ct*model.rsphere*mgrady
-    #u = -model.rsphere*model.omega*c + np.sqrt(rad) 
-    #print u.min(),u.max()
-    #print ug.min(), ug.max()
-    #plt.plot(model.lats[:,0]*180./np.pi,u[:,0],'r-')
-    #plt.plot(model.lats[:,0]*180./np.pi,ug[:,0,1],'b-')
-    #plt.show()
-    #raise SystemExit
-    
+
     # time loop.
     time1 = time.clock()
     for ncycle in range(itmax+1):
@@ -183,10 +165,10 @@ if __name__ == "__main__":
     lyrthkg = sp.spectogrd(lyrthkspec)
     pvg = (0.5*model.zmid/model.omega)*(vrtg + model.f)/lyrthkg
     
-    # make a orthographic plot of potential vorticity.
-    #m = Basemap(projection='moll',lat_0=0,lon_0=0)
-    #m = Basemap(projection='ortho',lon_0=-90,lat_0=40)
-    m = Basemap(projection='npaeqd',boundinglat=0,lon_0=0,round=True)
+    # make a plot of upper layer potential vorticity.
+    #m = Basemap(projection='kav7',lat_0=0,lon_0=0)
+    m = Basemap(projection='ortho',lon_0=90,lat_0=50)
+    #m = Basemap(projection='npaeqd',boundinglat=0,lon_0=0,round=True)
     # dimensionless upper layer PV
     lons1d = model.lons[0,:]
     lats1d = model.lats[:,0]
@@ -194,7 +176,8 @@ if __name__ == "__main__":
     print 'max/min PV',pvg.min(), pvg.max()
     lons, lats = np.meshgrid(lons1d,lats1d*180./np.pi)
     x,y = m(lons,lats)
-    levs = np.arange(0.,4,0.02)
+    pvmax = np.abs(pvg).max()
+    levs = np.linspace(0,pvmax,25)
     m.drawmeridians(np.arange(-180,180,60))
     m.drawparallels(np.arange(-80,81,20))
     CS=m.contourf(x,y,pvg,levs,cmap=plt.cm.spectral,extend='both')
