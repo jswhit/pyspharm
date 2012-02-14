@@ -1,5 +1,7 @@
 galewskyetal_testcase.py tests using spharm to integrate a shallow water model.
 
+2layer.py two layer baroclinic instability test case.
+
 regrid_test.py tests regrid and spectral interpolation functions.
 
 geodesic.py, galewskyetal_testcase.py and spharmonic.py use matplotlib (http://matplotlib.sf.net).
