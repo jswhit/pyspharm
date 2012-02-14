@@ -7,12 +7,12 @@ import time
 # two-layer baroclinically unstable jet test case
 
 # grid, time step info
-nlons = 256  # number of longitudes
+nlons = 128  # number of longitudes
 ntrunc = nlons/3 # spectral truncation (for alias-free computations)
 nlats = (nlons/2)+1 # for regular grid.
 gridtype = 'regular'
-dt = 45 # time step in seconds
-itmax = 10*(86400/dt) # integration length in days
+dt = 120 # time step in seconds
+itmax = 5*(86400/dt) # integration length in days
 
 # parameters for test
 rsphere = 6.37122e6 # earth radius
@@ -27,8 +27,8 @@ exnftop = cp - grav*ztop/theta1
 exnfmid = cp  - grav*zmid/theta1
 efold = 3.*3600. # efolding timescale at ntrunc for hyperdiffusion
 ndiss = 8 # order for hyperdiffusion
-umax = 40. # jet speed
-jetexp = 6 # parameter controlling jet width
+umax = 30. # jet speed
+jetexp = 4 # parameter controlling jet width
 
 # setup up spherical harmonic instance, set lats/lons of grid
 
@@ -37,7 +37,7 @@ delta = 2.*np.pi/nlons
 lats1d = 0.5*np.pi-delta*np.arange(nlats)
 lons1d = np.arange(-np.pi,np.pi,delta)
 lons,lats = np.meshgrid(lons1d,lats1d)
-f = 2.*omega*np.sin(lats) # coriolis
+f = 2.*omega*np.sin(lats)[:,:,np.newaxis] # coriolis
 
 # create spectral indexing arrays, laplacian operator and its inverse.
 indxm, indxn = getspecindx(ntrunc)
@@ -47,20 +47,20 @@ ilap[1:] = 1./lap[1:]
 ilap = ilap[:,np.newaxis]; lap = lap[:,np.newaxis]
 hyperdiff_fact = np.exp((-dt/efold)*(lap/lap[-1])**(ndiss/2))
 
-# initial conditions
-psibump = np.zeros((nlats,nlons,2),np.float32)
-psibump[:,:,1] = 5.e6*np.sin((lons-np.pi))**12*np.sin(2.*lats)**12
-psibump = np.where(lons[:,:,np.newaxis] > 0., 0, psibump)
-psibump = np.where(lats[:,:,np.newaxis] < 0., psibump, -psibump)
+# vort, div initial conditions
+psipert = np.zeros((nlats,nlons,2),np.float32)
+psipert[:,:,1] = 5.e6*np.sin((lons-np.pi))**12*np.sin(2.*lats)**12
+psipert = np.where(lons[:,:,np.newaxis] > 0., 0, psipert)
+psipert = np.where(lats[:,:,np.newaxis] < 0., psipert, -psipert)
 ug = np.zeros((nlats,nlons,2),np.float32)
 vg = np.zeros((nlats,nlons,2),np.float32)
 ug[:,:,1] = umax*np.sin(2.*lats)**jetexp
 vrtspec, divspec = x.getvrtdivspec(ug,vg,ntrunc)
-vrtspec = vrtspec + lap*x.grdtospec(psibump,ntrunc)
-# solve balance eqn.
+vrtspec = vrtspec + lap*x.grdtospec(psipert,ntrunc)
+# solve nonlinear balance eqn to get layer thickness.
 vrtg = x.spectogrd(vrtspec)
 ug,vg = x.getuv(vrtspec,divspec)
-tmpg1 = ug*(vrtg+f[:,:,np.newaxis]); tmpg2 = vg*(vrtg+f[:,:,np.newaxis])
+tmpg1 = ug*(vrtg+f); tmpg2 = vg*(vrtg+f)
 tmpspec1, tmpspec2 = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
 tmpspec2 = x.grdtospec(0.5*(ug**2+vg**2),ntrunc)
 mspec = ilap*tmpspec1 - tmpspec2
@@ -70,7 +70,7 @@ lyrthkspec[:,1] = (mspec[:,1]-mspec[:,0])/delth
 lyrthkspec[:,0] = lyrthkspec[:,0] - lyrthkspec[:,1]
 lyrthkspec[0,0] = (2./np.sqrt(2.))*(cp - exnfmid)
 lyrthkspec[0,1] = (2./np.sqrt(2.))*(exnfmid - exnftop)
-lyrthkspec = (theta1/grav)*lyrthkspec # put into height units (m)
+lyrthkspec = (theta1/grav)*lyrthkspec # convert from exner function to height units (m)
 lyrthkg = x.spectogrd(lyrthkspec)
 print lyrthkg[:,:,0].min(), lyrthkg[:,:,0].max()
 print lyrthkg[:,:,1].min(), lyrthkg[:,:,1].max()
@@ -94,9 +94,12 @@ for ncycle in range(itmax+1):
     vrtg = x.spectogrd(vrtspec)
     ug,vg = x.getuv(vrtspec,divspec)
     lyrthkg = x.spectogrd(lyrthkspec)
-    print 't=%6.2f hours: min/max %6.2f, %6.2f' % (t/3600.,vg.min(), vg.max())
+    pvg = (vrtg+f)/lyrthkg
+    pvg = (0.5*zmid/omega)*pvg
+    print 't=%6.2f hours: v min/max %6.2f, %6.2f pv min/max %6.2f, %6.2f' %\
+    (t/3600.,vg.min(), vg.max(),pvg.min(),pvg.max())
 # compute tendencies.
-    tmpg1 = ug*(vrtg+f[:,:,np.newaxis]); tmpg2 = vg*(vrtg+f[:,:,np.newaxis])
+    tmpg1 = ug*(vrtg+f); tmpg2 = vg*(vrtg+f)
     ddivdtspec[:,:,nnew], dvrtdtspec[:,:,nnew] = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
     dvrtdtspec[:,:,nnew] *= -1
     tmpg1 = ug*lyrthkg; tmpg2 = vg*lyrthkg
@@ -104,8 +107,7 @@ for ncycle in range(itmax+1):
     dlyrthkdtspec[:,:,nnew] *= -1
     mstrm[:,:,0] = grav*(lyrthkg[:,:,0] + lyrthkg[:,:,1]) 
     mstrm[:,:,1] = mstrm[:,:,0] + (grav*delth/theta1)*lyrthkg[:,:,1] 
-    tmpspec = x.grdtospec(mstrm+0.5*(ug**2+vg**2),ntrunc)
-    ddivdtspec[:,:,nnew] += -lap*tmpspec
+    ddivdtspec[:,:,nnew] += -lap*x.grdtospec(mstrm+0.5*(ug**2+vg**2),ntrunc)
 # update vort,div,phiv with third-order adams-bashforth.
 # forward euler, then 2nd-order adams-bashforth time steps to start.
     if ncycle == 0:
@@ -119,15 +121,12 @@ for ncycle in range(itmax+1):
         dvrtdtspec[:,:,nold] = dvrtdtspec[:,:,nnew]
         ddivdtspec[:,:,nold] = ddivdtspec[:,:,nnew]
         dlyrthkdtspec[:,:,nold] = dlyrthkdtspec[:,:,nnew]
-    vrtspec += dt*( \
-            (23./12.)*dvrtdtspec[:,:,nnew] - (16./12.)*dvrtdtspec[:,:,nnow]+ \
-            (5./12.)*dvrtdtspec[:,:,nold] )
-    divspec += dt*( \
-            (23./12.)*ddivdtspec[:,:,nnew] - (16./12.)*ddivdtspec[:,:,nnow]+ \
-            (5./12.)*ddivdtspec[:,:,nold] )
-    lyrthkspec += dt*( \
-            (23./12.)*dlyrthkdtspec[:,:,nnew] - (16./12.)*dlyrthkdtspec[:,:,nnow]+ \
-            (5./12.)*dlyrthkdtspec[:,:,nold] )
+    vrtspec += dt*( (23./12.)*dvrtdtspec[:,:,nnew] -
+    (16./12.)*dvrtdtspec[:,:,nnow] + (5./12.)*dvrtdtspec[:,:,nold] )
+    divspec += dt*( (23./12.)*ddivdtspec[:,:,nnew] -
+    (16./12.)*ddivdtspec[:,:,nnow] + (5./12.)*ddivdtspec[:,:,nold] )
+    lyrthkspec += dt*( (23./12.)*dlyrthkdtspec[:,:,nnew] - 
+    (16./12.)*dlyrthkdtspec[:,:,nnow] + (5./12.)*dlyrthkdtspec[:,:,nold] )
     # implicit hyperdiffusion for vort and div.
     vrtspec *= hyperdiff_fact
     divspec *= hyperdiff_fact
@@ -141,15 +140,16 @@ print 'CPU time = ',time2-time1
 # make a orthographic plot of potential vorticity.
 #m = Basemap(projection='moll',lat_0=0,lon_0=0)
 #m = Basemap(projection='ortho',lon_0=-90,lat_0=40)
-m = Basemap(projection='npaeqd',boundinglat=0,lon_0=0)
+m = Basemap(projection='npaeqd',boundinglat=0,lon_0=0,round=True)
 # dimensionless upper layer PV
-pvg = (vrtg+f[:,:,np.newaxis])/lyrthkg
-pvg,lons1d = addcyclic(pvg[:,:,1],lons1d*180./np.pi)
-pvg = (0.5*(ztop-zmid)/omega)*pvg
+#pvg = (vrtg+f)/lyrthkg
+pvg,lons1d = addcyclic(vrtg[:,:,1],lons1d*180./np.pi)
+#pvg = (0.5*zmid/omega)*pvg
 print 'max/min PV',pvg.min(), pvg.max()
 lons, lats = np.meshgrid(lons1d,lats1d*180./np.pi)
 x,y = m(lons,lats)
-levs = np.arange(-2,12,1)
+levs = np.arange(0.,4,0.02)
+levs = np.arange(-1.e-4,1.01e-4,1.e-5)
 m.drawmeridians(np.arange(-180,180,60))
 m.drawparallels(np.arange(-80,81,20))
 CS=m.contourf(x,y,pvg,20,cmap=plt.cm.spectral,extend='both')
