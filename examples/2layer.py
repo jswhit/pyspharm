@@ -128,11 +128,17 @@ hyperdiff_fact = np.exp((-dt/efold)*(lap/lap[-1])**(ndiss/2))
 # initial perturbation
 psibump = 4.e6*np.exp(-(lons/(20.*np.pi/180.))**2)*np.sin(2.*lats)**12
 psibump = np.ones((nlats,nlons,2),np.float32)*psibump[:,:,np.newaxis]
-vrtbumpspec = lap*x.grdtospec(psibump,ntrunc)
-divbumpspec = np.zeros(vrtbumpspec.shape, np.complex64)
-upert,vpert = x.getuv(vrtbumpspec,divbumpspec)
-ug = ug + upert; vg = vg + vpert
+vrtspec = vrtspec + lap*x.grdtospec(psibump,ntrunc)
 # solve balance eqn.
+#vrtg = x.spectogrd(vrtspec)
+#ug,vg = x.getuv(vrtspec,divspec)
+#tmpg1 = ug*(vrtg+f[:,:,np.newaxis]); tmpg2 = vg*(vrtg+f[:,:,np.newaxis])
+#tmpspec1, tmpspec2 = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
+#tmpspec2 = x.grdtospec(0.5*(ug**2+vg**2),ntrunc)
+#mspec = ilap*tmpspec1 - tmpspec2
+#deltapispec[:,:,0] = mspec[:,:,0]/theta1
+#deltapispec[:,:,1] = (mspec[:,:,1]-mspec[:,:,0])/(theta2-theta1)
+#deltapispec[:,:,0] = deltapispec[:,:,0] - deltapispec[:,:,1]
 
 # initialize spectral tendency arrays
 ddivdtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
