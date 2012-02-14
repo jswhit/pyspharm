@@ -22,16 +22,16 @@ itmax = 5*(86400/dt) # integration length in days
 rsphere = 6.37122e6 # earth radius
 omega = 7.292e-5 # rotation rate
 grav = 9.80616 # gravity
-hbar1 = 5.e3 # resting depth of each layer
-hbar2 = 15.e3 # resting depth of each layer
-umax = 30. # jet speed
+cp = 1004.
+theta1 = 280. ; theta2 = 320
+ztop = 15.e3
+pitop = cp - grav*ztop/theta1
 phi0 = np.pi/7.; phi1 = 0.5*np.pi - phi0; phi2 = 0.25*np.pi
 en = np.exp(-4.0/(phi1-phi0)**2)
 alpha = 1./3.; beta = 1./15.
-hamp = 150. # amplitude of height perturbation to zonal jet
+hamp = 15. # amplitude of height perturbation to zonal jet
 efold = 3.*3600. # efolding timescale at ntrunc for hyperdiffusion
 ndiss = 8 # order for hyperdiffusion
-densityratio = 0.9 # density of upper layer/lower layer
 
 # setup up spherical harmonic instance, set lats/lons of grid
 
@@ -42,22 +42,80 @@ lons1d = np.arange(-np.pi,np.pi,delta)
 lons,lats = np.meshgrid(lons1d,lats1d)
 f = 2.*omega*np.sin(lats) # coriolis
 
-# zonal jet.
-vg = np.zeros((nlats,nlons,2),np.float32)
-u1 = (umax/en)*np.exp(1./((lats1d-phi0)*(lats1d-phi1)))
-ug = np.zeros((nlats),np.float32)
-ug = np.where(np.logical_and(lats1d < phi1, lats1d > phi0), u1, ug)
-ug.shape = (nlats,1,1)
-# broadcast to shape (nlats,nlons,2)
-ug = ug*np.ones((nlats,nlons,2),dtype=np.float32)
-ug[:,:,0] = 0. # state of rest in lower layer.
-# simpler jet
-ug[:,:,1] = umax*(np.sin(2.*lats))**2
-# height perturbation.
-hbump = hamp*np.cos(lats)*np.exp(-(lons/alpha)**2)*np.exp(-(phi2-lats)**2/beta)
 
-# initial vorticity, divergence in spectral space
+# balanced zonal jets
+deltapi = 0.9*(cp-pitop)
+#f1 = np.cos(2.*lats)
+#f3 = (1./2.)*f1*( (np.sin(2.*lats))**2 + 2.)
+#df3 = -np.sin(2.*lats)* \
+#      ((np.sin(2.*lats))**2+2.) + (1./2.)* \
+#      np.cos(2.*lats)*4.*np.sin(2.*lats)*np.cos(2.*lats)
+rnorm3 = -3./2.
+rnorm5 = 1./(-(5./8.)+(5./48.)-(1./80.))
+rnorm7 = (7.*rnorm5)/6.
+#    rnorm9 = (9.*rnorm7)/8.
+#    rnorm11 = (11.*rnorm9)/10.
+#    rnorm13 = (13.*rnorm11)/12.
+c = np.cos(2.*lats); s = np.sin(2.*lats)
+f1 = c; df1 = -2.*s
+f3 = -rnorm3*(1./3.)*f1*(s**2+2)
+df3 = rnorm3*(2./3.)*s*(s**2+2)-rnorm3*(1./3.)*c*4.*s*c
+f5 = rnorm5*(-(5./8.)*c+(5./48.)*np.cos(6.*lats)-(1./80.)*np.cos(10.*lats))
+df5 = rnorm5*((5./4.)*s-(15./24.)*np.sin(6.*lats)+(1./8.)*np.sin(10.*lats)) 
+f7 = rnorm7*(-(1./7.)*c*s**6+(6./7.)*(f5/rnorm5))
+df7 = rnorm7*( (1./7.)*2.*s**7-12.*s**5*c**2+(6./7.)*(df5/rnorm5))
+#        f1 = cos(2.*rlat)
+#        df1 = -2.*sin(2.*rlat)
+#        f3 = -rnorm3*(1./3.)*f1*( (sin(2.*rlat))**2 + 2.)
+#        df3 = rnorm3*(2./3.)*sin(2.*rlat)*
+#       *         ((sin(2.*rlat))**2+2.) -
+#       *         rnorm3*(1./3.)*
+#       *         cos(2.*rlat)*4.*sin(2.*rlat)*cos(2.*rlat)
+#        f5 = rnorm5*(-(5./8.)*cos(2.*rlat) + (5./48.)*cos(6.*rlat) -
+#    *        (1./80.)*cos(10.*rlat))
+#        df5 = rnorm5*((5./4.)*sin(2.*rlat) -(15./24.)*sin(6.*rlat) +
+#    *        (1./8.)*sin(10.*rlat))
+#        f7 = rnorm7*( -(1./7.)*(sin(2.*rlat))**6*(cos(2.*rlat)) +
+#    *                   (6./7.)*(f5/rnorm5) )
+#        df7 = rnorm7*( (1./7)*( 2.*(sin(2.*rlat))**7 - 12.*
+#    *   (sin(2.*rlat))**5*(cos(2.*rlat))**2 ) + (6./7.)*(df5/rnorm5))
+#        f9 = rnorm9*(-(1./9.)*(sin(2.*rlat))**8*(cos(2.*rlat))+
+#    *                   (8./9.)*(f7/rnorm7) )
+#        df9 = 2.*rnorm9*(sin(2.*rlat))**9
+#        f11 = rnorm11*(-(1./11.)*(sin(2.*rlat))**10*(cos(2.*rlat))+
+#    *                  (10./11.)*(f9/rnorm9) )
+#        df11 = 2.*rnorm11*(sin(2.*rlat))**11
+#        f13 = rnorm13*((-1./13.)*(sin(2.*rlat))**12*(cos(2.*rlat))+
+#    *                  (12./13)*(f11/rnorm11) )
+#        df13 = 2.*rnorm13*(sin(2.*rlat))**13
+pimid = 0.5*(cp+pitop) + 0.5*f5*deltapi
+zint = (theta1/grav)*(cp - pimid)
+s = np.sin(lats)
+s[nlats/2,:] = 1. # avoid singularity at equator
+c = np.cos(lats)
+ct = c/s
+dpidphi = 0.5*deltapi*df5
+dmdphi = (theta2-theta1)*dpidphi
+rad = (rsphere*omega*c)**2 - ct*dmdphi
+ug = np.zeros((nlats,nlons,2),np.float32)
+vg = np.zeros((nlats,nlons,2),np.float32)
+deltapig = np.zeros((nlats,nlons,2),np.float32)
+ubg = c*(-rsphere*omega*c + np.sqrt( rad ) )
+print ubg.min(), ubg.max()
+#plt.plot(lats[:,0],zint[:,0])
+#plt.show()
+#raise SystemExit
+ug[:,:,1] = ubg/c
+# add geopotential pertubation to lower layer.
+hbump = hamp*np.cos(lats)*np.exp(-(lons/alpha)**2)*np.exp(-(phi2-lats)**2/beta)
+deltapig[:,:,0] = cp+grav*hbump-pimid 
+deltapig[:,:,1] = pimid-pitop
+print deltapig[:,:,0].min(), deltapig[:,:,0].max()
+print deltapig[:,:,1].min(), deltapig[:,:,1].max()
+# initial vorticity, divergence and layer thicknesses in spectral space
 vrtspec, divspec =  x.getvrtdivspec(ug,vg,ntrunc)
+deltapispec = x.grdtospec(deltapig,ntrunc)
+
 
 # create spectral indexing arrays, laplacian operator and its inverse.
 indxm, indxn = getspecindx(ntrunc)
@@ -67,29 +125,11 @@ ilap[1:] = 1./lap[1:]
 ilap = ilap[:,np.newaxis]; lap = lap[:,np.newaxis]
 hyperdiff_fact = np.exp((-dt/efold)*(lap/lap[-1])**(ndiss/2))
 
-# solve nonlinear balance eqn to get initial zonal geopotential,
-# add localized bump (not balanced).
-vrtg = x.spectogrd(vrtspec)
-tmpg1 = ug*(vrtg+f[:,:,np.newaxis]); tmpg2 = vg*(vrtg+f[:,:,np.newaxis])
-tmpspec1, tmpspec2 = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
-tmpspec2 = x.grdtospec(0.5*(ug**2+vg**2),ntrunc)
-phispec = ilap*tmpspec1 - tmpspec2
-# lower layer at rest implies this
-phispec[:,1] = phispec[:,1]/(1.-densityratio)
-phispec[:,0] = -densityratio*phispec[:,1]
-phig = x.spectogrd(phispec)
-# add basic state of rest.
-phig[:,:,0] += grav*hbar1
-phig[:,:,1] += grav*hbar2
-# add geopotential pertubation to upper layer.
-phig[:,:,1] += grav*hbump
-# grid to spectral
-phispec = x.grdtospec(phig,ntrunc)
-
 # initialize spectral tendency arrays
 ddivdtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
 dvrtdtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
-dphidtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
+ddeltapidtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
+mstrm = np.zeros(deltapig.shape, deltapig.dtype)
 nnew = 0; nnow = 1; nold = 2
 
 # time loop.
@@ -100,19 +140,18 @@ for ncycle in range(itmax+1):
 # get vort,u,v,phi on grid
     vrtg = x.spectogrd(vrtspec)
     ug,vg = x.getuv(vrtspec,divspec)
-    phig = x.spectogrd(phispec)
+    deltapig = x.spectogrd(deltapispec)
     print 't=%6.2f hours: min/max %6.2f, %6.2f' % (t/3600.,vg.min(), vg.max())
 # compute tendencies.
     tmpg1 = ug*(vrtg+f[:,:,np.newaxis]); tmpg2 = vg*(vrtg+f[:,:,np.newaxis])
     ddivdtspec[:,:,nnew], dvrtdtspec[:,:,nnew] = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
     dvrtdtspec[:,:,nnew] *= -1
-    tmpg1 = ug*phig; tmpg2 = vg*phig
-    tmpspec, dphidtspec[:,:,nnew] = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
-    dphidtspec[:,:,nnew] *= -1
-    pgf = np.empty(phig.shape, phig.dtype)
-    pgf[:,:,0] = phig[:,:,0] + densityratio*phig[:,:,1]
-    pgf[:,:,1] = phig[:,:,0] + phig[:,:,1]
-    tmpspec = x.grdtospec(pgf+0.5*(ug**2+vg**2),ntrunc)
+    tmpg1 = ug*deltapig; tmpg2 = vg*deltapig
+    tmpspec, ddeltapidtspec[:,:,nnew] = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
+    ddeltapidtspec[:,:,nnew] *= -1
+    mstrm[:,:,0] = theta1*(deltapig[:,:,0] + deltapig[:,:,1] + pitop)
+    mstrm[:,:,1] = mstrm[:,:,0] + (theta2-theta1)*(deltapig[:,:,1] + pitop)
+    tmpspec = x.grdtospec(mstrm+0.5*(ug**2+vg**2),ntrunc)
     ddivdtspec[:,:,nnew] += -lap*tmpspec
 # update vort,div,phiv with third-order adams-bashforth.
 # forward euler, then 2nd-order adams-bashforth time steps to start.
@@ -121,21 +160,21 @@ for ncycle in range(itmax+1):
         dvrtdtspec[:,:,nold] = dvrtdtspec[:,:,nnew]
         ddivdtspec[:,:,nnow] = ddivdtspec[:,:,nnew]
         ddivdtspec[:,:,nold] = ddivdtspec[:,:,nnew]
-        dphidtspec[:,:,nnow] = dphidtspec[:,:,nnew]
-        dphidtspec[:,:,nold] = dphidtspec[:,:,nnew]
+        ddeltapidtspec[:,:,nnow] = ddeltapidtspec[:,:,nnew]
+        ddeltapidtspec[:,:,nold] = ddeltapidtspec[:,:,nnew]
     elif ncycle == 1:
         dvrtdtspec[:,:,nold] = dvrtdtspec[:,:,nnew]
         ddivdtspec[:,:,nold] = ddivdtspec[:,:,nnew]
-        dphidtspec[:,:,nold] = dphidtspec[:,:,nnew]
+        ddeltapidtspec[:,:,nold] = ddeltapidtspec[:,:,nnew]
     vrtspec += dt*( \
             (23./12.)*dvrtdtspec[:,:,nnew] - (16./12.)*dvrtdtspec[:,:,nnow]+ \
             (5./12.)*dvrtdtspec[:,:,nold] )
     divspec += dt*( \
             (23./12.)*ddivdtspec[:,:,nnew] - (16./12.)*ddivdtspec[:,:,nnow]+ \
             (5./12.)*ddivdtspec[:,:,nold] )
-    phispec += dt*( \
-            (23./12.)*dphidtspec[:,:,nnew] - (16./12.)*dphidtspec[:,:,nnow]+ \
-            (5./12.)*dphidtspec[:,:,nold] )
+    deltapispec += dt*( \
+            (23./12.)*ddeltapidtspec[:,:,nnew] - (16./12.)*ddeltapidtspec[:,:,nnow]+ \
+            (5./12.)*ddeltapidtspec[:,:,nold] )
     # implicit hyperdiffusion for vort and div.
     vrtspec *= hyperdiff_fact
     divspec *= hyperdiff_fact
@@ -149,7 +188,7 @@ print 'CPU time = ',time2-time1
 # make a orthographic plot of potential vorticity.
 m = Basemap(projection='ortho',lat_0=45,lon_0=-100)
 # dimensionless upper layer PV
-pvg = (0.5*hbar2*grav/omega)*(vrtg+f[:,:,np.newaxis])/phig
+pvg = (vrtg+f[:,:,np.newaxis])/deltapig
 pvg,lons1d = addcyclic(pvg[:,:,1],lons1d*180./np.pi)
 print 'max/min PV',pvg.min(), pvg.max()
 lons, lats = np.meshgrid(lons1d,lats1d*180./np.pi)
@@ -157,7 +196,7 @@ x,y = m(lons,lats)
 levs = np.arange(-0.2,1.801,0.1)
 m.drawmeridians(np.arange(-180,180,60))
 m.drawparallels(np.arange(-80,81,20))
-CS=m.contourf(x,y,pvg,levs,cmap=plt.cm.spectral,extend='both')
+CS=m.contourf(x,y,pvg,20,cmap=plt.cm.spectral,extend='both')
 m.colorbar()
 plt.title('PV (T%s with hyperdiffusion, hour %6.2f)' % (ntrunc,t/3600.))
 plt.show()
