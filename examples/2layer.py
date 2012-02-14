@@ -5,22 +5,25 @@ from spharm import Spharmt, getspecindx, gaussian_lats_wts
 
 class TwoLayer(object):
 
-    def __init__(self,sp,theta1,theta2,grav,omega,cp,rsphere,zmid,ztop,efold,ndiss,ntrunc,dt):
+    def __init__(self,sp,dt,ntrunc,theta1=300,theta2=330,grav=9.80616,omega=7.292e-5,cp=1004,\
+            zmid=5.e3,ztop=15.e3,efold=3600.,ndiss=8,tdrag=1.e30,tdiab=1.e30,umax=20):
         # setup model parameters
-        self.theta1 = theta1
-        self.theta2 = theta2
-        self.delth = delth
-        self.grav = grav
-        self.omega = omega
-        self.cp = cp
-        self.rsphere = rsphere
-        self.zmid = zmid
-        self.ztop = ztop
-        self.efold = efold
-        self.ndiss = ndiss
-        self.sp = sp
-        self.ntrunc = ntrunc
-        self.dt = dt
+        self.theta1 = theta1 # lower layer pot. temp.
+        self.theta2 = theta2 # upper layer pot. temp.
+        self.delth = theta2-theta1 # difference in potential temp between layers
+        self.grav = grav # gravity
+        self.omega = omega # rotation rate
+        self.cp = cp # Specific Heat of Dry Air at Constant Pressure,
+        self.zmid = zmid # resting depth of lower layer (m)
+        self.ztop = ztop # resting depth of both layers (m)
+        # efolding time scale for hyperdiffusion at shortest wavenumber
+        self.efold = efold 
+        self.ndiss = ndiss # order of hyperdiffusion (2 for laplacian)
+        self.sp = sp # Spharmt instance
+        self.ntrunc = ntrunc # triangular truncation wavenumber
+        self.dt = dt # time step (secs)
+        self.tdiab = tdiab # lower layer drag timescale
+        self.tdrag = tdrag # interface relaxation timescale
         # create lat/lon arrays
         delta = 2.*np.pi/sp.nlon
         if sp.gridtype == 'regular':
@@ -37,11 +40,23 @@ class TwoLayer(object):
         indxm, indxn = getspecindx(ntrunc)
         indxn = indxn.astype(np.float32)[:,np.newaxis]
         totwavenum = indxn*(indxn+1.0)
-        self.lap = -totwavenum/rsphere**2
+        self.lap = -totwavenum/sp.rsphere**2
         self.ilap = np.zeros(self.lap.shape, np.float32)
         self.ilap[1:,:] = 1./self.lap[1:,:]
         # hyperdiffusion operator
         self.hyperdiff = -(1./efold)*(totwavenum/totwavenum[-1])**(ndiss/2)
+        # set equilibrium layer thicknes profile.
+        self._interface_profile(umax)
+
+    def _interface_profile(self,umax):
+        ug = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32) 
+        vg = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32) 
+        ug[:,:,1] = umax*np.sin(2.*self.lats)**2
+        vrtspec, divspec = self.sp.getvrtdivspec(ug,vg,self.ntrunc)
+        lyrthkspec = self.nlbalance(vrtspec)
+        self.lyrthkref = sp.spectogrd(lyrthkspec)
+        if self.lyrthkref.min() < 0:
+            raise ValueError('negative layer thickness! adjust equilibrium jet parameter')
 
     def nlbalance(self,vrtspec):
         # solve nonlinear balance eqn to get layer thickness given vorticity.
@@ -68,6 +83,8 @@ class TwoLayer(object):
         vrtg = self.sp.spectogrd(vrtspec)
         ug,vg = self.sp.getuv(vrtspec,divspec)
         lyrthkg = self.sp.spectogrd(lyrthkspec)
+        self.u = ug; self.v = vg
+        self.vrt = vrtg; self.lyrthk = lyrthkg
         tmpg1 = ug*(vrtg+self.f); tmpg2 = vg*(vrtg+self.f)
         ddivdtspec, dvrtdtspec = self.sp.getvrtdivspec(tmpg1,tmpg2,self.ntrunc)
         dvrtdtspec *= -1
@@ -111,28 +128,16 @@ if __name__ == "__main__":
     #nlats = nlons/2 # for gaussian grid.
     #gridtype = 'gaussian'
     dt = 360 # time step in seconds
-    itmax = 6*(86400/dt) # integration length in days
-    
-    # parameters for test
-    rsphere = 6.37122e6 # earth radius
-    omega = 7.292e-5 # rotation rate
-    grav = 9.80616 # gravity
-    cp = 1004.
-    theta1 = 300. ; theta2 = 330
-    delth = theta2-theta1
-    zmid = 5.e3
-    ztop = 15.e3
-    efold = 3.*3600. # efolding timescale at ntrunc for hyperdiffusion
-    ndiss = 8 # order for hyperdiffusion
-    umax = 45. # jet speed
-    jetexp = 8 # parameter controlling jet width
+    itmax = 8*(86400/dt) # integration length in days
+    umax = 50. # jet speed
+    jetexp = 10 # parameter controlling jet width
 
     # create spherical harmonic instance.
+    rsphere = 6.37122e6 # earth radius
     sp = Spharmt(nlons,nlats,rsphere,gridtype=gridtype)
 
-    # create model instance.
-    model =\
-    TwoLayer(sp,theta1,theta2,grav,omega,cp,rsphere,zmid,ztop,efold,ndiss,ntrunc,dt)
+    # create model instance using default parameters.
+    model = TwoLayer(sp,dt,ntrunc)
     
     # vort, div initial conditions
     psipert = np.zeros((sp.nlat,sp.nlon,2),np.float32)
@@ -144,6 +149,7 @@ if __name__ == "__main__":
     ug[:,:,1] = umax*np.sin(2.*model.lats)**jetexp
     vrtspec, divspec = sp.getvrtdivspec(ug,vg,model.ntrunc)
     vrtspec = vrtspec + model.lap*sp.grdtospec(psipert,model.ntrunc)
+    vrtg = sp.spectogrd(vrtspec)
     lyrthkspec = model.nlbalance(vrtspec)
     lyrthkg = sp.spectogrd(lyrthkspec)
     print lyrthkg[:,:,0].min(), lyrthkg[:,:,0].max()
@@ -155,32 +161,28 @@ if __name__ == "__main__":
     time1 = time.clock()
     for ncycle in range(itmax+1):
         t = ncycle*model.dt
-        ug,vg = sp.getuv(vrtspec,divspec)
-        print 't=%6.2f hours: min/max %6.2f, %6.2f' % (t/3600.,vg.min(), vg.max())
         vrtspec, divspec, lyrthkspec = model.rk4step(vrtspec, divspec, lyrthkspec)
+        pvg = (0.5*model.zmid/model.omega)*(model.vrt + model.f)/model.lyrthk
+        print 't=%6.2f hours: v min/max %6.2f, %6.2f pv min/max %6.2f, %6.2f'%\
+        (t/3600.,model.v.min(), model.v.max(), pvg.min(), pvg.max())
     time2 = time.clock()
     print 'CPU time = ',time2-time1
-    vrtg = sp.spectogrd(vrtspec)
-    ug,vg = sp.getuv(vrtspec,divspec)
-    lyrthkg = sp.spectogrd(lyrthkspec)
-    pvg = (0.5*model.zmid/model.omega)*(vrtg + model.f)/lyrthkg
     
     # make a plot of upper layer potential vorticity.
-    #m = Basemap(projection='kav7',lat_0=0,lon_0=0)
-    m = Basemap(projection='ortho',lon_0=90,lat_0=50)
-    #m = Basemap(projection='npaeqd',boundinglat=0,lon_0=0,round=True)
-    # dimensionless upper layer PV
-    lons1d = model.lons[0,:]
-    lats1d = model.lats[:,0]
-    pvg,lons1d = addcyclic(pvg[:,:,1],lons1d*180./np.pi)
-    print 'max/min PV',pvg.min(), pvg.max()
-    lons, lats = np.meshgrid(lons1d,lats1d*180./np.pi)
+    m = Basemap(projection='ortho',lat_0=60,lon_0=180)
+    lons1d = model.lons[0,:]*180./np.pi
+    lats1d = model.lats[:,0]*180./np.pi
+    vrtg,lons1dx = addcyclic(model.vrt[:,:,1],lons1d)
+    pvg,lons1dx = addcyclic(pvg[:,:,1],lons1d)
+    lyrthk,lons1dx = addcyclic(model.lyrthk[:,:,1],lons1d)
+    print 'max/min vort',vrtg.min(), vrtg.max()
+    print 'max/min pv',pvg.min(), pvg.max()
+    print 'max/min upper layer thk',lyrthk.min(), lyrthk.max()
+    lons, lats = np.meshgrid(lons1dx,lats1d)
     x,y = m(lons,lats)
-    pvmax = np.abs(pvg).max()
-    levs = np.linspace(0,pvmax,25)
     m.drawmeridians(np.arange(-180,180,60))
-    m.drawparallels(np.arange(-80,81,20))
-    CS=m.contourf(x,y,pvg,levs,cmap=plt.cm.spectral,extend='both')
+    m.drawparallels(np.arange(40,81,20))
+    CS=m.contourf(x,y,lyrthk,30,cmap=plt.cm.spectral,extend='both')
     m.colorbar()
-    plt.title('PV (T%s with hyperdiffusion, hour %6.2f)' % (ntrunc,t/3600.))
+    plt.title('Upper-Layer Thickness (T%s, hour %6.2f)' % (ntrunc,t/3600.))
     plt.show()
