@@ -14,7 +14,7 @@
       do n=m,ntrunc+1
          nm = nmstrt + n - m + 1
          divspec(nm,i) = -(sqrt(float(n)*float(n-1))/rsphere)*
-     *                   scale*cmplx(br(m,n,i),bi(m,n,1))
+     *                   scale*cmplx(br(m,n,i),bi(m,n,i))
          vrtspec(nm,i) =  (sqrt(float(n)*float(n-1))/rsphere)*
      *                   scale*cmplx(cr(m,n,i),ci(m,n,i))
       enddo
