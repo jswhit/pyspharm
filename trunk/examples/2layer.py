@@ -16,20 +16,20 @@ ntrunc = nlons/3 # spectral truncation (for alias-free computations)
 nlats = (nlons/2)+1 # for regular grid.
 gridtype = 'regular'
 dt = 60 # time step in seconds
-itmax = 5*(86400/dt) # integration length in days
+itmax = 3*(86400/dt) # integration length in days
 
 # parameters for test
 rsphere = 6.37122e6 # earth radius
 omega = 7.292e-5 # rotation rate
 grav = 9.80616 # gravity
 cp = 1004.
-theta1 = 280. ; theta2 = 320
+theta1 = 280. ; theta2 = 310
 ztop = 15.e3
 pitop = cp - grav*ztop/theta1
 phi0 = np.pi/7.; phi1 = 0.5*np.pi - phi0; phi2 = 0.25*np.pi
 en = np.exp(-4.0/(phi1-phi0)**2)
 alpha = 1./3.; beta = 1./15.
-hamp = 15. # amplitude of height perturbation to zonal jet
+hamp = 1. # amplitude of height perturbation to zonal jet
 efold = 3.*3600. # efolding timescale at ntrunc for hyperdiffusion
 ndiss = 8 # order for hyperdiffusion
 
@@ -124,6 +124,15 @@ ilap = np.zeros(lap.shape, np.float32)
 ilap[1:] = 1./lap[1:]
 ilap = ilap[:,np.newaxis]; lap = lap[:,np.newaxis]
 hyperdiff_fact = np.exp((-dt/efold)*(lap/lap[-1])**(ndiss/2))
+
+# initial perturbation
+psibump = 4.e6*np.exp(-(lons/(20.*np.pi/180.))**2)*np.sin(2.*lats)**12
+psibump = np.ones((nlats,nlons,2),np.float32)*psibump[:,:,np.newaxis]
+vrtbumpspec = lap*x.grdtospec(psibump,ntrunc)
+divbumpspec = np.zeros(vrtbumpspec.shape, np.complex64)
+upert,vpert = x.getuv(vrtbumpspec,divbumpspec)
+ug = ug + upert; vg = vg + vpert
+# solve balance eqn.
 
 # initialize spectral tendency arrays
 ddivdtspec = np.zeros(vrtspec.shape+(3,), np.complex64)
