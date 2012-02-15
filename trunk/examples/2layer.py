@@ -106,9 +106,9 @@ class TwoLayer(object):
             tmpg2[:,:,0] += -ug[:,:,0]/model.tdrag
         # add diabatic momentum flux contribution
         if self.tdiab < 1.e10:
-            tmpg1 += 0.5*(ug[:,:,1]-ug[:,:,0])[:,:,np.newaxis]*\
+            tmpg1 += 0.5*(vg[:,:,1]-vg[:,:,0])[:,:,np.newaxis]*\
             thtadot[:,:,np.newaxis]*totthk[:,:,np.newaxis]/(self.delth*lyrthkg)
-            tmpg2 += -0.5*(vg[:,:,1]-vg[:,:,0])[:,:,np.newaxis]*\
+            tmpg2 += -0.5*(ug[:,:,1]-ug[:,:,0])[:,:,np.newaxis]*\
             thtadot[:,:,np.newaxis]*totthk[:,:,np.newaxis]/(self.delth*lyrthkg)
         # compute vort flux contributions to vorticity and divergence tend.
         ddivdtspec, dvrtdtspec = self.sp.getvrtdivspec(tmpg1,tmpg2,self.ntrunc)
