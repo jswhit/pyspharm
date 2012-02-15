@@ -59,6 +59,7 @@ class TwoLayer(object):
         vrtspec, divspec = self.sp.getvrtdivspec(ug,vg,self.ntrunc)
         lyrthkspec = self.nlbalance(vrtspec)
         self.lyrthkref = sp.spectogrd(lyrthkspec)
+        self.uref = ug
         if self.lyrthkref.min() < 0:
             raise ValueError('negative layer thickness! adjust equilibrium jet parameter')
 
@@ -84,6 +85,7 @@ class TwoLayer(object):
 
     def gettend(self,vrtspec,divspec,lyrthkspec):
         # compute tendencies.
+        # first, transform fields from spectral space to grid space.
         vrtg = self.sp.spectogrd(vrtspec)
         ug,vg = self.sp.getuv(vrtspec,divspec)
         lyrthkg = self.sp.spectogrd(lyrthkspec)
