@@ -49,10 +49,10 @@ class TwoLayer(object):
         self.ilap[1:,:] = 1./self.lap[1:,:]
         # hyperdiffusion operator
         self.hyperdiff = -(1./efold)*(totwavenum/totwavenum[-1])**(ndiss/2)
-        # set equilibrium layer thicknes profile.
-        self._interface_profile(umax)
         # initialize orography to zero.
         self.orog = np.zeros((sp.nlat,sp.nlon),np.float32)
+        # set equilibrium layer thicknes profile.
+        self._interface_profile(umax)
 
     def _interface_profile(self,umax):
         ug = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32) 
@@ -75,7 +75,8 @@ class TwoLayer(object):
         tmpspec1, tmpspec2 = self.sp.getvrtdivspec(tmpg1,tmpg2,self.ntrunc)
         tmpspec2 = self.sp.grdtospec(0.5*(ug**2+vg**2),self.ntrunc)
         mspec = self.ilap*tmpspec1 - tmpspec2
-        lyrthkspec[:,0] = (mspec[:,0]-self.grav*self.orog)/self.theta1
+        lyrthkspec[:,0] =\
+        (mspec[:,0]-self.sp.grdtospec(self.grav*self.orog,self.ntrunc))/self.theta1
         lyrthkspec[:,1] = (mspec[:,1]-mspec[:,0])/self.delth
         lyrthkspec[:,0] = lyrthkspec[:,0] - lyrthkspec[:,1]
         exnftop = self.cp - (self.grav*self.ztop/self.theta1)
