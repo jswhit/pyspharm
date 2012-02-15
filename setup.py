@@ -15,7 +15,7 @@ ext = Extension(name          = '_spherepack',
 
 havefiles = [os.path.isfile(f) for f in srcs_spherepack]
 
-if havefiles.count(False):
+if havefiles.count(False) and sys.argv[1] not in ['sdist','clean']:
     sys.stdout.write("""
  SPHEREPACK fortran source files not in src directory.
  The SPHEREPACK license forbids redistribution of the source.
