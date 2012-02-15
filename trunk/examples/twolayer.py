@@ -10,7 +10,7 @@ from spharm import Spharmt, getspecindx, gaussian_lats_wts
 class TwoLayer(object):
 
     def __init__(self,sp,dt,ntrunc,theta1=300,theta2=330,grav=9.80616,omega=7.292e-5,cp=1004,\
-            zmid=5.e3,ztop=15.e3,efold=3600.,ndiss=8,tdrag=1.e30,tdiab=1.e30,umax=20):
+            zmid=5.e3,ztop=15.e3,efold=3600.,ndiss=8,tdrag=1.e30,tdiab=1.e30,umax=30,jetexp=4):
         # setup model parameters
         self.theta1 = theta1 # lower layer pot. temp.
         self.theta2 = theta2 # upper layer pot. temp.
@@ -52,12 +52,12 @@ class TwoLayer(object):
         # initialize orography to zero.
         self.orog = np.zeros((sp.nlat,sp.nlon),np.float32)
         # set equilibrium layer thicknes profile.
-        self._interface_profile(umax)
+        self._interface_profile(umax,jetexp)
 
-    def _interface_profile(self,umax):
+    def _interface_profile(self,umax,jetexp):
         ug = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32) 
         vg = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32) 
-        ug[:,:,1] = umax*np.sin(2.*self.lats)**2
+        ug[:,:,1] = umax*np.sin(2.*self.lats)**jetexp
         vrtspec, divspec = self.sp.getvrtdivspec(ug,vg,self.ntrunc)
         lyrthkspec = self.nlbalance(vrtspec)
         self.lyrthkref = self.sp.spectogrd(lyrthkspec)
