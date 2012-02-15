@@ -1,7 +1,11 @@
 import numpy as np
 from spharm import Spharmt, getspecindx, gaussian_lats_wts
 
-# two-layer baroclinic primitive equation model
+# two-layer baroclinic primitive equation model of
+# Zou., X. A., A. Barcilon, I. M. Navon, J. S. Whitaker, and D. G. Cacuci,
+# 1993: An adjoint sensitivity study of blocking in a two-layer isentropic
+# model. Mon. Wea. Rev., 121, 2834-2857.
+# doi: http://dx.doi.org/10.1175/1520-0493(1993)121<2833:AASSOB>2.0.CO;2
 
 class TwoLayer(object):
 
@@ -85,17 +89,41 @@ class TwoLayer(object):
         lyrthkg = self.sp.spectogrd(lyrthkspec)
         self.u = ug; self.v = vg
         self.vrt = vrtg; self.lyrthk = lyrthkg
+        if self.tdiab < 1.e10:
+            totthk = lyrthkg.sum(axis=2)
+            thtadot = self.delth*(self.lyrthkref[:,:,1] - lyrthkg[:,:,1])/\
+                                (self.tdiab*totthk)
+        # horizontal vorticity flux
         tmpg1 = ug*(vrtg+self.f); tmpg2 = vg*(vrtg+self.f)
+        # add lower layer drag contribution
+        if self.tdrag < 1.e10:
+            tmpg1[:,:,0] += vg[:,:,0]/model.tdrag 
+            tmpg2[:,:,0] += -ug[:,:,0]/model.tdrag
+        # add diabatic momentum flux contribution
+        if self.tdiab < 1.e10:
+            tmpg1 += 0.5*(ug[:,:,1]-ug[:,:,0])[:,:,np.newaxis]*\
+            thtadot[:,:,np.newaxis]*totthk[:,:,np.newaxis]/(self.delth*lyrthkg)
+            tmpg2 += -0.5*(vg[:,:,1]-vg[:,:,0])[:,:,np.newaxis]*\
+            thtadot[:,:,np.newaxis]*totthk[:,:,np.newaxis]/(self.delth*lyrthkg)
+        # compute vort flux contributions to vorticity and divergence tend.
         ddivdtspec, dvrtdtspec = self.sp.getvrtdivspec(tmpg1,tmpg2,self.ntrunc)
         dvrtdtspec *= -1
+        # divergence hyperdiffusion
         dvrtdtspec += self.hyperdiff*vrtspec
+        # horizontal mass flux contribution to continuity
         tmpg1 = ug*lyrthkg; tmpg2 = vg*lyrthkg
         tmpspec, dlyrthkdtspec = self.sp.getvrtdivspec(tmpg1,tmpg2,self.ntrunc)
         dlyrthkdtspec *= -1
+        # diabatic mass flux contribution to continuity
+        if self.tdiab < 1.e10:
+            tmpspec = self.sp.grdtospec(thtadot*totthk/self.delth,ntrunc)
+            dlyrthkdtspec[:,0] += -tmpspec; dlyrthkdtspec[:,1] += tmpspec
+        # pressure gradient force contribution to divergence tend.
         mstrm = np.empty((self.sp.nlat,self.sp.nlon,2),np.float32)
         mstrm[:,:,0] = self.grav*(lyrthkg[:,:,0] + lyrthkg[:,:,1]) 
         mstrm[:,:,1] = mstrm[:,:,0] + (self.grav*self.delth/self.theta1)*lyrthkg[:,:,1] 
         ddivdtspec += -self.lap*self.sp.grdtospec(mstrm+0.5*(ug**2+vg**2),self.ntrunc) 
+        # divergence hyperdiffusion
         ddivdtspec += self.hyperdiff*divspec
         return dvrtdtspec,ddivdtspec,dlyrthkdtspec
 
@@ -127,7 +155,7 @@ if __name__ == "__main__":
     gridtype = 'regular'
     #nlats = nlons/2 # for gaussian grid.
     #gridtype = 'gaussian'
-    dt = 360 # time step in seconds
+    dt = 900 # time step in seconds
     itmax = 8*(86400/dt) # integration length in days
     umax = 50. # jet speed
     jetexp = 10 # parameter controlling jet width
