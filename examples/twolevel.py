@@ -61,11 +61,6 @@ class TwoLevel(object):
         thetaspec = self.nlbalance(vrtspec)
         self.thetaref = self.sp.spectogrd(thetaspec)
         self.uref = ug
-        #import matplotlib.pyplot as plt
-        #plt.plot(self.lats[:,0]*180./np.pi,self.thetaref[:,0])
-        #plt.plot(self.lats[:,0]*180./np.pi,self.uref[:,0])
-        #plt.show()
-        #raise SystemExit
 
     def nlbalance(self,vrtspec):
         # solve nonlinear balance eqn to get potential temp given vorticity.
@@ -79,7 +74,7 @@ class TwoLevel(object):
         ddivdtspec = tmpspec[:,1]-tmpspec[:,0]
         ke = 0.5*(ug**2+vg**2)
         tmpspec = self.sp.grdtospec(ke[:,:,1]-ke[:,:,0],ntrunc)
-        thetaspec = (self.ilap*ddivdtspec - tmpspec)/self.delta_exnf
+        thetaspec = (tmpspec - self.ilap*ddivdtspec)/self.delta_exnf
         return thetaspec
 
     def gettend(self,vrtspec,divspec,thetaspec):
@@ -160,8 +155,8 @@ if __name__ == "__main__":
     gridtype = 'regular'
     #nlats = nlons/2 # for gaussian grid.
     #gridtype = 'gaussian'
-    dt = 900 # time step in seconds
-    itmax = 8*(86400/dt) # integration length in days
+    dt = 1800 # time step in seconds
+    itmax = 5.5*(86400/dt) # integration length in days
     umax = 50. # jet speed
     jetexp = 8 # parameter controlling jet width
 
@@ -182,11 +177,6 @@ if __name__ == "__main__":
     vrtspec, tmpspec = sp.getvrtdivspec(ug,vg,model.ntrunc)
     vrtspec = vrtspec + model.lap[:,np.newaxis]*sp.grdtospec(psipert,model.ntrunc)
     thetaspec = model.nlbalance(vrtspec)
-    #thetag = sp.spectogrd(thetaspec)
-    #vrtg = sp.spectogrd(vrtspec)
-    #print thetag.min(), thetag.max()
-    #print vrtg.min(), vrtg.max()
-    #raise SystemExit
     divspec = np.zeros(thetaspec.shape, thetaspec.dtype)
 
     # time loop.
@@ -200,7 +190,7 @@ if __name__ == "__main__":
     print 'CPU time = ',time2-time1
     
     # make a plot of temperature
-    m = Basemap(projection='ortho',lat_0=60,lon_0=180)
+    m = Basemap(projection='ortho',lat_0=60,lon_0=90)
     lons1d = model.lons[0,:]*180./np.pi
     lats1d = model.lats[:,0]*180./np.pi
     thetag,lons1dx = addcyclic(model.thetag,lons1d)
