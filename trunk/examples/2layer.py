@@ -196,20 +196,16 @@ if __name__ == "__main__":
     time2 = time.clock()
     print 'CPU time = ',time2-time1
     
-    # make a plot of upper layer potential vorticity.
+    # make a plot of upper layer thickness
     m = Basemap(projection='ortho',lat_0=60,lon_0=180)
     lons1d = model.lons[0,:]*180./np.pi
     lats1d = model.lats[:,0]*180./np.pi
-    vrtg,lons1dx = addcyclic(model.vrt[:,:,1],lons1d)
-    pvg,lons1dx = addcyclic(pvg[:,:,1],lons1d)
     lyrthk,lons1dx = addcyclic(model.lyrthk[:,:,1],lons1d)
-    print 'max/min vort',vrtg.min(), vrtg.max()
-    print 'max/min pv',pvg.min(), pvg.max()
     print 'max/min upper layer thk',lyrthk.min(), lyrthk.max()
     lons, lats = np.meshgrid(lons1dx,lats1d)
     x,y = m(lons,lats)
     m.drawmeridians(np.arange(-180,180,60))
-    m.drawparallels(np.arange(40,81,20))
+    m.drawparallels(np.arange(-80,81,20))
     CS=m.contourf(x,y,lyrthk,30,cmap=plt.cm.spectral,extend='both')
     m.colorbar()
     plt.title('Upper-Layer Thickness (T%s, hour %6.2f)' % (ntrunc,t/3600.))
