@@ -60,7 +60,7 @@ class TwoLayer(object):
         ug[:,:,1] = umax*np.sin(2.*self.lats)**2
         vrtspec, divspec = self.sp.getvrtdivspec(ug,vg,self.ntrunc)
         lyrthkspec = self.nlbalance(vrtspec)
-        self.lyrthkref = sp.spectogrd(lyrthkspec)
+        self.lyrthkref = self.sp.spectogrd(lyrthkspec)
         self.uref = ug
         if self.lyrthkref.min() < 0:
             raise ValueError('negative layer thickness! adjust equilibrium jet parameter')
@@ -102,8 +102,8 @@ class TwoLayer(object):
         tmpg1 = ug*(vrtg+self.f); tmpg2 = vg*(vrtg+self.f)
         # add lower layer drag contribution
         if self.tdrag < 1.e10:
-            tmpg1[:,:,0] += vg[:,:,0]/model.tdrag 
-            tmpg2[:,:,0] += -ug[:,:,0]/model.tdrag
+            tmpg1[:,:,0] += vg[:,:,0]/self.tdrag 
+            tmpg2[:,:,0] += -ug[:,:,0]/self.tdrag
         # add diabatic momentum flux contribution
         if self.tdiab < 1.e10:
             tmpg1 += 0.5*(vg[:,:,1]-vg[:,:,0])[:,:,np.newaxis]*\
@@ -121,7 +121,7 @@ class TwoLayer(object):
         dlyrthkdtspec *= -1
         # diabatic mass flux contribution to continuity
         if self.tdiab < 1.e10:
-            tmpspec = self.sp.grdtospec(thtadot*totthk/self.delth,ntrunc)
+            tmpspec = self.sp.grdtospec(thtadot*totthk/self.delth,self.ntrunc)
             dlyrthkdtspec[:,0] += -tmpspec; dlyrthkdtspec[:,1] += tmpspec
         # pressure gradient force contribution to divergence tend (includes
         # orography).
@@ -177,7 +177,6 @@ if __name__ == "__main__":
     psipert = np.zeros((sp.nlat,sp.nlon,2),np.float32)
     psipert[:,:,1] = 5.e6*np.sin((model.lons-np.pi))**12*np.sin(2.*model.lats)**12
     psipert = np.where(model.lons[:,:,np.newaxis] > 0., 0, psipert)
-    #psipert = np.where(model.lats[:,:,np.newaxis] < 0., psipert, -psipert)
     ug = np.zeros((sp.nlat,sp.nlon,2),np.float32)
     vg = np.zeros((sp.nlat,sp.nlon,2),np.float32)
     ug[:,:,1] = umax*np.sin(2.*model.lats)**jetexp
