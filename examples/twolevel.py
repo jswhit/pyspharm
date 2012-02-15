@@ -200,5 +200,5 @@ if __name__ == "__main__":
     m.drawparallels(np.arange(-80,81,20))
     CS=m.contourf(x,y,thetag,30,cmap=plt.cm.spectral,extend='both')
     m.colorbar()
-    plt.title('Upper-Level Thickness (T%s, hour %6.2f)' % (ntrunc,t/3600.))
+    plt.title('Temperature (T%s, hour %6.2f)' % (ntrunc,t/3600.))
     plt.show()
