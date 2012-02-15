@@ -113,7 +113,7 @@ class TwoLayer(object):
         # compute vort flux contributions to vorticity and divergence tend.
         ddivdtspec, dvrtdtspec = self.sp.getvrtdivspec(tmpg1,tmpg2,self.ntrunc)
         dvrtdtspec *= -1
-        # divergence hyperdiffusion
+        # vorticity hyperdiffusion
         dvrtdtspec += self.hyperdiff*vrtspec
         # horizontal mass flux contribution to continuity
         tmpg1 = ug*lyrthkg; tmpg2 = vg*lyrthkg
