@@ -51,6 +51,8 @@ class TwoLayer(object):
         self.hyperdiff = -(1./efold)*(totwavenum/totwavenum[-1])**(ndiss/2)
         # set equilibrium layer thicknes profile.
         self._interface_profile(umax)
+        # initialize orography to zero.
+        self.orog = np.zeros((sp.nlat,sp.nlon),np.float32)
 
     def _interface_profile(self,umax):
         ug = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32) 
@@ -120,9 +122,10 @@ class TwoLayer(object):
         if self.tdiab < 1.e10:
             tmpspec = self.sp.grdtospec(thtadot*totthk/self.delth,ntrunc)
             dlyrthkdtspec[:,0] += -tmpspec; dlyrthkdtspec[:,1] += tmpspec
-        # pressure gradient force contribution to divergence tend.
+        # pressure gradient force contribution to divergence tend (includes
+        # orography).
         mstrm = np.empty((self.sp.nlat,self.sp.nlon,2),np.float32)
-        mstrm[:,:,0] = self.grav*(lyrthkg[:,:,0] + lyrthkg[:,:,1]) 
+        mstrm[:,:,0] = self.grav*(self.orog + lyrthkg[:,:,0] + lyrthkg[:,:,1]) 
         mstrm[:,:,1] = mstrm[:,:,0] + (self.grav*self.delth/self.theta1)*lyrthkg[:,:,1] 
         ddivdtspec += -self.lap*self.sp.grdtospec(mstrm+0.5*(ug**2+vg**2),self.ntrunc) 
         # divergence hyperdiffusion
