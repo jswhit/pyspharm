@@ -75,7 +75,7 @@ class TwoLayer(object):
         tmpspec1, tmpspec2 = self.sp.getvrtdivspec(tmpg1,tmpg2,self.ntrunc)
         tmpspec2 = self.sp.grdtospec(0.5*(ug**2+vg**2),self.ntrunc)
         mspec = self.ilap*tmpspec1 - tmpspec2
-        lyrthkspec[:,0] = mspec[:,0]/self.theta1
+        lyrthkspec[:,0] = (mspec[:,0]-self.grav*self.orog)/self.theta1
         lyrthkspec[:,1] = (mspec[:,1]-mspec[:,0])/self.delth
         lyrthkspec[:,0] = lyrthkspec[:,0] - lyrthkspec[:,1]
         exnftop = self.cp - (self.grav*self.ztop/self.theta1)
