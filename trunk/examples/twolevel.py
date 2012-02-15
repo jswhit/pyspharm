@@ -73,7 +73,7 @@ class TwoLevel(object):
         tmpspec, dvrtdtspec = self.sp.getvrtdivspec(tmpg1,tmpg2,self.ntrunc)
         ddivdtspec = tmpspec[:,1]-tmpspec[:,0]
         ke = 0.5*(ug**2+vg**2)
-        tmpspec = self.sp.grdtospec(ke[:,:,1]-ke[:,:,0],ntrunc)
+        tmpspec = self.sp.grdtospec(ke[:,:,1]-ke[:,:,0],self.ntrunc)
         thetaspec = (tmpspec - self.ilap*ddivdtspec)/self.delta_exnf
         return thetaspec
 
@@ -91,7 +91,7 @@ class TwoLevel(object):
         ug,vg = self.sp.getuv(vrtspec,divspec2)
         thetag = self.sp.spectogrd(thetaspec)
         self.u = ug; self.v = vg; self.divg = divg
-        self.vrt = vrtg; self.thetag = thetag
+        self.vrt = vrtg; self.theta = thetag
         vadvu = 0.25*(divg*(ug[:,:,1]-ug[:,:,0]))
         vadvv = 0.25*(divg*(vg[:,:,1]-vg[:,:,0]))
         # horizontal vorticity flux
@@ -109,7 +109,7 @@ class TwoLevel(object):
         dvrtdtspec += self.hyperdiff[:,np.newaxis]*vrtspec
         # add laplacian term and hyperdiffusion to div tend.
         ke = 0.5*(ug**2+vg**2)
-        tmpspec = self.sp.grdtospec(ke[:,:,1]-ke[:,:,0],ntrunc)
+        tmpspec = self.sp.grdtospec(ke[:,:,1]-ke[:,:,0],self.ntrunc)
         ddivdtspec += self.hyperdiff*divspec - \
                 self.lap*(tmpspec - self.delta_exnf*thetaspec)
         # horizontal gradient of pot. temp.
@@ -122,7 +122,7 @@ class TwoLevel(object):
         tmpg = -umean*thetagradx - vmean*thetagrady - vadvtheta
         # thermal relaxation term.
         tmpg += (self.thetaref-thetag)/self.tdiab
-        dthetadtspec = self.sp.grdtospec(tmpg, ntrunc)
+        dthetadtspec = self.sp.grdtospec(tmpg, self.ntrunc)
         # hyperdiffusion
         dthetadtspec += self.hyperdiff*thetaspec
         return dvrtdtspec,ddivdtspec,dthetadtspec
@@ -185,7 +185,7 @@ if __name__ == "__main__":
         t = ncycle*model.dt
         vrtspec, divspec, thetaspec = model.rk4step(vrtspec, divspec, thetaspec)
         print 't=%6.2f hours: v min/max %6.2f, %6.2f theta min/max %6.2f, %6.2f'%\
-        (t/3600.,model.v.min(), model.v.max(), model.thetag.min(), model.thetag.max())
+        (t/3600.,model.v.min(), model.v.max(), model.theta.min(), model.theta.max())
     time2 = time.clock()
     print 'CPU time = ',time2-time1
     
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     m = Basemap(projection='ortho',lat_0=60,lon_0=90)
     lons1d = model.lons[0,:]*180./np.pi
     lats1d = model.lats[:,0]*180./np.pi
-    thetag,lons1dx = addcyclic(model.thetag,lons1d)
+    thetag,lons1dx = addcyclic(model.theta,lons1d)
     lons, lats = np.meshgrid(lons1dx,lats1d)
     x,y = m(lons,lats)
     m.drawmeridians(np.arange(-180,180,60))
