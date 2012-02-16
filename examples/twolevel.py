@@ -156,9 +156,9 @@ if __name__ == "__main__":
     #nlats = nlons/2 # for gaussian grid.
     #gridtype = 'gaussian'
     dt = 1800 # time step in seconds
-    itmax = 5.5*(86400/dt) # integration length in days
+    itmax = 5*(86400/dt) # integration length in days
     umax = 50. # jet speed
-    jetexp = 8 # parameter controlling jet width
+    jetexp = 6 # parameter controlling jet width
 
     # create spherical harmonic instance.
     rsphere = 6.37122e6 # earth radius
