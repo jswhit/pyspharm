@@ -8,7 +8,8 @@ from spharm import Spharmt, getspecindx, gaussian_lats_wts
 class TwoLevel(object):
 
     def __init__(self,sp,dt,ntrunc,ptop=0.,p0=1.e5,grav=9.80616,omega=7.292e-5,cp=1004,\
-            rgas=287.,efold=3600.,ndiss=8,tdrag=1.e30,tdiab=1.e30,umax=40,jetexp=2,delth=20):
+            rgas=287.,efold=3600.,ndiss=8,tdrag=1.e30,tdiab=1.e30,\
+            umax=40,jetexp=2,delth=20,moistfact=1.0):
         # setup model parameters
         self.p0 = p0 # mean surface pressure
         self.ptop = ptop # model top pressure
@@ -17,6 +18,10 @@ class TwoLevel(object):
         self.omega = omega # rotation rate
         self.cp = cp # Specific Heat of Dry Air at Constant Pressure,
         self.delth = delth # vertical stability
+        # factor to reduce static stability in rising air
+        # (crude moist physics assuming air is saturated)
+        # moistfact = 1 is dry model
+        self.moistfact = moistfact
         dp = 0.5*(ptop-p0)
         exnf1 = cp*((p0+0.5*dp)/p0)**(rgas/cp)
         exnf2 = cp*((p0+1.5*dp)/p0)**(rgas/cp)
@@ -33,6 +38,7 @@ class TwoLevel(object):
         delta = 2.*np.pi/sp.nlon
         if sp.gridtype == 'regular':
            lats1d = 0.5*np.pi-delta*np.arange(sp.nlat)
+           wts = np.cos(lats1d)
         else:
            lats1d,wts = gaussian_lats_wts(sp.nlat)
            lats1d = lats1d*np.pi/180.
@@ -40,6 +46,9 @@ class TwoLevel(object):
         lons,lats = np.meshgrid(lons1d,lats1d)
         self.lons = lons
         self.lats = lats
+        # weights for computing global means.
+        self.globalmeanwts = np.ones((sp.nlat,sp.nlon))*wts[:,np.newaxis]
+        self.globalmeanwts = self.globalmeanwts/self.globalmeanwts.sum()
         self.f = 2.*omega*np.sin(lats)[:,:,np.newaxis] # coriolis
         # create laplacian operator and its inverse.
         indxm, indxn = getspecindx(ntrunc)
@@ -60,6 +69,12 @@ class TwoLevel(object):
         vrtspec, divspec = self.sp.getvrtdivspec(ug,vg,self.ntrunc)
         thetaspec = self.nlbalance(vrtspec)
         self.thetaref = self.sp.spectogrd(thetaspec)
+        #import matplotlib.pyplot as plot
+        #plt.plot(180.*self.lats[:,0]/np.pi,self.thetaref)
+        #plt.grid(True)
+        #plt.xlim(90,-90)
+        #plt.show()
+        #raise SystemExit
         self.uref = ug
 
     def nlbalance(self,vrtspec):
@@ -116,12 +131,22 @@ class TwoLevel(object):
         thetagradx, thetagrady = self.sp.getgrad(thetaspec)
         # tendency of pot. temp.
         vadvtheta = 0.5*divg*self.delth
+        # in rising air, use reduced static stability
+        if self.moistfact < 1:
+            wmean = ((divg + np.abs(divg))*self.globalmeanwts).sum()
+            # need to remove global mean vertical velocity or 
+            # global mean temp will increase.
+            self.heat = 0.25*(divg + np.abs(divg) - wmean)*self.delth*(1.-self.moistfact)
+        else: # moistfact=1 is dry model
+            self.heat = np.zeros(self.theta.shape, self.theta.dtype)
         umean = 0.5*(ug[:,:,1]+ug[:,:,0])
         vmean = 0.5*(vg[:,:,1]+vg[:,:,0])
         # advection
         tmpg = -umean*thetagradx - vmean*thetagrady - vadvtheta
         # thermal relaxation term.
         tmpg += (self.thetaref-thetag)/self.tdiab
+        # heating term.
+        tmpg += self.heat
         dthetadtspec = self.sp.grdtospec(tmpg, self.ntrunc)
         # hyperdiffusion
         dthetadtspec += self.hyperdiff*thetaspec
