@@ -8,11 +8,11 @@ import gobject, sys, time
 # requires GTKAgg matplotlib backend.
 
 # set model parameters.
-nlons = 128  # number of longitudes
+nlons = 256  # number of longitudes
 ntrunc = nlons/3 # spectral truncation (for alias-free computations)
 nlats = (nlons/2)+1 # for regular grid.
 gridtype = 'regular'
-dt = 900 # time step in seconds
+dt = 300 # time step in seconds
 tdiab = 12.*86400 # thermal relaxation time scale
 tdrag = 4.*86400. # lower layer drag
 efold = 1.*3600. # hyperdiffusion time scale
@@ -47,36 +47,45 @@ import matplotlib
 matplotlib.use('GTKAgg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap, addcyclic
-fig = plt.figure()
+fig = plt.figure(figsize=(8,10))
+ax1 = fig.add_subplot(2,1,1)
+ax2 = fig.add_subplot(2,1,2)
 m = Basemap(projection='kav7',lon_0=0)
 lons1d = model.lons[0,:]*180./np.pi
 lats1d = model.lats[:,0]*180./np.pi
-data,lons1dx = addcyclic(model.vrt[:,:,1],lons1d)
-#data,lons1dx = addcyclic(model.theta,lons1d)
+data1,lons1dx = addcyclic(model.vrt[:,:,1],lons1d)
+data2,lons1dx = addcyclic(model.theta,lons1d)
 lons, lats = np.meshgrid(lons1dx,lats1d)
 x,y = m(lons,lats)
-m.drawmeridians(np.arange(-180,180,60),labels=[0,0,0,1])
-m.drawparallels(np.arange(-60,91,30),labels=[1,0,0,0])
-levs = np.arange(-1.6e-4,1.61e-4,2.e-5)
-#levs = np.arange(-60,21,2)
-CS=m.contourf(x,y,data,levs,cmap=plt.cm.spectral,extend='both')
-cb = m.colorbar(location='right',format='%3.1e')
+m.drawmeridians(np.arange(-180,180,60),labels=[0,0,0,1],ax=ax1)
+m.drawparallels(np.arange(-60,91,30),labels=[1,0,0,0],ax=ax2)
+m.drawmeridians(np.arange(-180,180,60),labels=[0,0,0,1],ax=ax2)
+m.drawparallels(np.arange(-60,91,30),labels=[1,0,0,0],ax=ax2)
+levs1 = np.arange(-1.6e-4,1.61e-4,2.e-5)
+levs2 = np.arange(-60,21,2)
+CS1=m.contourf(x,y,data1,levs1,cmap=plt.cm.spectral,extend='both',ax=ax1)
+CS2=m.contourf(x,y,data2,levs2,cmap=plt.cm.spectral,extend='both',ax=ax2)
+cb1 = m.colorbar(CS1,location='right',format='%3.1e',ax=ax1)
+cb2 = m.colorbar(CS2,location='right',format='%g',ax=ax2)
 t = 0.
-txt = plt.title('Upper Level Vorticity (T%s, hour %6.2f)' % (ntrunc,t/3600.))
+txt1 = ax1.set_title('Upper Level Vorticity (T%s, hour %6.2f)' % (ntrunc,t/3600.))
+txt2 = ax2.set_title('Temperature (T%s, hour %6.2f)' % (ntrunc,t/3600.))
 
 manager = plt.get_current_fig_manager()
 # callback function to update contour plot
 def updatefig(*args):
-    global cnt,vrtspec,divspec,thetaspec,CS,cb
+    global cnt,vrtspec,divspec,thetaspec,CS1,CS2
     t = cnt*model.dt
     vrtspec, divspec, thetaspec = model.rk4step(vrtspec, divspec, thetaspec)
-    data,lons1dx = addcyclic(model.vrt[:,:,1],lons1d)
-    #data,lons1dx = addcyclic(model.theta,lons1d)
+    data1,lons1dx = addcyclic(model.vrt[:,:,1],lons1d)
+    data2,lons1dx = addcyclic(model.theta,lons1d)
     # remove old contours, add new ones.
-    for c in CS.collections: c.remove()
-    CS=m.contourf(x,y,data,levs,cmap=plt.cm.spectral,extend='both')
-    txt.set_text('Upper Level Vorticity (T%s, hour %6.2f)' % (ntrunc,t/3600.))
-    #txt.set_text('Temperature (T%s, hour %6.2f)' % (ntrunc,t/3600.))
+    for c in CS1.collections: c.remove()
+    CS1=m.contourf(x,y,data1,levs1,cmap=plt.cm.spectral,extend='both',ax=ax1)
+    for c in CS2.collections: c.remove()
+    CS2=m.contourf(x,y,data2,levs2,cmap=plt.cm.spectral,extend='both',ax=ax2)
+    txt1.set_text('Upper Level Vorticity (T%s, hour %6.2f)' % (ntrunc,t/3600.))
+    txt2.set_text('Temperature (T%s, hour %6.2f)' % (ntrunc,t/3600.))
     manager.canvas.draw()
     cnt = cnt+1
     return True
