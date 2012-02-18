@@ -4,6 +4,7 @@ from spharm import Spharmt, getspecindx, gaussian_lats_wts
 # two-level baroclinic primitive equation model of
 # Lee, S. and I. M. Held: 1993: Baroclinic Wave Packets in Models and Observations
 # J. Atmos. Sci., 50, 1413-1428.
+# http://dx.doi.org/10.1175/1520-0469(1993)050<1413:BWPIMA>2.0.CO;2
 
 class TwoLevel(object):
 
@@ -16,8 +17,8 @@ class TwoLevel(object):
         self.rgas = rgas # gas constant for dry air
         self.grav = grav # gravity
         self.omega = omega # rotation rate
-        self.cp = cp # Specific Heat of Dry Air at Constant Pressure,
-        self.delth = delth # vertical stability
+        self.cp = cp # specific heat of dry air at constant pressure
+        self.delth = delth # static stability
         # factor to reduce static stability in rising air
         # (crude moist physics assuming air is saturated)
         # moistfact = 1 is dry model
@@ -69,12 +70,6 @@ class TwoLevel(object):
         vrtspec, divspec = self.sp.getvrtdivspec(ug,vg,self.ntrunc)
         thetaspec = self.nlbalance(vrtspec)
         self.thetaref = self.sp.spectogrd(thetaspec)
-        #import matplotlib.pyplot as plot
-        #plt.plot(180.*self.lats[:,0]/np.pi,self.thetaref)
-        #plt.grid(True)
-        #plt.xlim(90,-90)
-        #plt.show()
-        #raise SystemExit
         self.uref = ug
 
     def nlbalance(self,vrtspec):
@@ -126,7 +121,7 @@ class TwoLevel(object):
         ke = 0.5*(ug**2+vg**2)
         tmpspec = self.sp.grdtospec(ke[:,:,1]-ke[:,:,0],self.ntrunc)
         ddivdtspec += self.hyperdiff*divspec - \
-                self.lap*(tmpspec - self.delta_exnf*thetaspec)
+                      self.lap*(tmpspec - self.delta_exnf*thetaspec)
         # horizontal gradient of pot. temp.
         thetagradx, thetagrady = self.sp.getgrad(thetaspec)
         # tendency of pot. temp.
