@@ -3,6 +3,8 @@ from spharm import Spharmt
 from twolevel import TwoLevel
 import numpy.random as npran
 import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap, addcyclic
 
 # animates solution from twolevel.py on screen, using matplotlib.
 
@@ -42,9 +44,7 @@ model.theta = sp.spectogrd(thetaspec)
 model.heat = np.zeros(model.theta.shape, model.theta.dtype)
 
 # animate vorticity from solution as it is running
-import matplotlib
-import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap, addcyclic
+# first, create initial frame
 fig = plt.figure(figsize=(8,10))
 ax1 = fig.add_subplot(2,1,1)
 ax2 = fig.add_subplot(2,1,2)
@@ -70,6 +70,7 @@ txt1 = ax1.set_title('Upper Level Vorticity (T%s, hour %6.2f)' % (ntrunc,t/3600.
 txt2 = ax2.set_title('Temperature (T%s, hour %6.2f)' % (ntrunc,t/3600.))
 
 
+# run model, update contours and title on the fly.
 def updatefig(*args):
     global vrtspec,divspec,thetaspec,CS1,CS2,txt1,txt2,t
     t += model.dt
@@ -81,8 +82,8 @@ def updatefig(*args):
     CS1=m.contourf(x,y,data1,levs1,cmap=plt.cm.spectral,extend='both',ax=ax1)
     for c in CS2.collections: c.remove()
     CS2=m.contourf(x,y,data2,levs2,cmap=plt.cm.spectral,extend='both',ax=ax2)
+    # update titles.
     txt1.set_text('Upper Level Vorticity (T%s, hour %6.2f)' % (ntrunc,t/3600.))
     txt2.set_text('Temperature (T%s, hour %6.2f)' % (ntrunc,t/3600.))
-
 ani = animation.FuncAnimation(fig, updatefig)
 plt.show()
