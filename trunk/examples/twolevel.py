@@ -11,7 +11,7 @@ class TwoLevel(object):
     def __init__(self,sp,dt,ntrunc,ptop=0.,p0=1.e5,grav=9.80616,omega=7.292e-5,cp=1004,\
             rgas=287.,efold=3600.,ndiss=8,tdrag=1.e30,tdiab=1.e30,\
             umax=40,jetexp=2,delth=20,moistfact=1.0):
-        # setup model parameters
+        # set model parameters
         self.p0 = p0 # mean surface pressure
         self.ptop = ptop # model top pressure
         self.rgas = rgas # gas constant for dry air
@@ -42,11 +42,10 @@ class TwoLevel(object):
            wts = np.cos(lats1d)
         else:
            lats1d,wts = gaussian_lats_wts(sp.nlat)
-           lats1d = lats1d*np.pi/180.
+           lats1d = lats1d*np.pi/180. # convert to radians.
         lons1d = np.arange(-np.pi,np.pi,delta)
         lons,lats = np.meshgrid(lons1d,lats1d)
-        self.lons = lons
-        self.lats = lats
+        self.lons = lons; self.lats = lats
         # weights for computing global means.
         self.globalmeanwts = np.ones((sp.nlat,sp.nlon))*wts[:,np.newaxis]
         self.globalmeanwts = self.globalmeanwts/self.globalmeanwts.sum()
@@ -84,8 +83,7 @@ class TwoLevel(object):
         ddivdtspec = tmpspec[:,1]-tmpspec[:,0]
         ke = 0.5*(ug**2+vg**2)
         tmpspec = self.sp.grdtospec(ke[:,:,1]-ke[:,:,0],self.ntrunc)
-        thetaspec = (tmpspec - self.ilap*ddivdtspec)/self.delta_exnf
-        return thetaspec
+        return (tmpspec - self.ilap*ddivdtspec)/self.delta_exnf
 
     def gettend(self,vrtspec,divspec,thetaspec):
         # compute tendencies.
@@ -166,7 +164,6 @@ class TwoLevel(object):
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from mpl_toolkits.basemap import Basemap, addcyclic
-    import time
     
     # grid, time step info
     nlons = 128  # number of longitudes
@@ -200,14 +197,11 @@ if __name__ == "__main__":
     divspec = np.zeros(thetaspec.shape, thetaspec.dtype)
 
     # time loop.
-    time1 = time.clock()
     for ncycle in range(itmax+1):
         t = ncycle*model.dt
         vrtspec, divspec, thetaspec = model.rk4step(vrtspec, divspec, thetaspec)
         print 't=%6.2f hours: v min/max %6.2f, %6.2f theta min/max %6.2f, %6.2f'%\
         (t/3600.,model.v.min(), model.v.max(), model.theta.min(), model.theta.max())
-    time2 = time.clock()
-    print 'CPU time = ',time2-time1
     
     # make a plot of temperature
     m = Basemap(projection='ortho',lat_0=60,lon_0=90)
