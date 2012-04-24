@@ -15,6 +15,8 @@ nlons = 256  # number of longitudes
 ntrunc = nlons/3 # spectral truncation (for alias-free computations)
 nlats = (nlons/2)+1 # for regular grid.
 gridtype = 'regular'
+#nlats = nlons/2 # for gaussian grid.
+#gridtype = 'gaussian'
 dt = 150 # time step in seconds
 itmax = 6*(86400/dt) # integration length in days
 
