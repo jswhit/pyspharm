@@ -372,6 +372,8 @@ prevent deletion of read-only instance variables.
 # check that datagrid is rank 2 or 3 with size (self.nlat, self.nlon) or
 # (self.nlat, self.nlon, nt) where nt is number of grids to transform.
 
+        idim = datagrid.ndim
+
         if len(datagrid.shape) > 3:
             msg = 'grdtospec needs a rank two or three array, got %d' % (len(datagrid.shape),)
             raise ValueError(msg)
@@ -444,7 +446,7 @@ prevent deletion of read-only instance variables.
 
         dataspec = _spherepack.twodtooned(a,b,ntrunc)
 
-        if nt==1:
+        if idim == 2:
             return numpy.squeeze(dataspec)
         else:
             return dataspec
@@ -466,6 +468,8 @@ prevent deletion of read-only instance variables.
         """
 
 # make sure dataspec is rank 1 or 2.
+
+        idim = dataspec.ndim
 
         if len(dataspec.shape) > 2:
             msg = 'spectogrd needs a rank one or two array, got %d' % (len(dataspec.shape),)
@@ -529,7 +533,7 @@ prevent deletion of read-only instance variables.
                     msg = 'In return from call to shsgc in Spharmt.spectogrd ierror =  %d' % ierror
                     raise ValueError(msg)
 
-        if nt==1:
+        if idim == 1:
             return numpy.squeeze(datagrid)
         else:
             return datagrid
@@ -556,6 +560,8 @@ prevent deletion of read-only instance variables.
         """
 
 # make sure ugrid,vgrid are rank 2 or 3 and same shape.
+
+        idim = ugrid.ndim
 
         shapeu = ugrid.shape
         shapev = vgrid.shape
@@ -646,7 +652,7 @@ prevent deletion of read-only instance variables.
 
         vrtspec, divspec = _spherepack.twodtooned_vrtdiv(br,bi,cr,ci,ntrunc,rsphere)
 
-        if nt==1:
+        if idim == 2:
             return numpy.squeeze(vrtspec), numpy.squeeze(divspec)
         else:
             return vrtspec, divspec
@@ -673,6 +679,8 @@ prevent deletion of read-only instance variables.
  gridded zonal and meridional winds. Shapes are either (nlat,nlon) or
  (nlat,nlon,nt).
         """
+
+        idim = vrtspec.ndim
 
         shapevrt = vrtspec.shape
         shapediv = divspec.shape
@@ -751,7 +759,7 @@ prevent deletion of read-only instance variables.
 
 # convert to u and v in geographical coordinates.
 
-        if nt == 1:
+        if idim == 1:
             return numpy.reshape(w, (nlat,nlon)), -numpy.reshape(v, (nlat,nlon))
         else:
             return w,-v
@@ -778,6 +786,8 @@ prevent deletion of read-only instance variables.
         """
 
 # make sure ugrid,vgrid are rank 2 or 3 and same shape.
+
+        idim = ugrid.ndim
 
         shapeu = ugrid.shape
         shapev = vgrid.shape
@@ -827,7 +837,10 @@ prevent deletion of read-only instance variables.
         psigrid =  self.spectogrd(psispec)
         chigrid =  self.spectogrd(chispec)
 
-        return psigrid, chigrid
+        if idim == 2:
+            return numpy.squeeze(psigrid), numpy.squeeze(chigrid)
+        else:
+            return psigrid, chigrid
 
     def getgrad(self, chispec):
 
@@ -846,6 +859,8 @@ prevent deletion of read-only instance variables.
         """
 
 # make sure chispec is rank 1 or 2.
+
+        idim = chispec.ndim
 
         if len(chispec.shape) !=1 and len(chispec.shape) !=2:
             msg = 'getgrad needs rank one or two arrays!'
@@ -872,7 +887,10 @@ prevent deletion of read-only instance variables.
 
         uchi, vchi = self.getuv(numpy.zeros(chispec.shape, chispec.dtype), divspec)
 
-        return uchi, vchi
+        if idim == 1:
+            return numpy.squeeze(uchi), numpy.squeeze(vchi)
+        else:
+            return uchi, vchi
 
     def specsmooth(self, datagrid, smooth):
 
