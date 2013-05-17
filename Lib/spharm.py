@@ -125,7 +125,7 @@ import _spherepack, numpy, math, sys
 # define a list of instance variables that cannot be rebound
 # or unbound.
 _private_vars = ['nlon','nlat','gridtype','legfunc','rsphere']
-__version__ = '1.0.7'
+__version__ = '1.0.8'
 
 class Spharmt:
     """
