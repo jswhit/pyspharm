@@ -4,12 +4,11 @@ include setup.py
 include Lib/__init__.py
 include Lib/spharm.py
 recursive-include html *
-include examples/FortranFormat.py
 include examples/README
 include examples/regrid_test.py
-include examples/shallow_test.py
 include examples/geodesic.py
 include examples/spharmonic.py
+include examples/galewskyetal_testcase.py
 include src/invlap.f
 include src/lap.f
 include src/multsmoothfact.f
