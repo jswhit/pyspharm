@@ -50,7 +50,7 @@ if havefiles.count(False) and sys.argv[1] not in ['sdist','clean']:
 
 if __name__ == "__main__":
     setup(name = 'pyspharm',
-          version           = "1.0.7",
+          version           = "1.0.8",
           description       = "Python Spherical Harmonic Transform Module",
           author            = "Jeff Whitaker",
           author_email      = "jeffrey.s.whitaker@noaa.gov",
