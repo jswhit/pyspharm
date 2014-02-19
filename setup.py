@@ -13,40 +13,40 @@ srcs_local = ['src/_spherepack.pyf','src/getlegfunc.f','src/specintrp.f','src/on
 ext = Extension(name          = '_spherepack',
                 sources       = srcs_local+srcs_spherepack)
 
-havefiles = [os.path.isfile(f) for f in srcs_spherepack]
-
-if havefiles.count(False) and sys.argv[1] not in ['sdist','clean']:
-    sys.stdout.write("""
- SPHEREPACK fortran source files not in src directory.
- The SPHEREPACK license forbids redistribution of the source.
- You can download the tarfile from http://www.scd.ucar.edu/softlib/SPHERE.html
- and copy the *.f files to the src directory, or it can be done
- automatically for you now.
- 
- WARNING: By downloading the SPHEREPACK source files, you are agreeing to
- the terms of the SPHEREPACK license at
- http://www2.cisl.ucar.edu/resources/legacy/spherepack/license\n
- """)
-    download = raw_input('Do you want to download SPHEREPACK now? (yes or no)')
-    if download not in ['Y','y','yes','Yes','YES']:
-        sys.exit(0)
-    import urllib, tarfile
-    tarfname = 'spherepack3.2.tar'
-    URL="https://www2.cisl.ucar.edu/sites/default/files/"+tarfname
-    urllib.urlretrieve(URL,tarfname)
-    if not os.path.isfile(tarfname):
-        raise IOError('Sorry, download failed')
-    tarf = tarfile.open(tarfname)
-    for f in tarf.getnames():
-        ff = os.path.join('src',os.path.basename(f))
-        if ff in srcs_spherepack:
-            sys.stdout.write(f+'\n')
-            mem = tarf.extractfile(f)
-            fout = open(ff,'w')
-            for line in mem.readlines():
-                fout.write(line)
-            fout.close()
-    tarf.close()
+#havefiles = [os.path.isfile(f) for f in srcs_spherepack]
+#
+#if havefiles.count(False) and sys.argv[1] not in ['sdist','clean']:
+#    sys.stdout.write("""
+# SPHEREPACK fortran source files not in src directory.
+# The SPHEREPACK license forbids redistribution of the source.
+# You can download the tarfile from http://www.scd.ucar.edu/softlib/SPHERE.html
+# and copy the *.f files to the src directory, or it can be done
+# automatically for you now.
+# 
+# WARNING: By downloading the SPHEREPACK source files, you are agreeing to
+# the terms of the SPHEREPACK license at
+# http://www2.cisl.ucar.edu/resources/legacy/spherepack/license\n
+# """)
+#    download = raw_input('Do you want to download SPHEREPACK now? (yes or no)')
+#    if download not in ['Y','y','yes','Yes','YES']:
+#        sys.exit(0)
+#    import urllib, tarfile
+#    tarfname = 'spherepack3.2.tar'
+#    URL="https://www2.cisl.ucar.edu/sites/default/files/"+tarfname
+#    urllib.urlretrieve(URL,tarfname)
+#    if not os.path.isfile(tarfname):
+#        raise IOError('Sorry, download failed')
+#    tarf = tarfile.open(tarfname)
+#    for f in tarf.getnames():
+#        ff = os.path.join('src',os.path.basename(f))
+#        if ff in srcs_spherepack:
+#            sys.stdout.write(f+'\n')
+#            mem = tarf.extractfile(f)
+#            fout = open(ff,'w')
+#            for line in mem.readlines():
+#                fout.write(line)
+#            fout.close()
+#    tarf.close()
 
 if __name__ == "__main__":
     setup(name = 'pyspharm',
