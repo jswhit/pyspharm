@@ -3,7 +3,7 @@ Introduction
 ============
 
 This module provides a python interface to the NCAR
-U{SPHEREPACK<http://www.scd.ucar.edu/softlib/SPHERE.html>} library.
+U{SPHEREPACK<https://www2.cisl.ucar.edu/resources/legacy/spherepack>} library.
 It is not a one-to-one wrapper for the SPHEREPACK routines, rather
 it provides a simple interface oriented toward working with
 atmospheric general circulation model (GCM) data.
