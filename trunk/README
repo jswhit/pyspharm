@@ -1,6 +1,8 @@
 Requires: Numpy (http://numeric.scipy.org),
 and a fortran compiler supported by numpy.f2py,
 
+Please read LICENSE.spherepack
+
 Installation: 
 
 python setup.py install
@@ -8,18 +10,12 @@ python setup.py install
 (to change default fortran compiler you can use e.g.
  python setup.py build config_fc --fcompiler=g95)
 
-The SPHERPACK source code is not included, due to licensing restrictions.
-The SPHEREPACK license is at
-http://www.cisl.ucar.edu/css/software/spherepack/sp.form.html
-setup.py will try to download the SPHERPACK source files automatically.
-By allowing it to do so, you are agreeing to the terms of the
-SPHEREPACK license.
-
 View documentation by pointing your browser to html/index.html.
 
 Example programs are provided in the examples directory.
 
-Copyright:
+Copyright: (applies only to python binding, Spherepack fortran
+source code licensing is in LICENSE.spherepack)
 
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
