@@ -1,6 +1,7 @@
 spharm.spharm	spharm.spharm-module.html
 spharm.spharm.getspecindx	spharm.spharm-module.html#getspecindx
 spharm.spharm.legendre	spharm.spharm-module.html#legendre
+spharm.spharm.__package__	spharm.spharm-module.html#__package__
 spharm.spharm.regrid	spharm.spharm-module.html#regrid
 spharm.spharm.gaussian_lats_wts	spharm.spharm-module.html#gaussian_lats_wts
 spharm.spharm._private_vars	spharm.spharm-module.html#_private_vars

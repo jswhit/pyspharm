@@ -67,25 +67,6 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="__setattr__"></a><span class="summary-sig-name">__setattr__</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">key</span>,
-        <span class="summary-sig-arg">val</span>)</span><br />
-      prevent modification of read-only instance variables.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.__setattr__">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
           <td><span class="summary-sig"><a name="__delattr__"></a><span class="summary-sig-name">__delattr__</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">key</span>)</span><br />
       prevent deletion of read-only instance variables.</td>
@@ -126,12 +107,12 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#grdtospec" class="summary-sig-name">grdtospec</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">datagrid</span>,
-        <span class="summary-sig-arg">ntrunc</span>=<span class="summary-sig-default">None</span>)</span><br />
-      grid to spectral transform (spherical harmonic analysis).</td>
+          <td><span class="summary-sig"><a name="__setattr__"></a><span class="summary-sig-name">__setattr__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">key</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      prevent modification of read-only instance variables.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.grdtospec">source&nbsp;code</a></span>
+            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.__setattr__">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -145,52 +126,11 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#spectogrd" class="summary-sig-name">spectogrd</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">dataspec</span>)</span><br />
-      spectral to grid transform (spherical harmonic synthesis).</td>
+          <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#getgrad" class="summary-sig-name">getgrad</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">chispec</span>)</span><br />
+      compute vector gradient on grid given complex spectral coefficients.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.spectogrd">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#getvrtdivspec" class="summary-sig-name">getvrtdivspec</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">ugrid</span>,
-        <span class="summary-sig-arg">vgrid</span>,
-        <span class="summary-sig-arg">ntrunc</span>=<span class="summary-sig-default">None</span>)</span><br />
-      compute spectral coefficients of vorticity and divergence given 
-      vector wind.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getvrtdivspec">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#getuv" class="summary-sig-name">getuv</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">vrtspec</span>,
-        <span class="summary-sig-arg">divspec</span>)</span><br />
-      compute vector wind on grid given complex spectral coefficients of 
-      vorticity and divergence.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getuv">source&nbsp;code</a></span>
+            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getgrad">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -225,11 +165,53 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#getgrad" class="summary-sig-name">getgrad</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">chispec</span>)</span><br />
-      compute vector gradient on grid given complex spectral coefficients.</td>
+          <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#getuv" class="summary-sig-name">getuv</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrtspec</span>,
+        <span class="summary-sig-arg">divspec</span>)</span><br />
+      compute vector wind on grid given complex spectral coefficients of 
+      vorticity and divergence.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getgrad">source&nbsp;code</a></span>
+            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getuv">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#getvrtdivspec" class="summary-sig-name">getvrtdivspec</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">ugrid</span>,
+        <span class="summary-sig-arg">vgrid</span>,
+        <span class="summary-sig-arg">ntrunc</span>=<span class="summary-sig-default">None</span>)</span><br />
+      compute spectral coefficients of vorticity and divergence given 
+      vector wind.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getvrtdivspec">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#grdtospec" class="summary-sig-name">grdtospec</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">datagrid</span>,
+        <span class="summary-sig-arg">ntrunc</span>=<span class="summary-sig-default">None</span>)</span><br />
+      grid to spectral transform (spherical harmonic analysis).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.grdtospec">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -249,6 +231,24 @@
       isotropic spectral smoothing on a sphere.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.specsmooth">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="spharm.spharm.Spharmt-class.html#spectogrd" class="summary-sig-name">spectogrd</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dataspec</span>)</span><br />
+      spectral to grid transform (spherical harmonic synthesis).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.spectogrd">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -369,70 +369,115 @@
   </dl>
 </td></tr></table>
 </div>
-<a name="grdtospec"></a>
+<a name="getgrad"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">grdtospec</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">datagrid</span>,
-        <span class="sig-arg">ntrunc</span>=<span class="sig-default">None</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getgrad</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">chispec</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.grdtospec">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getgrad">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <p>grid to spectral transform (spherical harmonic analysis).</p>
+  <p>compute vector gradient on grid given complex spectral 
+  coefficients.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>datagrid</code></strong> - rank 2 or 3 numpy float32 array with shape (nlat,nlon) or 
-          (nlat,nlon,nt), where nt is the number of grids to be 
-          transformed.  If datagrid is rank 2, nt is assumed to be 1.</li>
-        <li><strong class="pname"><code>ntrunc</code></strong> - optional spectral truncation limit. (default self.nlat-1)</li>
-    </ul></dd>
-    <dt>Returns:</dt>
-        <dd><code><b>dataspec</b></code> - rank 1 or 2 numpy complex array 
-          with shape (ntrunc+1)*(ntrunc+2)/2 or 
-          ((ntrunc+1)*(ntrunc+2)/2,nt) containing complex spherical 
-          harmonic coefficients resulting from the spherical harmonic 
-          analysis of datagrid.</dd>
-  </dl>
-</td></tr></table>
-</div>
-<a name="spectogrd"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">spectogrd</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">dataspec</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.spectogrd">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>spectral to grid transform (spherical harmonic synthesis).</p>
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>dataspec</code></strong> - rank 1 or 2 numpy complex array with shape 
+        <li><strong class="pname"><code>chispec</code></strong> - rank 1 or 2 numpy complex array with shape 
           (ntrunc+1)*(ntrunc+2)/2 or ((ntrunc+1)*(ntrunc+2)/2,nt) 
           containing complex spherical harmonic coefficients (where ntrunc 
           is the triangular truncation limit and nt is the number of 
-          spectral arrays to be transformed). If dataspec is rank 1, nt is 
+          spectral arrays to be transformed). If chispec is rank 1, nt is 
           assumed to be 1.</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd><code><b>datagrid</b></code> - rank 2 or 3 numpy float32 array 
-          with shape (nlat,nlon) or (nlat,nlon,nt) containing the gridded 
-          data resulting from the spherical harmonic synthesis of dataspec.</dd>
+        <dd><code><b>uchi, vchi</b></code> - rank 2 or 3 numpy float32 arrays
+          containing gridded zonal and meridional components of the vector 
+          gradient. Shapes are either (nlat,nlon) or (nlat,nlon,nt).</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getpsichi"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getpsichi</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">ugrid</span>,
+        <span class="sig-arg">vgrid</span>,
+        <span class="sig-arg">ntrunc</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getpsichi">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>compute streamfunction and velocity potential on grid given vector 
+  wind.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>ugrid</code></strong> - rank 2 or 3 numpy float32 array containing grid of zonal winds.  
+          Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the 
+          number of grids to be transformed.  If ugrid is rank 2, nt is 
+          assumed to be 1.</li>
+        <li><strong class="pname"><code>vgrid</code></strong> - rank 2 or 3 numpy float32 array containing grid of meridional 
+          winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt 
+          is the number of grids to be transformed.  Both ugrid and vgrid 
+          must have the same shape.</li>
+        <li><strong class="pname"><code>ntrunc</code></strong> - optional spectral truncation limit. (default self.nlat-1)</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd><code><b>psigrid, chigrid</b></code> - rank 2 or 3 numpy float32 
+          arrays of gridded streamfunction and velocity potential. Shapes 
+          are either (nlat,nlon) or (nlat,nlon,nt).</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getuv"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getuv</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">vrtspec</span>,
+        <span class="sig-arg">divspec</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getuv">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>compute vector wind on grid given complex spectral coefficients of 
+  vorticity and divergence.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>vrtspec</code></strong> - rank 1 or 2 numpy complex array of vorticity spectral 
+          coefficients, with shape (ntrunc+1)*(ntrunc+2)/2 or 
+          ((ntrunc+1)*(ntrunc+2)/2,nt) (where ntrunc is the triangular 
+          truncation and nt is the number of spectral arrays to be 
+          transformed). If vrtspec is rank 1, nt is assumed to be 1.</li>
+        <li><strong class="pname"><code>divspec</code></strong> - rank 1 or 2 numpy complex array of divergence spectral 
+          coefficients, with shape (ntrunc+1)*(ntrunc+2)/2 or 
+          ((ntrunc+1)*(ntrunc+2)/2,nt) (where ntrunc is the triangular 
+          truncation and nt is the number of spectral arrays to be 
+          transformed). Both vrtspec and divspec must have the same shape.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd><code><b>ugrid, vgrid</b></code> - rank 2 or 3 numpy float32 
+          arrays containing gridded zonal and meridional winds. Shapes are 
+          either (nlat,nlon) or (nlat,nlon,nt).</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -476,115 +521,37 @@
   </dl>
 </td></tr></table>
 </div>
-<a name="getuv"></a>
+<a name="grdtospec"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getuv</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">vrtspec</span>,
-        <span class="sig-arg">divspec</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getuv">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>compute vector wind on grid given complex spectral coefficients of 
-  vorticity and divergence.</p>
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>vrtspec</code></strong> - rank 1 or 2 numpy complex array of vorticity spectral 
-          coefficients, with shape (ntrunc+1)*(ntrunc+2)/2 or 
-          ((ntrunc+1)*(ntrunc+2)/2,nt) (where ntrunc is the triangular 
-          truncation and nt is the number of spectral arrays to be 
-          transformed). If vrtspec is rank 1, nt is assumed to be 1.</li>
-        <li><strong class="pname"><code>divspec</code></strong> - rank 1 or 2 numpy complex array of divergence spectral 
-          coefficients, with shape (ntrunc+1)*(ntrunc+2)/2 or 
-          ((ntrunc+1)*(ntrunc+2)/2,nt) (where ntrunc is the triangular 
-          truncation and nt is the number of spectral arrays to be 
-          transformed). Both vrtspec and divspec must have the same shape.</li>
-    </ul></dd>
-    <dt>Returns:</dt>
-        <dd><code><b>ugrid, vgrid</b></code> - rank 2 or 3 numpy float32 
-          arrays containing gridded zonal and meridional winds. Shapes are 
-          either (nlat,nlon) or (nlat,nlon,nt).</dd>
-  </dl>
-</td></tr></table>
-</div>
-<a name="getpsichi"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getpsichi</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">ugrid</span>,
-        <span class="sig-arg">vgrid</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">grdtospec</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">datagrid</span>,
         <span class="sig-arg">ntrunc</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getpsichi">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.grdtospec">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <p>compute streamfunction and velocity potential on grid given vector 
-  wind.</p>
+  <p>grid to spectral transform (spherical harmonic analysis).</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>ugrid</code></strong> - rank 2 or 3 numpy float32 array containing grid of zonal winds.  
-          Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the 
-          number of grids to be transformed.  If ugrid is rank 2, nt is 
-          assumed to be 1.</li>
-        <li><strong class="pname"><code>vgrid</code></strong> - rank 2 or 3 numpy float32 array containing grid of meridional 
-          winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt 
-          is the number of grids to be transformed.  Both ugrid and vgrid 
-          must have the same shape.</li>
+        <li><strong class="pname"><code>datagrid</code></strong> - rank 2 or 3 numpy float32 array with shape (nlat,nlon) or 
+          (nlat,nlon,nt), where nt is the number of grids to be 
+          transformed.  If datagrid is rank 2, nt is assumed to be 1.</li>
         <li><strong class="pname"><code>ntrunc</code></strong> - optional spectral truncation limit. (default self.nlat-1)</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd><code><b>psigrid, chigrid</b></code> - rank 2 or 3 numpy float32 
-          arrays of gridded streamfunction and velocity potential. Shapes 
-          are either (nlat,nlon) or (nlat,nlon,nt).</dd>
-  </dl>
-</td></tr></table>
-</div>
-<a name="getgrad"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getgrad</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">chispec</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.getgrad">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>compute vector gradient on grid given complex spectral 
-  coefficients.</p>
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>chispec</code></strong> - rank 1 or 2 numpy complex array with shape 
-          (ntrunc+1)*(ntrunc+2)/2 or ((ntrunc+1)*(ntrunc+2)/2,nt) 
-          containing complex spherical harmonic coefficients (where ntrunc 
-          is the triangular truncation limit and nt is the number of 
-          spectral arrays to be transformed). If chispec is rank 1, nt is 
-          assumed to be 1.</li>
-    </ul></dd>
-    <dt>Returns:</dt>
-        <dd><code><b>uchi, vchi</b></code> - rank 2 or 3 numpy float32 arrays
-          containing gridded zonal and meridional components of the vector 
-          gradient. Shapes are either (nlat,nlon) or (nlat,nlon,nt).</dd>
+        <dd><code><b>dataspec</b></code> - rank 1 or 2 numpy complex array 
+          with shape (ntrunc+1)*(ntrunc+2)/2 or 
+          ((ntrunc+1)*(ntrunc+2)/2,nt) containing complex spherical 
+          harmonic coefficients resulting from the spherical harmonic 
+          analysis of datagrid.</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -618,6 +585,39 @@
         <dd><code><b>datagrid</b></code> - rank 2 or 3 numpy float32 array 
           with shape (nlat,nlon) or (nlat,nlon,nt) containing the smoothed 
           grids.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="spectogrd"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">spectogrd</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">dataspec</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spharm.spharm-pysrc.html#Spharmt.spectogrd">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>spectral to grid transform (spherical harmonic synthesis).</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>dataspec</code></strong> - rank 1 or 2 numpy complex array with shape 
+          (ntrunc+1)*(ntrunc+2)/2 or ((ntrunc+1)*(ntrunc+2)/2,nt) 
+          containing complex spherical harmonic coefficients (where ntrunc 
+          is the triangular truncation limit and nt is the number of 
+          spectral arrays to be transformed). If dataspec is rank 1, nt is 
+          assumed to be 1.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd><code><b>datagrid</b></code> - rank 2 or 3 numpy float32 array 
+          with shape (nlat,nlon) or (nlat,nlon,nt) containing the gridded 
+          data resulting from the spherical harmonic synthesis of dataspec.</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -687,7 +687,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Jan  6 12:05:18 2009
+    Generated by Epydoc 3.0.1 on Wed Feb 19 14:44:42 2014
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
