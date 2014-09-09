@@ -23,7 +23,7 @@ umax = 40
 moistfact = 0.1
 
 # create spherical harmonic instance.
-sp = Spharmt(nlons,nlats,ntrunc=ntrunc,rsphere=rsphere,gridtype=gridtype)
+sp = Spharmt(nlons,nlats,rsphere=rsphere,gridtype=gridtype)
 
 # create model instance.
 model =\

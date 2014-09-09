@@ -169,7 +169,7 @@ if __name__ == "__main__":
 
     # create spherical harmonic instance.
     rsphere = 6.37122e6 # earth radius
-    sp = Spharmt(nlons,nlats,ntrunc=ntrunc,rsphere=rsphere,gridtype=gridtype)
+    sp = Spharmt(nlons,nlats,rsphere=rsphere,gridtype=gridtype)
 
     # create model instance using default parameters.
     model = TwoLayer(sp,dt,ntrunc)
