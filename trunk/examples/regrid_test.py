@@ -10,7 +10,7 @@ def rhwave(wavenum,omega,re,lats,lons):
 
 # create Rossby-Haurwitz wave data on 144x73 regular and 192x94 gaussian grids.
 
-nlats_reg = 73  
+nlats_reg = 73
 nlons_reg = 144
 nlats_gau = 94
 nlons_gau = 192
@@ -51,11 +51,11 @@ dataspec = reggrid.grdtospec(psi_reg_exact,ntrunc) # compute spectral coeffs
 nlat = 0
 dg2rad = math.pi/180. # degrees to radians factor.
 err = []
-for lat, lon in map(None,latpts,lonpts):
-    legfuncs = legendre(lat,ntrunc) # compute legendre functions 
+for lat, lon in zip(latpts,lonpts):
+    legfuncs = legendre(lat,ntrunc) # compute legendre functions
     intrp = specintrp(lon,dataspec,legfuncs) # do spectral interpolation
     exact = rhwave(wavenum,omega,re,dg2rad*lat,dg2rad*lon) # exact soln
-    err.append(exact-intrp) # error 
+    err.append(exact-intrp) # error
     nlat = nlat+1
 print('spectral interpolation error (should be less than 1.e-6):')
 print(max(err)/numpy.fabs(psi_reg_exact).max())
