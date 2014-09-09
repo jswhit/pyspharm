@@ -40,8 +40,8 @@ gaugrid = Spharmt(nlons_gau,nlats_gau,gridtype='gaussian')
 
 psi_reg = regrid(gaugrid,reggrid,psi_gau)
 
-print 'reggrid error (should be less than 1.e-6):'
-print numpy.fabs(psi_reg-psi_reg_exact).max()/numpy.fabs(psi_reg_exact).max()
+print('reggrid error (should be less than 1.e-6):')
+print(numpy.fabs(psi_reg-psi_reg_exact).max()/numpy.fabs(psi_reg_exact).max())
 
 # spectrally interpolate to geodesic grid.
 
@@ -57,5 +57,5 @@ for lat, lon in map(None,latpts,lonpts):
     exact = rhwave(wavenum,omega,re,dg2rad*lat,dg2rad*lon) # exact soln
     err.append(exact-intrp) # error 
     nlat = nlat+1
-print 'spectral interpolation error (should be less than 1.e-6):'
-print max(err)/numpy.fabs(psi_reg_exact).max()
+print('spectral interpolation error (should be less than 1.e-6):')
+print(max(err)/numpy.fabs(psi_reg_exact).max())

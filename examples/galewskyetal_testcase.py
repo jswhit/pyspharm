@@ -87,7 +87,7 @@ for ncycle in range(itmax+1):
     vrtg = x.spectogrd(vrtspec)
     ug,vg = x.getuv(vrtspec,divspec)
     phig = x.spectogrd(phispec)
-    print 't=%6.2f hours: min/max %6.2f, %6.2f' % (t/3600.,vg.min(), vg.max())
+    print('t=%6.2f hours: min/max %6.2f, %6.2f' % (t/3600.,vg.min(), vg.max()))
 # compute tendencies.
     tmpg1 = ug*(vrtg+f); tmpg2 = vg*(vrtg+f)
     ddivdtspec[:,nnew], dvrtdtspec[:,nnew] = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
@@ -127,13 +127,13 @@ for ncycle in range(itmax+1):
     nnew = nold; nnow = nsav1; nold = nsav2
 
 time2 = time.clock()
-print 'CPU time = ',time2-time1
+print('CPU time = ',time2-time1)
 
 # make a orthographic plot of potential vorticity.
 m = Basemap(projection='ortho',lat_0=45,lon_0=-100)
 # dimensionless PV
 pvg = (0.5*hbar*grav/omega)*(vrtg+f)/phig
-print 'max/min PV',pvg.min(), pvg.max()
+print('max/min PV',pvg.min(), pvg.max())
 pvg,lons1d = addcyclic(pvg,lons1d*180./np.pi)
 lons, lats = np.meshgrid(lons1d,lats1d*180./np.pi)
 x,y = m(lons,lats)
