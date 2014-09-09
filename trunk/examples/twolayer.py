@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 from spharm import Spharmt, getspecindx, gaussian_lats_wts
 
@@ -21,7 +22,7 @@ class TwoLayer(object):
         self.zmid = zmid # resting depth of lower layer (m)
         self.ztop = ztop # resting depth of both layers (m)
         # efolding time scale for hyperdiffusion at shortest wavenumber
-        self.efold = efold 
+        self.efold = efold
         self.ndiss = ndiss # order of hyperdiffusion (2 for laplacian)
         self.sp = sp # Spharmt instance
         self.ntrunc = ntrunc # triangular truncation wavenumber
@@ -55,8 +56,8 @@ class TwoLayer(object):
         self._interface_profile(umax,jetexp)
 
     def _interface_profile(self,umax,jetexp):
-        ug = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32) 
-        vg = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32) 
+        ug = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32)
+        vg = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32)
         ug[:,:,1] = umax*np.sin(2.*self.lats)**jetexp
         vrtspec, divspec = self.sp.getvrtdivspec(ug,vg,self.ntrunc)
         lyrthkspec = self.nlbalance(vrtspec)
@@ -102,7 +103,7 @@ class TwoLayer(object):
         tmpg1 = ug*(vrtg+self.f); tmpg2 = vg*(vrtg+self.f)
         # add lower layer drag contribution
         if self.tdrag < 1.e10:
-            tmpg1[:,:,0] += vg[:,:,0]/self.tdrag 
+            tmpg1[:,:,0] += vg[:,:,0]/self.tdrag
             tmpg2[:,:,0] += -ug[:,:,0]/self.tdrag
         # add diabatic momentum flux contribution
         if self.tdiab < 1.e10:
@@ -126,9 +127,9 @@ class TwoLayer(object):
         # pressure gradient force contribution to divergence tend (includes
         # orography).
         mstrm = np.empty((self.sp.nlat,self.sp.nlon,2),np.float32)
-        mstrm[:,:,0] = self.grav*(self.orog + lyrthkg[:,:,0] + lyrthkg[:,:,1]) 
-        mstrm[:,:,1] = mstrm[:,:,0] + (self.grav*self.delth/self.theta1)*lyrthkg[:,:,1] 
-        ddivdtspec += -self.lap*self.sp.grdtospec(mstrm+0.5*(ug**2+vg**2),self.ntrunc) 
+        mstrm[:,:,0] = self.grav*(self.orog + lyrthkg[:,:,0] + lyrthkg[:,:,1])
+        mstrm[:,:,1] = mstrm[:,:,0] + (self.grav*self.delth/self.theta1)*lyrthkg[:,:,1]
+        ddivdtspec += -self.lap*self.sp.grdtospec(mstrm+0.5*(ug**2+vg**2),self.ntrunc)
         # divergence hyperdiffusion
         ddivdtspec += self.hyperdiff*divspec
         return dvrtdtspec,ddivdtspec,dlyrthkdtspec
@@ -153,10 +154,10 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from mpl_toolkits.basemap import Basemap, addcyclic
     import time
-    
+
     # grid, time step info
     nlons = 128  # number of longitudes
-    ntrunc = nlons/3 # spectral truncation (for alias-free computations)
+    ntrunc = 42 # spectral truncation (for alias-free computations)
     nlats = (nlons/2)+1 # for regular grid.
     gridtype = 'regular'
     #nlats = nlons/2 # for gaussian grid.
@@ -168,11 +169,11 @@ if __name__ == "__main__":
 
     # create spherical harmonic instance.
     rsphere = 6.37122e6 # earth radius
-    sp = Spharmt(nlons,nlats,rsphere,gridtype=gridtype)
+    sp = Spharmt(nlons,nlats,ntrunc=ntrunc,rsphere=rsphere,gridtype=gridtype)
 
     # create model instance using default parameters.
     model = TwoLayer(sp,dt,ntrunc)
-    
+
     # vort, div initial conditions
     psipert = np.zeros((sp.nlat,sp.nlon,2),np.float32)
     psipert[:,:,1] = 5.e6*np.sin((model.lons-np.pi))**12*np.sin(2.*model.lats)**12
@@ -185,8 +186,8 @@ if __name__ == "__main__":
     vrtg = sp.spectogrd(vrtspec)
     lyrthkspec = model.nlbalance(vrtspec)
     lyrthkg = sp.spectogrd(lyrthkspec)
-    print lyrthkg[:,:,0].min(), lyrthkg[:,:,0].max()
-    print lyrthkg[:,:,1].min(), lyrthkg[:,:,1].max()
+    print(lyrthkg[:,:,0].min(), lyrthkg[:,:,0].max())
+    print(lyrthkg[:,:,1].min(), lyrthkg[:,:,1].max())
     if lyrthkg.min() < 0:
         raise ValueError('negative layer thickness! adjust jet parameters')
 
@@ -196,17 +197,17 @@ if __name__ == "__main__":
         t = ncycle*model.dt
         vrtspec, divspec, lyrthkspec = model.rk4step(vrtspec, divspec, lyrthkspec)
         pvg = (0.5*model.zmid/model.omega)*(model.vrt + model.f)/model.lyrthk
-        print 't=%6.2f hours: v min/max %6.2f, %6.2f pv min/max %6.2f, %6.2f'%\
-        (t/3600.,model.v.min(), model.v.max(), pvg.min(), pvg.max())
+        print('t=%6.2f hours: v min/max %6.2f, %6.2f pv min/max %6.2f, %6.2f'%\
+        (t/3600.,model.v.min(), model.v.max(), pvg.min(), pvg.max()))
     time2 = time.clock()
-    print 'CPU time = ',time2-time1
-    
+    print('CPU time = ',time2-time1)
+
     # make a plot of upper layer thickness
     m = Basemap(projection='ortho',lat_0=60,lon_0=180)
     lons1d = model.lons[0,:]*180./np.pi
     lats1d = model.lats[:,0]*180./np.pi
     lyrthk,lons1dx = addcyclic(model.lyrthk[:,:,1],lons1d)
-    print 'max/min upper layer thk',lyrthk.min(), lyrthk.max()
+    print('max/min upper layer thk',lyrthk.min(), lyrthk.max())
     lons, lats = np.meshgrid(lons1dx,lats1d)
     x,y = m(lons,lats)
     m.drawmeridians(np.arange(-180,180,60))
