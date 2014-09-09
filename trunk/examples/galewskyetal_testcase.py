@@ -36,7 +36,7 @@ ndiss = 8 # order for hyperdiffusion
 
 # setup up spherical harmonic instance, set lats/lons of grid
 
-x = Spharmt(nlons,nlats,ntrunc=ntrunc,rsphere=rsphere,gridtype=gridtype)
+x = Spharmt(nlons,nlats,rsphere=rsphere,gridtype=gridtype)
 delta = 2.*np.pi/nlons
 lats1d = 0.5*np.pi-delta*np.arange(nlats)
 lons1d = np.arange(-np.pi,np.pi,delta)
