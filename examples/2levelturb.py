@@ -10,7 +10,7 @@ from mpl_toolkits.basemap import Basemap, addcyclic
 
 # set model parameters.
 nlons = 128  # number of longitudes
-ntrunc = nlons/3 # spectral truncation (for alias-free computations)
+ntrunc = 42  # spectral truncation (for alias-free computations)
 nlats = (nlons/2)+1 # for regular grid.
 gridtype = 'regular'
 dt = 900 # time step in seconds
@@ -23,7 +23,7 @@ umax = 40
 moistfact = 0.1
 
 # create spherical harmonic instance.
-sp = Spharmt(nlons,nlats,rsphere,gridtype=gridtype)
+sp = Spharmt(nlons,nlats,ntrunc=ntrunc,rsphere=rsphere,gridtype=gridtype)
 
 # create model instance.
 model =\

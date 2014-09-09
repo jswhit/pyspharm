@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 from spharm import Spharmt, getspecindx
 import matplotlib.pyplot as plt
@@ -12,13 +13,13 @@ import time
 
 # grid, time step info
 nlons = 256  # number of longitudes
-ntrunc = nlons/3 # spectral truncation (for alias-free computations)
+ntrunc = 84 # spectral truncation (for alias-free computations)
 nlats = (nlons/2)+1 # for regular grid.
 gridtype = 'regular'
 #nlats = nlons/2 # for gaussian grid.
 #gridtype = 'gaussian'
 dt = 150 # time step in seconds
-itmax = 6*(86400/dt) # integration length in days
+itmax = int(6*(86400/dt)) # integration length in days
 
 # parameters for test
 rsphere = 6.37122e6 # earth radius
@@ -35,7 +36,7 @@ ndiss = 8 # order for hyperdiffusion
 
 # setup up spherical harmonic instance, set lats/lons of grid
 
-x = Spharmt(nlons,nlats,rsphere,gridtype=gridtype)
+x = Spharmt(nlons,nlats,ntrunc=ntrunc,rsphere=rsphere,gridtype=gridtype)
 delta = 2.*np.pi/nlons
 lats1d = 0.5*np.pi-delta*np.arange(nlats)
 lons1d = np.arange(-np.pi,np.pi,delta)

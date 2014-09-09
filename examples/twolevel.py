@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 from spharm import Spharmt, getspecindx, gaussian_lats_wts
 
@@ -28,7 +29,7 @@ class TwoLevel(object):
         exnf2 = cp*((p0+1.5*dp)/p0)**(rgas/cp)
         self.delta_exnf = exnf2-exnf1 # diff in exner function between 2 levs.
         # efolding time scale for hyperdiffusion at shortest wavenumber
-        self.efold = efold 
+        self.efold = efold
         self.ndiss = ndiss # order of hyperdiffusion (2 for laplacian)
         self.sp = sp # Spharmt instance
         self.ntrunc = ntrunc # triangular truncation wavenumber
@@ -63,8 +64,8 @@ class TwoLevel(object):
         self._interface_profile(umax,jetexp)
 
     def _interface_profile(self,umax,jetexp):
-        ug = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32) 
-        vg = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32) 
+        ug = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32)
+        vg = np.zeros((self.sp.nlat,self.sp.nlon,2),np.float32)
         ug[:,:,1] = umax*np.sin(2.*self.lats)**jetexp
         vrtspec, divspec = self.sp.getvrtdivspec(ug,vg,self.ntrunc)
         thetaspec = self.nlbalance(vrtspec)
@@ -105,10 +106,10 @@ class TwoLevel(object):
         # horizontal vorticity flux
         tmpg1 = ug*(vrtg+self.f); tmpg2 = vg*(vrtg+self.f)
         # add lower layer drag and vertical advection contributions
-        tmpg1[:,:,0] += vadvv + vg[:,:,0]/self.tdrag 
+        tmpg1[:,:,0] += vadvv + vg[:,:,0]/self.tdrag
         tmpg2[:,:,0] += -vadvu - ug[:,:,0]/self.tdrag
-        tmpg1[:,:,1] += vadvv 
-        tmpg2[:,:,1] += -vadvu 
+        tmpg1[:,:,1] += vadvv
+        tmpg2[:,:,1] += -vadvu
         # compute vort flux contributions to vorticity and divergence tend.
         tmpspec, dvrtdtspec = self.sp.getvrtdivspec(tmpg1,tmpg2,self.ntrunc)
         ddivdtspec = tmpspec[:,1]-tmpspec[:,0]
@@ -127,7 +128,7 @@ class TwoLevel(object):
         # in rising air, use reduced static stability
         if self.moistfact < 1:
             wmean = ((divg + np.abs(divg))*self.globalmeanwts).sum()
-            # need to remove global mean vertical velocity or 
+            # need to remove global mean vertical velocity or
             # global mean temp will increase.
             self.heat = 0.25*(divg + np.abs(divg) - wmean)*self.delth*(1.-self.moistfact)
         else: # moistfact=1 is dry model
@@ -164,22 +165,22 @@ class TwoLevel(object):
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from mpl_toolkits.basemap import Basemap, addcyclic
-    
+
     # grid, time step info
     nlons = 128  # number of longitudes
-    ntrunc = nlons/3 # spectral truncation (for alias-free computations)
+    ntrunc = 42 # spectral truncation (for alias-free computations)
     nlats = (nlons/2)+1 # for regular grid.
     gridtype = 'regular'
     #nlats = nlons/2 # for gaussian grid.
     #gridtype = 'gaussian'
     dt = 1800 # time step in seconds
-    itmax = 5*(86400/dt) # integration length in days
+    itmax = int(5*(86400/dt)) # integration length in days
     umax = 50. # jet speed
     jetexp = 6 # parameter controlling jet width
 
     # create spherical harmonic instance.
     rsphere = 6.37122e6 # earth radius
-    sp = Spharmt(nlons,nlats,rsphere,gridtype=gridtype)
+    sp = Spharmt(nlons,nlats,ntrunc=ntrunc,rsphere=rsphere,gridtype=gridtype)
 
     # create model instance using default parameters.
     model = TwoLevel(sp,dt,ntrunc)
@@ -200,9 +201,10 @@ if __name__ == "__main__":
     for ncycle in range(itmax+1):
         t = ncycle*model.dt
         vrtspec, divspec, thetaspec = model.rk4step(vrtspec, divspec, thetaspec)
-        print 't=%6.2f hours: v min/max %6.2f, %6.2f theta min/max %6.2f, %6.2f'%\
-        (t/3600.,model.v.min(), model.v.max(), model.theta.min(), model.theta.max())
-    
+        print('t=%6.2f hours: v min/max %6.2f, %6.2f theta min/max %6.2f, %6.2f'%\
+        (t/3600.,model.v.min(), model.v.max(), model.theta.min(),
+            model.theta.max()))
+
     # make a plot of temperature
     m = Basemap(projection='ortho',lat_0=60,lon_0=90)
     lons1d = model.lons[0,:]*180./np.pi

@@ -26,7 +26,7 @@ for m,n in zip(indxm,indxn):
     else:
         i = i + 1
 if nm < 0:
-    raise ValueError,'invalid m,n - must fit within triangular truncation at wavenumber '+repr(ntrunc)
+    raise ValueError('invalid m,n - must fit within triangular truncation at wavenumber '+repr(ntrunc))
 coeffs = np.zeros((ntrunc+1)*(ntrunc+2)/2,np.complex)
 coeffs[nm] = 1.
 spharmonic = x.spectogrd(coeffs)
@@ -34,7 +34,7 @@ delta = 360./nlons
 lats = 90.-delta*np.arange(nlats)
 lons = delta*np.arange(nlons)
 spharmonic, lons = addcyclic(spharmonic, lons)
-print spharmonic.min(), spharmonic.max()
+print(spharmonic.min(), spharmonic.max())
 lons, lats = np.meshgrid(lons, lats)
 x, y = map(lons,lats)
 CS = map.contourf(x,y,spharmonic,15,cmap=plt.cm.jet)
