@@ -822,8 +822,8 @@ prevent deletion of read-only instance variables.
 
         if len(vrtspec.shape) == 1:
             nt = 1
-            vrtspec = numpy.reshape(vrtspec, ((ntrunc+1)*(ntrunc+2)/2,1))
-            divspec = numpy.reshape(divspec, ((ntrunc+1)*(ntrunc+2)/2,1))
+            vrtspec = numpy.reshape(vrtspec, ((ntrunc+1)*(ntrunc+2)//2,1))
+            divspec = numpy.reshape(divspec, ((ntrunc+1)*(ntrunc+2)//2,1))
         else:
             nt = vrtspec.shape[1]
 
@@ -875,7 +875,7 @@ prevent deletion of read-only instance variables.
 
         if len(chispec.shape) == 1:
             nt = 1
-            chispec = numpy.reshape(chispec, ((ntrunc+1)*(ntrunc+2)/2,1))
+            chispec = numpy.reshape(chispec, ((ntrunc+1)*(ntrunc+2)//2,1))
         else:
             nt = chispec.shape[1]
 
