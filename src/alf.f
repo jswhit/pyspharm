@@ -263,6 +263,7 @@ c                        notes by paul n. swarztrauber)
 c
       subroutine lfim (init,theta,l,n,nm,pb,id,wlfim)
       dimension       pb(1)        ,wlfim(1)
+      dimension theta(l)
 c
 c     total length of wlfim is 4*l*(nm+1)
 c
@@ -276,7 +277,7 @@ c
       end
       subroutine lfim1(init,theta,l,n,nm,id,p3,phz,ph1,p1,p2,cp)
       dimension       p1(l,1)    ,p2(l,1)    ,p3(id,1)   ,phz(l,1)   ,
-     1                ph1(l,1)   ,cp(1)      ,theta(1)
+     1                ph1(l,1)   ,cp(1)      ,theta(l)
       nmp1 = nm+1
       if(init .ne. 0) go to 5
       ssqrt2 = 1./sqrt(2.)
@@ -455,6 +456,7 @@ c                        notes by paul n. swarztrauber)
 c
       subroutine lfin (init,theta,l,m,nm,pb,id,wlfin)
       dimension       pb(1)        ,wlfin(1)
+      dimension theta(l)
 c
 c     total length of wlfin is 4*l*(nm+1)
 c
@@ -468,7 +470,7 @@ c
       end
       subroutine lfin1(init,theta,l,m,nm,id,p3,phz,ph1,p1,p2,cp)
       dimension       p1(l,1)    ,p2(l,1)    ,p3(id,1)   ,phz(l,1)   ,
-     1                ph1(l,1)   ,cp(1)      ,theta(1)
+     1                ph1(l,1)   ,cp(1)      ,theta(l)
       nmp1 = nm+1
       if(init .ne. 0) go to 5
       ssqrt2 = 1./sqrt(2.)
