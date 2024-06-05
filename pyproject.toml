@@ -1,3 +1,26 @@
 [build-system]
 requires = ["setuptools>=30.3.0", "wheel", "numpy"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyspharm"
+version = "1.0.9"
+description = "Python Spherical Harmonic Transform Module"
+authors = [
+    { name = "Jeff Whitaker", email = "jeffrey.s.whitaker@noaa.gov" }
+]
+readme = "README.md"
+requires-python = "<3.12"
+license = { file = "LICENSE.spherepack" }
+classifiers = [
+    "Topic :: Scientific/Engineering :: Atmospheric Science"
+]
+dependencies = [ "numpy" ]
+
+[project.urls]
+Homepage = "http://code.google.com/p/pyspharm"
+Repository = "https://github.com/jswhit/pyspharm"
+
+[tool.setuptools]
+packages = [ "spharm" ]
+package-dir = { spharm = "Lib" }
