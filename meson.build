@@ -13,6 +13,13 @@ py_mod = import('python')
 py = py_mod.find_installation(pure: false)
 py_dep = py.dependency()
 
+py.install_sources([
+		'Lib/__init__.py',
+		'Lib/spharm.py',
+	],
+	subdir: 'spharm'
+)
+
 incdir_numpy = run_command(py,
   ['-c', 'import os; os.chdir(".."); import numpy; print(numpy.get_include())'],
   check : true
