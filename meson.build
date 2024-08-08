@@ -32,40 +32,9 @@ incdir_f2py = run_command(py,
 
 spherepack_source = custom_target('_spherepackmodule.c',
     input: [
-        'src/_spherepack.pyf',
-	'src/getlegfunc.f',
-	'src/specintrp.f',
-	'src/onedtotwod.f',
-	'src/onedtotwod_vrtdiv.f',
-	'src/twodtooned.f',
-	'src/twodtooned_vrtdiv.f',
-	'src/multsmoothfact.f',
-	'src/lap.f',
-	'src/invlap.f',
-        # SPHEREPACK sources
-        'src/gaqd.f',
-	'src/shses.f',
-	'src/shaes.f',
-	'src/vhaes.f',
-	'src/vhses.f',
-	'src/shsgs.f',
-	'src/shags.f',
-	'src/vhags.f',
-	'src/vhsgs.f',
-	'src/sphcom.f',
-	'src/hrfft.f',
-	'src/shaec.f',
-	'src/shagc.f',
-	'src/shsec.f',
-	'src/shsgc.f',
-	'src/vhaec.f',
-	'src/vhagc.f',
-	'src/vhsec.f',
-	'src/vhsgc.f',
-	'src/ihgeod.f',
-	'src/alf.f'],
+        'src/_spherepack.pyf'],
     output: ['_spherepackmodule.c', '_spherepack-f2pywrappers.f'],
-    command: [py, '-m', 'numpy.f2py', '@INPUT@', '-m', '_spherepack', '--lower']
+    command: [py, '-m', 'numpy.f2py', '--lower', '@INPUT@']
 )
 
 inc_np = include_directories(incdir_numpy, incdir_f2py)
