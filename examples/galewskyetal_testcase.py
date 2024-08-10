@@ -14,7 +14,7 @@ import time
 # grid, time step info
 nlons = 256  # number of longitudes
 ntrunc = 84 # spectral truncation (for alias-free computations)
-nlats = (nlons/2)+1 # for regular grid.
+nlats = (nlons//2)+1 # for regular grid.
 gridtype = 'regular'
 #nlats = nlons/2 # for gaussian grid.
 #gridtype = 'gaussian'
@@ -81,14 +81,15 @@ nnew = 0; nnow = 1; nold = 2
 
 # time loop.
 
-time1 = time.clock()
+time1 = time.process_time()
 for ncycle in range(itmax+1):
     t = ncycle*dt
 # get vort,u,v,phi on grid
     vrtg = x.spectogrd(vrtspec)
     ug,vg = x.getuv(vrtspec,divspec)
     phig = x.spectogrd(phispec)
-    print('t=%6.2f hours: min/max %6.2f, %6.2f' % (t/3600.,vg.min(), vg.max()))
+    if ncycle % 24 == 0:
+        print('t=%6.2f hours: min/max %6.2f, %6.2f' % (t/3600.,vg.min(), vg.max()))
 # compute tendencies.
     tmpg1 = ug*(vrtg+f); tmpg2 = vg*(vrtg+f)
     ddivdtspec[:,nnew], dvrtdtspec[:,nnew] = x.getvrtdivspec(tmpg1,tmpg2,ntrunc)
@@ -127,7 +128,7 @@ for ncycle in range(itmax+1):
     nsav1 = nnew; nsav2 = nnow
     nnew = nold; nnow = nsav1; nold = nsav2
 
-time2 = time.clock()
+time2 = time.process_time()
 print('CPU time = ',time2-time1)
 
 # make a orthographic plot of potential vorticity.
@@ -141,7 +142,7 @@ x,y = m(lons,lats)
 levs = np.arange(-0.2,1.801,0.1)
 m.drawmeridians(np.arange(-180,180,60))
 m.drawparallels(np.arange(-80,81,20))
-CS=m.contourf(x,y,pvg,levs,cmap=plt.cm.spectral,extend='both')
+CS=m.contourf(x,y,pvg,levs,cmap="Spectral",extend='both')
 m.colorbar()
 plt.title('PV (T%s with hyperdiffusion, hour %6.2f)' % (ntrunc,t/3600.))
 plt.show()

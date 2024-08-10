@@ -11,7 +11,7 @@ from mpl_toolkits.basemap import Basemap, addcyclic
 # set model parameters.
 nlons = 128  # number of longitudes
 ntrunc = 42  # spectral truncation (for alias-free computations)
-nlats = (nlons/2)+1 # for regular grid.
+nlats = (nlons//2)+1 # for regular grid.
 gridtype = 'regular'
 dt = 900 # time step in seconds
 tdiab = 12.*86400 # thermal relaxation time scale
@@ -61,8 +61,8 @@ m.drawmeridians(np.arange(-180,180,60),labels=[0,0,0,1],ax=ax2)
 m.drawparallels(np.arange(-60,91,30),labels=[1,0,0,0],ax=ax2)
 levs1 = np.arange(-1.6e-4,1.61e-4,2.e-5)
 levs2 = np.arange(-60,21,2)
-CS1=m.contourf(x,y,data1,levs1,cmap=plt.cm.spectral,extend='both',ax=ax1)
-CS2=m.contourf(x,y,data2,levs2,cmap=plt.cm.spectral,extend='both',ax=ax2)
+CS1=m.contourf(x,y,data1,levs1,cmap="Spectral",extend='both')  # ,ax=ax1)
+CS2=m.contourf(x,y,data2,levs2,cmap="Spectral",extend='both',ax=ax2)
 cb1 = m.colorbar(CS1,location='right',format='%3.1e',ax=ax1)
 cb2 = m.colorbar(CS2,location='right',format='%g',ax=ax2)
 t = 0.
@@ -79,9 +79,9 @@ def updatefig(*args):
     data2,lons1dx = addcyclic(model.theta,lons1d)
     # remove old contours, add new ones.
     for c in CS1.collections: c.remove()
-    CS1=m.contourf(x,y,data1,levs1,cmap=plt.cm.spectral,extend='both',ax=ax1)
+    CS1=m.contourf(x,y,data1,levs1,cmap="Spectral",extend='both',ax=ax1)
     for c in CS2.collections: c.remove()
-    CS2=m.contourf(x,y,data2,levs2,cmap=plt.cm.spectral,extend='both',ax=ax2)
+    CS2=m.contourf(x,y,data2,levs2,cmap="Spectral",extend='both',ax=ax2)
     # update titles.
     txt1.set_text('Upper Level Vorticity (T%s, hour %6.2f)' % (ntrunc,t/3600.))
     txt2.set_text('Temperature (T%s, hour %6.2f)' % (ntrunc,t/3600.))

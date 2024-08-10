@@ -169,12 +169,12 @@ if __name__ == "__main__":
     # grid, time step info
     nlons = 128  # number of longitudes
     ntrunc = 42 # spectral truncation (for alias-free computations)
-    nlats = (nlons/2)+1 # for regular grid.
+    nlats = (nlons//2)+1 # for regular grid.
     gridtype = 'regular'
     #nlats = nlons/2 # for gaussian grid.
     #gridtype = 'gaussian'
     dt = 1800 # time step in seconds
-    itmax = int(5*(86400/dt)) # integration length in days
+    itmax = int(5*(86400//dt)) # integration length in days
     umax = 50. # jet speed
     jetexp = 6 # parameter controlling jet width
 
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     x,y = m(lons,lats)
     m.drawmeridians(np.arange(-180,180,60))
     m.drawparallels(np.arange(-80,81,20))
-    CS=m.contourf(x,y,thetag,30,cmap=plt.cm.spectral,extend='both')
+    CS=m.contourf(x,y,thetag,30,cmap="Spectral",extend='both')
     m.colorbar()
     plt.title('Temperature (T%s, hour %6.2f)' % (ntrunc,t/3600.))
     plt.show()

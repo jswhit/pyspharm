@@ -12,7 +12,7 @@ map.drawmapboundary(fill_color='aqua')
 # draw lat/lon grid lines every 30 degrees.
 map.drawmeridians(np.arange(0,360,30))
 map.drawparallels(np.arange(-90,90,30))
-m = int(raw_input('input the number of points on the edge of each spherical geodesic triangle:'))
+m = int(input('input the number of points on the edge of each spherical geodesic triangle:'))
 # find the geodesic points.
 lats, lons = getgeodesicpts(m)
 x, y = map(lons, lats)
