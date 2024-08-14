@@ -31,8 +31,7 @@ incdir_f2py = run_command(py,
 ).stdout().strip()
 
 spherepack_source = custom_target('_spherepackmodule.c',
-    input: [
-        'src/_spherepack.pyf'],
+    input: ['src/_spherepack.pyf'],
     output: ['_spherepackmodule.c', '_spherepack-f2pywrappers.f'],
     command: [py, '-m', 'numpy.f2py', '--lower', '@INPUT@']
 )
