@@ -170,6 +170,9 @@ prevent deletion of read-only instance variables.
         else:
             del self.__dict__[key]
 
+    def __repr__(self):
+        return "Spharmt({:d}, {:d}, {:e}, {:s}, {:s})".format(self.nlon, self.nlat, self.rsphere, self.gridtype, self.legfunc)
+
     def __init__(self, nlon, nlat, rsphere=6.3712e6, gridtype='regular', legfunc='stored'):
         """
  create a Spharmt class instance.
