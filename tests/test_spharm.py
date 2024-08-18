@@ -1,7 +1,17 @@
+"""Tests of invariants for spharm package.
+
+Mostly the tests of a single function check that the outputs are the
+right shape and neither nan nor infinity (and obtained without
+crashes).  Occasionally there are checks of other properties.
+
+There are a few checks that we can round-trip information.
+
+"""
 import itertools
 
 import numpy as np
 import pytest
+
 import spharm
 
 # T799 transforms result in nans
@@ -14,6 +24,7 @@ NLATS = [32, 64, 96]  # , 128]
     params=itertools.product(["gaussian", "regular"], ["computed", "stored"], NLATS)
 )
 def spharmt(request):
+    """Create a (collection of) Spharmt instances for a test."""
     nlat = request.param[2]
     nlon = nlat * 2
     transform = spharm.Spharmt(
@@ -32,6 +43,7 @@ class TestSpharmt:
     """
 
     def test_grdtospec(self, spharmt, transform_multiple, ntrunc):
+        """Test Spharmt.grdtospec invariants."""
         if ntrunc > spharmt.nlat - 1:
             pytest.skip("ntrunc larger than nlat")
         if transform_multiple:
@@ -49,6 +61,7 @@ class TestSpharmt:
         assert coeffs[1:] == pytest.approx(0, abs=1e-6 * ncoeffs)
 
     def test_spectogrd(self, spharmt, transform_multiple, ntrunc):
+        """Test Spharmt.spectogrd invariants."""
         if ntrunc > spharmt.nlat - 1:
             pytest.skip("ntrunc larger than nlat")
         ncoeffs = (ntrunc + 1) * (ntrunc + 2) // 2
@@ -65,6 +78,12 @@ class TestSpharmt:
         assert np.all(np.isfinite(grid))
 
     def test_roundtrip_spectral_grid(self, spharmt, transform_multiple, ntrunc):
+        """Test that coefficients can roundtrip to a grid and back.
+
+        There are half as many degrees of freedom in the coefficients
+        than in the grid in the best case, so going the other way
+        needs careful consideration.
+        """
         if ntrunc > spharmt.nlat - 1:
             pytest.skip("ntrunc larger than nlat")
         elif spharmt.gridtype == "regular" and ntrunc > 1 * (spharmt.nlat + 1) / 2:
@@ -81,6 +100,7 @@ class TestSpharmt:
         assert coeffs == pytest.approx(test_data, abs=1e-6 * size, rel=7e-6)
 
     def test_getuv(self, spharmt, transform_multiple, ntrunc):
+        """Test behavior of Spharmt.getuv."""
         if ntrunc > spharmt.nlat - 1:
             pytest.skip("ntrunc larger than nlat")
         ncoeffs = (ntrunc + 1) * (ntrunc + 2) // 2
@@ -97,6 +117,7 @@ class TestSpharmt:
             assert np.all(np.isfinite(grid))
 
     def test_getvrtdivspec(self, spharmt, transform_multiple, ntrunc):
+        """Test behavior of Spharmt.getvrtdivspec."""
         if ntrunc > spharmt.nlat - 1:
             pytest.skip("ntrunc larger than nlat")
         shape = (spharmt.nlat, spharmt.nlon)
@@ -111,9 +132,14 @@ class TestSpharmt:
                 assert coeffs.shape[1] == 5
             assert np.all(np.isfinite(coeffs))
 
+    # 54 xpass 18 xfail
     @pytest.mark.xfail
     @pytest.mark.parametrize("scenario", [1, 2, 3])
     def test_roundtrip_winds(self, spharmt, transform_multiple, ntrunc, scenario):
+        """Test that we can roundtrip vorticity and divergence through winds.
+
+        Currently fails on larger grids, for reasons I don't understand.
+        """
         if ntrunc > spharmt.nlat / 2:
             pytest.skip("ntrunc larger than nlat")
         ncoeffs = (ntrunc + 1) * (ntrunc + 2) // 2
@@ -138,6 +164,7 @@ class TestSpharmt:
         assert actual_div[4:] == pytest.approx(div[4:], abs=1e-6 * size)
 
     def test_getgrad(self, spharmt, transform_multiple, ntrunc):
+        """Test behavior of Spharmt.getgrad."""
         if ntrunc > spharmt.nlat - 1:
             pytest.skip("ntrunc larger than nlat")
         ncoeffs = (ntrunc + 1) * (ntrunc + 2) // 2
@@ -151,9 +178,12 @@ class TestSpharmt:
             assert grid.shape[1] == spharmt.nlon
             if transform_multiple:
                 assert grid.shape[2] == 5
-            assert grid == pytest.approx(0.0, abs=1e-6 * max(ncoeffs, np.prod(grid.shape[:2])))
+            assert grid == pytest.approx(
+                0.0, abs=1e-6 * max(ncoeffs, np.prod(grid.shape[:2]))
+            )
 
     def test_getpsichi(self, spharmt, transform_multiple, ntrunc):
+        """Test behavior of Spharmt.getpsichi."""
         if ntrunc > spharmt.nlat - 1:
             pytest.skip("ntrunc larger than nlat")
         shape = (spharmt.nlat, spharmt.nlon)
@@ -161,14 +191,14 @@ class TestSpharmt:
             shape = shape + (5,)
         test_data = np.ones(shape, dtype="f4")
         psi_chi = spharmt.getpsichi(test_data, test_data, ntrunc)
-        ncoeffs = (ntrunc + 1) * (ntrunc + 2) // 2
         for coeffs in psi_chi:
-            assert coeffs.shape[:len(shape)] == shape
+            assert coeffs.shape[: len(shape)] == shape
             if transform_multiple:
                 assert coeffs.shape[2] == 5
             assert np.all(np.isfinite(coeffs))
 
     def test_specsmooth(self, spharmt, transform_multiple, ntrunc):
+        """Test that smoothing a constant field does nothing."""
         if ntrunc > spharmt.nlat - 1:
             pytest.skip("ntrunc larger than nlat")
         shape = (spharmt.nlat, spharmt.nlon)
@@ -182,6 +212,7 @@ class TestSpharmt:
 
 @pytest.mark.parametrize("smooth", [None, True])
 def test_regrid(spharmt, smooth):
+    """Test recovery of a field from sparse grid to dense and back."""
     ntrunc = 25
     sourcegrid = spharm.Spharmt(54, 27)
     test_data = np.ones((27, 54), dtype="f4")
@@ -194,6 +225,7 @@ def test_regrid(spharmt, smooth):
 
 @pytest.mark.parametrize("nlat", NLATS)
 def test_gaussian_lats_wts(nlat):
+    """Test behavior of gaussian lats and weights."""
     lats, weights = spharm.gaussian_lats_wts(nlat)
     assert np.all(lats <= 90)
     assert np.all(lats >= -90)
@@ -203,6 +235,10 @@ def test_gaussian_lats_wts(nlat):
 
 @pytest.mark.parametrize("ntrunc", NTRUNC)
 def test_getspecindx(ntrunc):
+    """Test behavior of getspecindx.
+
+    0 <= wavenumber <= degree <= ntrunc
+    """
     wavenumber, degree = spharm.getspecindx(ntrunc)
     assert np.all(wavenumber <= ntrunc)
     assert np.all(degree <= ntrunc)
@@ -215,6 +251,7 @@ def test_getspecindx(ntrunc):
 @pytest.mark.parametrize("lat", np.linspace(-90, 90, 7))
 @pytest.mark.parametrize("ntrunc", NTRUNC)
 def test_legendre(lat, ntrunc):
+    """Test behavior of legendre."""
     pnm = spharm.legendre(lat, ntrunc)
     ncoeffs = (ntrunc + 1) * (ntrunc + 2) // 2
     assert pnm.shape[0] == ncoeffs
@@ -223,6 +260,7 @@ def test_legendre(lat, ntrunc):
 
 @pytest.mark.parametrize("m", range(1, 20))
 def test_getgeodesicpts(m):
+    """Test behavior of getgeodesicpts."""
     lats, lons = spharm.getgeodesicpts(m)
     assert np.all(lats >= -90)
     assert np.all(lats <= 90)
@@ -239,6 +277,7 @@ def test_getgeodesicpts(m):
 @pytest.mark.parametrize("lat", np.linspace(-90, 90, 7))
 @pytest.mark.parametrize("ntrunc", NTRUNC)
 def test_specintrp(lon, lat, ntrunc):
+    """Test behavior of specintrp."""
     ncoeffs = (ntrunc + 1) * (ntrunc + 2) // 2
     test_coeffs = np.ones(ncoeffs, dtype="c8")
     legfuncs = spharm.legendre(lat, ntrunc)
