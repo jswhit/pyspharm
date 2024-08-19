@@ -1,9 +1,7 @@
 Requires: Numpy (http://numeric.scipy.org),
 and a fortran compiler supported by numpy.f2py,
 
-Does not work for python > 3.11, since numpy.distutils was removed.
-In order to make this module work for python >= 3.12, the build
-system needs to be updated to use [meson](https://numpy.org/doc/stable/f2py/buildtools/meson.html).
+Now works for python 3.12 (build system updated to use meson instead of f2py)
 
 Please read LICENSE.spherepack
 
