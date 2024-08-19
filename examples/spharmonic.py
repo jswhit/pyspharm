@@ -11,8 +11,8 @@ map.drawmapboundary()
 # draw lat/lon grid lines every 30 degrees.
 map.drawmeridians(np.arange(0,360,30))
 map.drawparallels(np.arange(-90,90,30))
-min = int(raw_input('input degree (m) of legendre function to plot:'))
-nin = int(raw_input('input order  (n) of legendre function to plot:'))
+min = int(input('input degree (m) of legendre function to plot:'))
+nin = int(input('input order  (n) of legendre function to plot:'))
 nlons = 720; nlats = 361
 x = Spharmt(nlons,nlats,legfunc='computed')
 ntrunc = nlats-1
@@ -27,7 +27,7 @@ for m,n in zip(indxm,indxn):
         i = i + 1
 if nm < 0:
     raise ValueError('invalid m,n - must fit within triangular truncation at wavenumber '+repr(ntrunc))
-coeffs = np.zeros((ntrunc+1)*(ntrunc+2)/2,np.complex)
+coeffs = np.zeros((ntrunc+1)*(ntrunc+2)//2,np.complex128)
 coeffs[nm] = 1.
 spharmonic = x.spectogrd(coeffs)
 delta = 360./nlons

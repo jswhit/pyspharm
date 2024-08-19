@@ -158,12 +158,12 @@ if __name__ == "__main__":
     # grid, time step info
     nlons = 128  # number of longitudes
     ntrunc = 42 # spectral truncation (for alias-free computations)
-    nlats = (nlons/2)+1 # for regular grid.
+    nlats = (nlons//2)+1 # for regular grid.
     gridtype = 'regular'
     #nlats = nlons/2 # for gaussian grid.
     #gridtype = 'gaussian'
     dt = 900 # time step in seconds
-    itmax = 8*(86400/dt) # integration length in days
+    itmax = 8*(86400//dt) # integration length in days
     umax = 50. # jet speed
     jetexp = 10 # parameter controlling jet width
 
@@ -192,14 +192,14 @@ if __name__ == "__main__":
         raise ValueError('negative layer thickness! adjust jet parameters')
 
     # time loop.
-    time1 = time.clock()
+    time1 = time.process_time()
     for ncycle in range(itmax+1):
         t = ncycle*model.dt
         vrtspec, divspec, lyrthkspec = model.rk4step(vrtspec, divspec, lyrthkspec)
         pvg = (0.5*model.zmid/model.omega)*(model.vrt + model.f)/model.lyrthk
         print('t=%6.2f hours: v min/max %6.2f, %6.2f pv min/max %6.2f, %6.2f'%\
         (t/3600.,model.v.min(), model.v.max(), pvg.min(), pvg.max()))
-    time2 = time.clock()
+    time2 = time.process_time()
     print('CPU time = ',time2-time1)
 
     # make a plot of upper layer thickness
@@ -212,7 +212,7 @@ if __name__ == "__main__":
     x,y = m(lons,lats)
     m.drawmeridians(np.arange(-180,180,60))
     m.drawparallels(np.arange(-80,81,20))
-    CS=m.contourf(x,y,lyrthk,30,cmap=plt.cm.spectral,extend='both')
+    CS=m.contourf(x,y,lyrthk,30,cmap="Spectral",extend='both')
     m.colorbar()
     plt.title('Upper-Layer Thickness (T%s, hour %6.2f)' % (ntrunc,t/3600.))
     plt.show()
