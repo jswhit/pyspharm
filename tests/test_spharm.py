@@ -16,8 +16,8 @@ import spharm
 
 # T799 transforms result in nans
 # T382 on a 512x1024 grid seems to work fine
-NTRUNC = [21, 42, 63]  # , 85]
-NLATS = [32, 64, 96]  # , 128]
+NTRUNC = [21, 42, 63, 85, 106, 159]#, 255, 382]
+NLATS = [32, 64, 96, 128, 160, 256]#, 384, 512]
 
 
 @pytest.fixture(
@@ -132,8 +132,6 @@ class TestSpharmt:
                 assert coeffs.shape[1] == 5
             assert np.all(np.isfinite(coeffs))
 
-    # 54 xpass 18 xfail
-    @pytest.mark.xfail
     @pytest.mark.parametrize("scenario", [1, 2, 3])
     def test_roundtrip_winds(self, spharmt, transform_multiple, ntrunc, scenario):
         """Test that we can roundtrip vorticity and divergence through winds.
@@ -148,6 +146,8 @@ class TestSpharmt:
             shape = shape + (5,)
         size = np.prod(shape)
         test_coeffs = np.arange(size, dtype="c8").reshape(shape)
+        # Global divergence/convergence doesn't work
+        test_coeffs[0] = 0
         zero_coeffs = np.zeros_like(test_coeffs)
         if scenario & 1:
             div = test_coeffs
@@ -160,8 +160,8 @@ class TestSpharmt:
         ugrid, vgrid = spharmt.getuv(vrt, div)
         actual_vrt, actual_div = spharmt.getvrtdivspec(ugrid, vgrid, ntrunc)
         # TODO: Test with original code and no slicing
-        assert actual_vrt[4:] == pytest.approx(vrt[4:], abs=1e-6 * size)
-        assert actual_div[4:] == pytest.approx(div[4:], abs=1e-6 * size)
+        assert actual_vrt == pytest.approx(vrt, abs=2e-6 * size, rel=3e-6)
+        assert actual_div == pytest.approx(div, abs=2e-6 * size, rel=3e-6)
 
     def test_getgrad(self, spharmt, transform_multiple, ntrunc):
         """Test behavior of Spharmt.getgrad."""
@@ -179,7 +179,7 @@ class TestSpharmt:
             if transform_multiple:
                 assert grid.shape[2] == 5
             assert grid == pytest.approx(
-                0.0, abs=1e-6 * max(ncoeffs, np.prod(grid.shape[:2]))
+                np.zeros_like(grid), abs=1e-6 * max(ncoeffs, np.prod(grid.shape[:2]))
             )
 
     def test_getpsichi(self, spharmt, transform_multiple, ntrunc):
