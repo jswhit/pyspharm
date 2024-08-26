@@ -401,7 +401,7 @@ prevent deletion of read-only instance variables.
 
         if len(datagrid.shape) == 2:
             nt = 1
-            datagrid = numpy.reshape(datagrid, (nlat,nlon,1))
+            datagrid = numpy.expand_dims(datagrid, 2)
         else:
             nt = datagrid.shape[2]
 
@@ -484,7 +484,7 @@ prevent deletion of read-only instance variables.
 
         if len(dataspec.shape) == 1:
             nt = 1
-            dataspec = numpy.reshape(dataspec, (dataspec.shape[0],1))
+            dataspec = numpy.expand_dims(dataspec, 1)
         else:
             nt = dataspec.shape[1]
 
@@ -602,8 +602,8 @@ prevent deletion of read-only instance variables.
 
         if len(shapeu) == 2:
             nt = 1
-            w = numpy.reshape(ugrid, (nlat,nlon,1))
-            v = -numpy.reshape(vgrid, (nlat,nlon,1))
+            w = numpy.expand_dims(ugrid, 2)
+            v = -numpy.expand_dims(vgrid, 2)
         else:
             nt = shapeu[2]
             w = ugrid
@@ -710,8 +710,8 @@ prevent deletion of read-only instance variables.
 
         if len(vrtspec.shape) == 1:
             nt = 1
-            vrtspec = numpy.reshape(vrtspec, (vrtspec.shape[0],1))
-            divspec = numpy.reshape(divspec, (divspec.shape[0],1))
+            vrtspec = numpy.expand_dims(vrtspec, 1)
+            divspec = numpy.expand_dims(divspec, 1)
         else:
             nt = vrtspec.shape[1]
 
@@ -822,8 +822,8 @@ prevent deletion of read-only instance variables.
 
         if len(vrtspec.shape) == 1:
             nt = 1
-            vrtspec = numpy.reshape(vrtspec, ((ntrunc+1)*(ntrunc+2)//2,1))
-            divspec = numpy.reshape(divspec, ((ntrunc+1)*(ntrunc+2)//2,1))
+            vrtspec = numpy.expand_dims(vrtspec, 1)
+            divspec = numpy.expand_dims(divspec, 1)
         else:
             nt = vrtspec.shape[1]
 
@@ -875,7 +875,7 @@ prevent deletion of read-only instance variables.
 
         if len(chispec.shape) == 1:
             nt = 1
-            chispec = numpy.reshape(chispec, ((ntrunc+1)*(ntrunc+2)//2,1))
+            chispec = numpy.expand_dims(chispec, 1)
         else:
             nt = chispec.shape[1]
 
