@@ -32,7 +32,7 @@ class TimeSuite:
         self.transform = spharm.Spharmt(data_size[1], data_size[0], legfunc=method)
         self.data = np.ones(data_size, dtype="f4")
         ncoeffs = (ntrunc + 1) * (ntrunc + 2) // 2
-        self.coeffs = np.ones(ncoeffs, dtype="f4")
+        self.coeffs = np.ones(ncoeffs, dtype="c8")
 
     def time_grdtospec(self, ntrunc, method):
         self.transform.grdtospec(self.data, ntrunc)
