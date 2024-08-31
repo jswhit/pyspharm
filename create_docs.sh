@@ -1,1 +1,1 @@
-pdoc -o html spharm.spharm
+pdoc -o docs spharm.spharm
