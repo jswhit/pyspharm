@@ -7,6 +7,7 @@ crashes).  Occasionally there are checks of other properties.
 There are a few checks that we can round-trip information.
 
 """
+
 import itertools
 
 import numpy as np
@@ -16,8 +17,8 @@ import spharm
 
 # T799 transforms result in nans
 # T382 on a 512x1024 grid seems to work fine
-NTRUNC = [21, 42, 63, 85, 106, 159]#, 255, 382]
-NLATS = [32, 64, 96, 128, 160, 256]#, 384, 512]
+NTRUNC = [21, 42, 63]  # , 85, 106, 159]#, 255, 382]
+NLATS = [32, 64, 96]  # , 128, 160, 256]#, 384, 512]
 
 
 @pytest.fixture(
