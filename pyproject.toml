@@ -32,8 +32,9 @@ Homepage = "http://github.com/jswhit/pyspharm"
 Repository = "https://github.com/jswhit/pyspharm"
 
 [project.optional-dependencies]
-tests = ["pytest", "hypothesis[numpy]"]
 examples = ["basemap", "matplotlib"]
+benchmarks = ["asv", "virtualenv", "pip"]
+tests = ["pytest", "hypothesis[numpy]"]
 
 [tool.setuptools]
 packages = [ "spharm" ]
