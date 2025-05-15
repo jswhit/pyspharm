@@ -53,7 +53,7 @@ if __name__ == "__main__":
           version           = "1.0.9",
           description       = "Python Spherical Harmonic Transform Module",
           author            = "Jeff Whitaker",
-          author_email      = "jeffrey.s.whitaker@noaa.gov",
+          author_email      = "whitaker.jeffrey@gmail.com",
           url               = "http://code.google.com/p/pyspharm",
           ext_modules       = [ext],
 	  packages          = ['spharm'],

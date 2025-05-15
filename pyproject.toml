@@ -7,7 +7,7 @@ name = "pyspharm"
 version = "1.0.9"
 description = "Python Spherical Harmonic Transform Module"
 authors = [
-    { name = "Jeff Whitaker", email = "jeffrey.s.whitaker@noaa.gov" }
+    { name = "Jeff Whitaker", email = "whitaker.jeffrey@gmail.com" }
 ]
 readme = "README.md"
 license = { file = "LICENSE.spherepack" }
