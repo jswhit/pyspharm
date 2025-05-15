@@ -5,6 +5,7 @@ Please read LICENSE.spherepack
 Installation: 
 
 python -m build
+
 python -m pip install dist/*whl
 
 View documentation by pointing your browser to html/index.html.
