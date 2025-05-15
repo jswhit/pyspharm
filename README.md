@@ -1,16 +1,11 @@
-Requires: Numpy (http://numeric.scipy.org),
-and a fortran compiler supported by numpy.f2py,
-
-Now works for python 3.12 (build system updated to use meson instead of f2py)
+Requires: numpy, meson-python and gfortran.
 
 Please read LICENSE.spherepack
 
 Installation: 
 
-python setup.py install
-
-(to change default fortran compiler you can use e.g.
- python setup.py build config_fc --fcompiler=g95)
+python -m build
+python -m pip install dist/*whl
 
 View documentation by pointing your browser to html/index.html.
 
