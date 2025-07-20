@@ -33,3 +33,12 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 -- Jeff Whitaker <Jeffrey.S.Whitaker@noaa.gov>
+
+## Windows Installation
+
+If you are a Windows user, you can download the original compressed package of this project. After downloading, extract the package, open a command prompt, and `cd` into the extracted directory. Then run:
+
+```bash
+python windows_installer.py
+```
+Follow the prompts to complete the installation.
