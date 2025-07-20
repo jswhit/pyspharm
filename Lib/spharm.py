@@ -3,25 +3,25 @@ Introduction
 ============
 
 This module provides a python interface to the NCAR
-U{SPHEREPACK<https://www2.cisl.ucar.edu/resources/legacy/spherepack>} library.
+`SPHEREPACK<https://github.com/NCAR/NCAR-Classic-Libraries-for-Geophysics/blob/main/SpherePack/>`_ library.
 It is not a one-to-one wrapper for the SPHEREPACK routines, rather
 it provides a simple interface oriented toward working with
 atmospheric general circulation model (GCM) data.
 
 Requirements
 ============
- - U{numpy<http://numeric.scipy.org>}, and a fortran compiler
+ - `numpy<http://numpy.org>`_, and a fortran compiler
  supported by numpy.f2py.
 
 Installation
 ============
- - U{Download<http://code.google.com/p/pyspharm/downloads/list>} module source,
+ - `Download<https://github.com/jswhit/pyspharm/archive/refs/heads/master.zip>`_ module source,
  untar.
- - run C{python setup.py install} (as root if necessary).
+ - run ``python -m pip install`` (as root if necessary).
  The SPHERPACK fortran source files will be downloaded automatically by the
  setup.py script, since the SPHEREPACK license prohibits redistribution.
  To specify the fortran compiler to use (e.g. g95) run
- C{python setup.py config_fc --fcompiler=g95 install}. C{f2py -c --help-fcompiler}
+ ``python setup.py config_fc --fcompiler=g95 install``. ``f2py -c --help-fcompiler``
  will show you what fortran compilers are available.
 
 Usage
@@ -38,74 +38,74 @@ and 'stored'. Real-world examples are included in the source distribution.
 
 Class methods
 =============
- - grdtospec: grid to spectral transform (spherical harmonic analysis).
- - spectogrd: spectral to grid transform (spherical harmonic synthesis).
- - getuv:  compute u and v winds from spectral coefficients of vorticity
+ - `Spharmt.grdtospec`: grid to spectral transform (spherical harmonic analysis).
+ - `Spharmt.spectogrd`: spectral to grid transform (spherical harmonic synthesis).
+ - `Spharmt.getuv`:  compute u and v winds from spectral coefficients of vorticity
  and divergence.
- - getvrtdivspec: get spectral coefficients of vorticity and divergence
+ - `Spharmt.getvrtdivspec`: get spectral coefficients of vorticity and divergence
  from u and v winds.
- - getgrad: compute the vector gradient given spectral coefficients.
- - getpsichi: compute streamfunction and velocity potential from winds.
- - specsmooth:  isotropic spectral smoothing.
+ - `Spharmt.getgrad`: compute the vector gradient given spectral coefficients.
+ - `Spharmt.getpsichi`: compute streamfunction and velocity potential from winds.
+ - `Spharmt.specsmooth`:  isotropic spectral smoothing.
 
 Functions
 =========
- - regrid:  spectral re-gridding, with optional spectral smoothing and/or
+ - `regrid`:  spectral re-gridding, with optional spectral smoothing and/or
  truncation.
- - gaussian_lats_wts: compute gaussian latitudes and weights.
- - getspecindx: compute indices of zonal wavenumber and degree
+ - `gaussian_lats_wts`: compute gaussian latitudes and weights.
+ - `getspecindx`: compute indices of zonal wavenumber and degree
  for complex spherical harmonic coefficients.
- - legendre: compute associated legendre functions.
- - getgeodesicpts: computes the points on the surface of the sphere
+ - `legendre`: compute associated legendre functions.
+ - `getgeodesicpts`: computes the points on the surface of the sphere
  corresponding to a twenty-sided (icosahedral) geodesic.
- - specintrp: spectral interpolation to an arbitrary point on the sphere.
+ - `specintrp`: spectral interpolation to an arbitrary point on the sphere.
 
 Conventions
 ===========
 
-The gridded data is assumed to be oriented such that i=1 is the
-Greenwich meridian and j=1 is the northernmost point. Grid indices
-increase eastward and southward. If nlat is odd the equator is included.
-If nlat is even the equator will lie half way between points nlat/2
-and (nlat/2)+1. nlat must be at least 3. For regular grids
-(gridtype='regular') the poles will be included when nlat is odd.
-The grid increment in longitude is 2*pi/nlon radians. For example,
-nlon = 72 for a five degree grid. nlon must be greater than or
-equal to 4. The efficiency of the computation is improved when nlon
+The gridded data is assumed to be oriented such that ``i=1`` is the
+Greenwich meridian and ``j=1`` is the northernmost point. Grid indices
+increase eastward and southward. If ``nlat`` is odd the equator is included.
+If ``nlat`` is even the equator will lie half way between points ``nlat//2``
+and ``(nlat//2)+1``. ``nlat`` must be at least 3. For regular grids
+(``gridtype='regular'``) the poles will be included when ``nlat`` is odd.
+The grid increment in longitude is ``2*pi/nlon`` radians. For example,
+``nlon = 72`` for a five degree grid. nlon must be greater than or
+equal to 4. The efficiency of the computation is improved when ``nlon``
 is a product of small prime numbers.
 
 The spectral data is assumed to be in a complex array of dimension
-(ntrunc+1)*(ntrunc+2)/2. ntrunc is the triangular truncation limit
-(ntrunc = 42 for T42). ntrunc must be <= nlat-1. Coefficients are
-ordered so that first (nm=0) is m=0,n=0, second is m=0,n=1,
-nm=ntrunc is m=0,n=ntrunc, nm=ntrunc+1 is m=1,n=1, etc.
-The values of m (degree) and n (order) as a function of the index
-nm are given by the arrays indxm, indxn returned by getspecindx.
+``(ntrunc+1)*(ntrunc+2)//2``. ``ntrunc`` is the triangular truncation limit
+(``ntrunc = 42`` for T42). ``ntrunc`` must be ``<= nlat-1``. Coefficients are
+ordered so that first (``nm=0``) is ``m=0,n=0``, second is ``m=0,n=1``,
+``nm=ntrunc`` is ``m=0,n=ntrunc``, ``nm=ntrunc+1`` is ``m=1,n=1``, etc.
+The values of ``m`` (degree) and ``n`` (order) as a function of the index
+``nm`` are given by the arrays ``indxm, indxn`` returned by `getspecindx`.
 
 The associated legendre polynomials are normalized so that the
-integral (pbar(n,m,theta)**2)*sin(theta) on the interval theta=0 to pi
-is 1, where pbar(m,n,theta)=sqrt((2*n+1)*factorial(n-m)/(2*factorial(n+m)))*
-sin(theta)**m/(2**n*factorial(n)) times the (n+m)th derivative of
-(x**2-1)**n with respect to x=cos(theta).
-theta = pi/2 - phi, where phi is latitude and theta is colatitude.
-Therefore, cos(theta) = sin(phi) and sin(theta) = cos(phi).
-Note that pbar(0,0,theta)=sqrt(2)/2, and pbar(1,0,theta)=.5*sqrt(6)*sin(lat).
+integral ``(pbar(n,m,theta)**2)*sin(theta)`` on the interval ``theta=0`` to pi
+is 1, where ``pbar(m,n,theta)=sqrt((2*n+1)*factorial(n-m)/(2*factorial(n+m)))*
+sin(theta)**m/(2**n*factorial(n))`` times the (``n+m``)th derivative of
+``(x**2-1)**n`` with respect to ``x=cos(theta)``.
+``theta = pi/2 - phi``, where ``phi`` is latitude and ``theta`` is colatitude.
+Therefore, ``cos(theta) = sin(phi)`` and ``sin(theta) = cos(phi)``.
+Note that ``pbar(0,0,theta)=sqrt(2)/2``, and ``pbar(1,0,theta)=.5*sqrt(6)*sin(lat)``.
 
 The default grid type is regular (equally spaced latitude points).
-Set gridtype='gaussian' when creating a class instance
+Set ``gridtype='gaussian'`` when creating a class instance
 for gaussian latitude points.
 
 Quantities needed to compute spherical harmonics are precomputed and stored
-when the class instance is created with legfunc='stored' (the default).
-If legfunc='computed', they are recomputed on the fly on each method call.
-The storage requirements for legfunc="stored" increase like nlat**2, while
-those for legfunc='stored' increase like nlat**3.  However, for
-repeated method invocations on a single class instance, legfunc="stored"
+when the class instance is created with ``legfunc='stored'`` (the default).
+If ``legfunc='computed'``, they are recomputed on the fly on each method call.
+The storage requirements for ``legfunc="stored"`` increase like ``nlat**2``, while
+those for ``legfunc='stored'`` increase like ``nlat**3``.  However, for
+repeated method invocations on a single class instance, ``legfunc="stored"``
 will always be faster.
 
-@contact: U{Jeff Whitaker<mailto:jeffrey.s.whitaker@noaa.gov>}
+@contact: `Jeff Whitaker<mailto:jeffrey.s.whitaker@noaa.gov>`_
 
-@version: 1.0.7
+@version: 1.0.9
 
 @license: Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
@@ -131,22 +131,22 @@ class Spharmt:
     """
  spherical harmonic transform class.
 
- @ivar nlat: number of latitudes (set when class instance is created,
+ :ivar nlat: number of latitudes (set when class instance is created,
  cannot be changed).
 
- @ivar nlon: number of longitudes (set when class instance is created,
+ :ivar nlon: number of longitudes (set when class instance is created,
  cannot be changed).
 
- @ivar rsphere: The radius of the sphere in meters (set when class
+ :ivar rsphere: The radius of the sphere in meters (set when class
  instance is created, cannot be changed).
 
- @ivar legfunc: 'stored' or 'computed'.  If 'stored',
+ :ivar legfunc: 'stored' or 'computed'.  If 'stored',
  associated legendre functions are precomputed and stored when the
  class instance is created.  If 'computed', associated
  legendre functions are computed on the fly when transforms are
  requested. Set when class instance is created, cannot be changed.
 
- @ivar gridtype: 'regular' (equally spaced in longitude and latitude)
+ :ivar gridtype: 'regular' (equally spaced in longitude and latitude)
  or 'gaussian' (equally spaced in longitude, latitudes located at
  roots of ordinary Legendre polynomial of degree nlat). Set when class
  instance is created, cannot be changed.
@@ -177,29 +177,29 @@ prevent deletion of read-only instance variables.
         """
  create a Spharmt class instance.
 
- @param nlon: Number of longitudes. The grid must be oriented from
+ :param nlon: Number of longitudes. The grid must be oriented from
  east to west, with the first point at the Greenwich meridian
  and the last point at 360-delta degrees east
  (where delta = 360/nlon degrees). Must be >= 4. Transforms will
  be faster when nlon is the product of small primes.
 
- @param nlat: Number of latitudes.  The grid must be oriented from north
+ :param nlat: Number of latitudes.  The grid must be oriented from north
  to south. If nlat is odd the equator is included.
  If nlat is even the equator will lie half way between points
  points nlat/2 and (nlat/2)+1. Must be >=3.
 
- @keyword rsphere: The radius of the sphere in meters.
- Default 6371200 (the value for Earth).
+ :param rsphere: The radius of the sphere in meters.
+ Default 6,371,200 (the value for Earth).
 
- @keyword legfunc: 'stored' (default) or 'computed'.  If 'stored',
+ :param legfunc: 'stored' (default) or 'computed'.  If 'stored',
  associated legendre functions are precomputed and stored when the
- class instance is created.  This uses O(nlat**3) memory, but
+ class instance is created.  This uses O(``nlat**3``) memory, but
  speeds up the spectral transforms.  If 'computed', associated
  legendre functions are computed on the fly when transforms are
- requested.  This uses O(nlat**2) memory, but slows down the spectral
+ requested.  This uses O(``nlat**2``) memory, but slows down the spectral
  transforms a bit.
 
- @keyword gridtype: 'regular' (default) or 'gaussian'. Regular grids
+ :param gridtype: 'regular' (default) or 'gaussian'. Regular grids
  will include the poles and equator if nlat is odd.  Gaussian
  grids never include the poles, but will include the equator if
  nlat is odd.
@@ -359,15 +359,15 @@ prevent deletion of read-only instance variables.
         """
  grid to spectral transform (spherical harmonic analysis).
 
- @param datagrid: rank 2 or 3 numpy float32 array with shape (nlat,nlon) or
+ :param datagrid: rank 2 or 3 numpy float32 array with shape (nlat,nlon) or
  (nlat,nlon,nt), where nt is the number of grids to be transformed.  If
  datagrid is rank 2, nt is assumed to be 1.
 
- @keyword ntrunc:  optional spectral truncation limit.
+ :param ntrunc:  optional spectral truncation limit.
  (default self.nlat-1)
 
- @return: C{B{dataspec}} - rank 1 or 2 numpy complex array with shape
- (ntrunc+1)*(ntrunc+2)/2 or ((ntrunc+1)*(ntrunc+2)/2,nt) containing
+ :return: **dataspec** - rank 1 or 2 numpy complex array with shape
+ ``(ntrunc+1)*(ntrunc+2)//2`` or ``((ntrunc+1)*(ntrunc+2)//2,nt)`` containing
  complex spherical harmonic coefficients resulting from the spherical
  harmonic analysis of datagrid.
         """
@@ -459,14 +459,14 @@ prevent deletion of read-only instance variables.
         """
  spectral to grid transform (spherical harmonic synthesis).
 
- @param dataspec: rank 1 or 2 numpy complex array with shape
- (ntrunc+1)*(ntrunc+2)/2 or ((ntrunc+1)*(ntrunc+2)/2,nt) containing
+ :param dataspec: rank 1 or 2 numpy complex array with shape
+ ``(ntrunc+1)*(ntrunc+2)//2`` or ``((ntrunc+1)*(ntrunc+2)//2,nt)`` containing
  complex spherical harmonic coefficients (where ntrunc is the
  triangular truncation limit and nt is the number of spectral arrays
  to be transformed). If dataspec is rank 1, nt is assumed to be 1.
 
- @return: C{B{datagrid}} - rank 2 or 3 numpy float32 array with shape
- (nlat,nlon) or (nlat,nlon,nt) containing the gridded data resulting from
+ :return: **datagrid** - rank 2 or 3 numpy float32 array with shape
+ ``(nlat,nlon)`` or ``(nlat,nlon,nt)`` containing the gridded data resulting from
  the spherical harmonic synthesis of dataspec.
         """
 
@@ -546,20 +546,20 @@ prevent deletion of read-only instance variables.
         """
  compute spectral coefficients of vorticity and divergence given vector wind.
 
- @param ugrid: rank 2 or 3 numpy float32 array containing grid of zonal
- winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number
+ :param ugrid: rank 2 or 3 numpy float32 array containing grid of zonal
+ winds.  Must have shape ``(nlat,nlon)`` or ``(nlat,nlon,nt)``, where nt is the number
  of grids to be transformed.  If ugrid is rank 2, nt is assumed to be 1.
 
- @param vgrid: rank 2 or 3 numpy float32 array containing grid of meridional
- winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number
+ :param vgrid: rank 2 or 3 numpy float32 array containing grid of meridional
+ winds.  Must have shape ``(nlat,nlon)`` or ``(nlat,nlon,nt)``, where nt is the number
  of grids to be transformed.  Both ugrid and vgrid must have the same shape.
 
- @keyword ntrunc:  optional spectral truncation limit.
- (default self.nlat-1)
+ :param ntrunc:  optional spectral truncation limit.
+ (default ``self.nlat-1``)
 
- @return: C{B{vrtspec, divspec}} - rank 1 or 2 numpy complex arrays
+ :return: **vrtspec, divspec** - rank 1 or 2 numpy complex arrays
  of vorticity and divergence spherical harmonic coefficients with shape
- shape (ntrunc+1)*(ntrunc+2)/2 or ((ntrunc+1)*(ntrunc+2)/2,nt).
+ shape ``(ntrunc+1)*(ntrunc+2)//2`` or ``((ntrunc+1)*(ntrunc+2)//2,nt)``.
         """
 
 # make sure ugrid,vgrid are rank 2 or 3 and same shape.
@@ -666,21 +666,21 @@ prevent deletion of read-only instance variables.
  compute vector wind on grid given complex spectral coefficients
  of vorticity and divergence.
 
- @param vrtspec: rank 1 or 2 numpy complex array of vorticity spectral
- coefficients, with shape (ntrunc+1)*(ntrunc+2)/2 or
- ((ntrunc+1)*(ntrunc+2)/2,nt) (where ntrunc is the triangular truncation
+ :param vrtspec: rank 1 or 2 numpy complex array of vorticity spectral
+ coefficients, with shape ``(ntrunc+1)*(ntrunc+2)//2`` or
+ ``((ntrunc+1)*(ntrunc+2)//2,nt)`` (where ntrunc is the triangular truncation
  and nt is the number of spectral arrays to be transformed).
  If vrtspec is rank 1, nt is assumed to be 1.
 
- @param divspec: rank 1 or 2 numpy complex array of divergence spectral
- coefficients, with shape (ntrunc+1)*(ntrunc+2)/2 or
- ((ntrunc+1)*(ntrunc+2)/2,nt) (where ntrunc is the triangular truncation
+ :param divspec: rank 1 or 2 numpy complex array of divergence spectral
+ coefficients, with shape ``(ntrunc+1)*(ntrunc+2)//2`` or
+ ``((ntrunc+1)*(ntrunc+2)//2,nt)`` (where ntrunc is the triangular truncation
  and nt is the number of spectral arrays to be transformed).
  Both vrtspec and divspec must have the same shape.
 
- @return: C{B{ugrid, vgrid}} - rank 2 or 3 numpy float32 arrays containing
- gridded zonal and meridional winds. Shapes are either (nlat,nlon) or
- (nlat,nlon,nt).
+ :return: **ugrid, vgrid** - rank 2 or 3 numpy float32 arrays containing
+ gridded zonal and meridional winds. Shapes are either ``(nlat,nlon)`` or
+ ``(nlat,nlon,nt)``.
         """
 
         idim = vrtspec.ndim
@@ -772,20 +772,20 @@ prevent deletion of read-only instance variables.
         """
  compute streamfunction and velocity potential on grid given vector wind.
 
- @param ugrid: rank 2 or 3 numpy float32 array containing grid of zonal
- winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number
+ :param ugrid: rank 2 or 3 numpy float32 array containing grid of zonal
+ winds.  Must have shape ``(nlat,nlon)`` or ``(nlat,nlon,nt)``, where nt is the number
  of grids to be transformed.  If ugrid is rank 2, nt is assumed to be 1.
 
- @param vgrid: rank 2 or 3 numpy float32 array containing grid of meridional
- winds.  Must have shape (nlat,nlon) or (nlat,nlon,nt), where nt is the number
+ :param vgrid: rank 2 or 3 numpy float32 array containing grid of meridional
+ winds.  Must have shape ``(nlat,nlon)`` or ``(nlat,nlon,nt)``, where nt is the number
  of grids to be transformed.  Both ugrid and vgrid must have the same shape.
 
- @keyword ntrunc:  optional spectral truncation limit.
- (default self.nlat-1)
+ :param ntrunc:  optional spectral truncation limit.
+ (default ``self.nlat-1``)
 
- @return: C{B{psigrid, chigrid}} - rank 2 or 3 numpy float32 arrays
+ :return: **psigrid, chigrid** - rank 2 or 3 numpy float32 arrays
  of gridded streamfunction and velocity potential. Shapes are either
- (nlat,nlon) or (nlat,nlon,nt).
+ ``(nlat,nlon)`` or ``(nlat,nlon,nt)``.
         """
 
 # make sure ugrid,vgrid are rank 2 or 3 and same shape.
@@ -850,15 +850,15 @@ prevent deletion of read-only instance variables.
         """
  compute vector gradient on grid given complex spectral coefficients.
 
- @param chispec: rank 1 or 2 numpy complex array with shape
- (ntrunc+1)*(ntrunc+2)/2 or ((ntrunc+1)*(ntrunc+2)/2,nt) containing
+ :param chispec: rank 1 or 2 numpy complex array with shape
+ ``(ntrunc+1)*(ntrunc+2)//2`` or ``((ntrunc+1)*(ntrunc+2)//2,nt)`` containing
  complex spherical harmonic coefficients (where ntrunc is the
  triangular truncation limit and nt is the number of spectral arrays
  to be transformed). If chispec is rank 1, nt is assumed to be 1.
 
- @return: C{B{uchi, vchi}} - rank 2 or 3 numpy float32 arrays containing
+ :return: **uchi, vchi** - rank 2 or 3 numpy float32 arrays containing
  gridded zonal and meridional components of the vector gradient.
- Shapes are either (nlat,nlon) or (nlat,nlon,nt).
+ Shapes are either ``(nlat,nlon)`` or ``(nlat,nlon,nt)``.
         """
 
 # make sure chispec is rank 1 or 2.
@@ -900,15 +900,15 @@ prevent deletion of read-only instance variables.
         """
  isotropic spectral smoothing on a sphere.
 
- @param datagrid: rank 2 or 3 numpy float32 array with shape (nlat,nlon) or
- (nlat,nlon,nt), where nt is the number of grids to be smoothed.  If
+ :param datagrid: rank 2 or 3 numpy float32 array with shape ``(nlat,nlon)`` or
+ ``(nlat,nlon,nt)``, where nt is the number of grids to be smoothed.  If
  datagrid is rank 2, nt is assumed to be 1.
 
- @param smooth: rank 1 array of length nlat containing smoothing factors
+ :param smooth: rank 1 array of length nlat containing smoothing factors
  as a function of total wavenumber.
 
- @return: C{B{datagrid}} - rank 2 or 3 numpy float32 array with shape
- (nlat,nlon) or (nlat,nlon,nt) containing the smoothed grids.
+ :return: **datagrid** - rank 2 or 3 numpy float32 array with shape
+ ``(nlat,nlon)`` or ``(nlat,nlon,nt)`` containing the smoothed grids.
         """
 
 # check that datagrid is rank 2 or 3 with size (self.nlat, self.nlon) or
@@ -949,20 +949,20 @@ def regrid(grdin, grdout, datagrid, ntrunc=None, smooth=None):
  regrid data using spectral interpolation, while performing
  optional spectral smoothing and/or truncation.
 
- @param grdin: Spharmt class instance describing input grid.
+ :param grdin: Spharmt class instance describing input grid.
 
- @param grdout: Spharmt class instance describing output grid.
+ :param grdout: Spharmt class instance describing output grid.
 
- @param datagrid: data on input grid (grdin.nlat x grdin.nlon). If
+ :param datagrid: data on input grid (grdin.nlat x grdin.nlon). If
  datagrid is rank 3, last dimension is the number of grids to interpolate.
 
- @keyword ntrunc:  optional spectral truncation limit for datagrid
- (default min(grdin.nlat-1,grdout.nlat-1)).
+ :param ntrunc:  optional spectral truncation limit for datagrid
+ (default ``min(grdin.nlat-1,grdout.nlat-1)``).
 
- @keyword smooth: rank 1 array of length grdout.nlat containing smoothing
+ :param smooth: rank 1 array of length grdout.nlat containing smoothing
  factors as a function of total wavenumber (default is no smoothing).
 
- @return: C{B{datagrid}} - interpolated (and optionally smoothed) array(s)
+ :return: **datagrid** - interpolated (and optionally smoothed) array(s)
  on grdout.nlon x grdout.nlat grid.
     """
 
@@ -996,9 +996,9 @@ def gaussian_lats_wts(nlat):
     """
  compute the gaussian latitudes (in degrees) and quadrature weights.
 
- @param nlat: number of gaussian latitudes desired.
+ :param nlat: number of gaussian latitudes desired.
 
- @return: C{B{lats, wts}} - rank 1 numpy float64 arrays containing
+ :return: **lats, wts** - rank 1 numpy float64 arrays containing
  gaussian latitudes (in degrees north) and gaussian quadrature weights.
     """
 
@@ -1022,9 +1022,9 @@ def getspecindx(ntrunc):
  compute indices of zonal wavenumber (indxm) and degree (indxn)
  for complex spherical harmonic coefficients.
 
- @param ntrunc: spherical harmonic triangular truncation limit.
+ :param ntrunc: spherical harmonic triangular truncation limit.
 
- @return: C{B{indxm, indxn}} - rank 1 numpy Int32 arrays
+ :return: **indxm, indxn** - rank 1 numpy Int32 arrays
  containing zonal wavenumber (indxm) and degree (indxn) of
  spherical harmonic coefficients.
     """
@@ -1042,10 +1042,10 @@ def getgeodesicpts(m):
  computes the lat/lon values of the points on the surface of the sphere
  corresponding to a twenty-sided (icosahedral) geodesic.
 
- @param m: the number of points on the edge of a single geodesic triangle.
- There are 10*(m-1)**2+2 total geodesic points, including the poles.
+ :param m: the number of points on the edge of a single geodesic triangle.
+ There are ``10*(m-1)**2+2`` total geodesic points, including the poles.
 
- @return: C{B{lats, lons}} - rank 1 numpy float32 arrays containing
+ :return: **lats, lons** - rank 1 numpy float32 arrays containing
  the latitudes and longitudes of the geodesic points (in degrees). These
  points are nearly evenly distributed on the surface of the sphere.
     """
@@ -1070,17 +1070,17 @@ def getgeodesicpts(m):
 
 def legendre(lat,ntrunc):
     """
- calculate associated legendre functions for triangular truncation T(ntrunc),
+ calculate associated legendre functions for triangular truncation T(`ntrunc`),
  at a given latitude.
 
- @param lat:  the latitude (in degrees) to compute the associate legendre
+ :param lat:  the latitude (in degrees) to compute the associate legendre
  functions.
 
- @param ntrunc:  the triangular truncation limit.
+ :param ntrunc:  the triangular truncation limit.
 
- @return: C{B{pnm}} - rank 1 numpy float32 array containing the
- (C{B{ntrunc}}+1)*(C{B{ntrunc}}+2)/2 associated legendre functions at
- latitude C{B{lat}}.
+ :return: **pnm** - rank 1 numpy float32 array containing the
+ ``(ntrunc+1)*(ntrunc+2)//2`` associated legendre functions at
+ latitude `lat`.
     """
     return _spherepack.getlegfunc(lat,ntrunc)
 
@@ -1088,15 +1088,15 @@ def specintrp(lon,dataspec,legfuncs):
     """
     spectral interpolation given spherical harmonic coefficients.
 
-    @param lon: longitude (in degrees) of point on a sphere to interpolate to.
+    :param lon: longitude (in degrees) of point on a sphere to interpolate to.
 
-    @param dataspec:  spectral coefficients of function to interpolate.
+    :param dataspec:  spectral coefficients of function to interpolate.
 
-    @param legfuncs: associated legendre functions with same triangular
-    truncation as C{B{dataspec}} (computed using L{legendre}), computed
+    :param legfuncs: associated legendre functions with same triangular
+    truncation as `dataspec` (computed using :class:`legendre`), computed
     at latitude of interpolation point.
 
-    @return: C{B{ob}} - interpolated value.
+    :return: **ob** - interpolated value.
     """
     ntrunc1 = int(-1.5 + 0.5*math.sqrt(9.-8.*(1.-dataspec.shape[0])))
     ntrunc2 = int(-1.5 + 0.5*math.sqrt(9.-8.*(1.-legfuncs.shape[0])))
