@@ -1,10 +1,24 @@
 # Built object files
 src/*.o
+*.o
 
 # Python build system intermediate files
 /build/
 /pyspharm.dist-info/
 /pyspharm.egg-info/
+MANIFEST
+/.mesonpy-*/
+/.hypothesis/
+/.asv/
 
 # Source and binary distributions from setuptools
 /dist/
+
+# Byte-compiled python files
+__pycache__
+*.pyc
+*.pyo
+
+# Other generated files
+/.tox/
+/*.log

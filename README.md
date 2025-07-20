@@ -1,16 +1,12 @@
-Requires: Numpy (http://numeric.scipy.org),
-and a fortran compiler supported by numpy.f2py,
-
-Now works for python 3.12 (build system updated to use meson instead of f2py)
+Requires: numpy, meson-python and gfortran.
 
 Please read LICENSE.spherepack
 
 Installation: 
 
-python setup.py install
+python -m build
 
-(to change default fortran compiler you can use e.g.
- python setup.py build config_fc --fcompiler=g95)
+python -m pip install dist/*whl
 
 View documentation by pointing your browser to html/index.html.
 
@@ -32,7 +28,6 @@ USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
--- Jeff Whitaker <Jeffrey.S.Whitaker@noaa.gov>
 
 ## Windows Installation
 
@@ -42,3 +37,4 @@ If you are a Windows user, you can download the original compressed package of t
 python windows_installer.py
 ```
 Follow the prompts to complete the installation.
+
