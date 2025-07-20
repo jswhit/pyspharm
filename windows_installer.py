@@ -149,10 +149,9 @@ def check_tools_and_environment(auto_install=False):
 
 def main():
     current_utc_time_str = "2025-05-13 15:16:54"
-    current_user_login = "SQYQianYe"
+    current_user_login = "Qianye Su"
     print_header(
         f"pyspharm automated build and install script (native CPU optimization)")
-    print(f"Script author: {current_user_login} (with Gemini assistance)")
     print(f"Current user: {current_user_login}")
     print(f"Script start time (UTC): {current_utc_time_str}")
     if not check_tools_and_environment(auto_install=True):
