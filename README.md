@@ -27,3 +27,14 @@ CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
 USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
+
+
+## Windows Installation
+
+If you are a Windows user, you can download the original compressed package of this project. After downloading, extract the package, open a command prompt, and `cd` into the extracted directory. Then run:
+
+```bash
+python windows_installer.py
+```
+Follow the prompts to complete the installation.
+
