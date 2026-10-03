@@ -1,0 +1,100 @@
+name: Build wheels
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  wheels:
+    name: Build ${{ matrix.python }} on ${{ matrix.build.platform }}
+    runs-on: ${{ matrix.build.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        build:
+          - {os: ubuntu-latest, platform: manylinux_x86_64}
+          - {os: macos-13, platform: macosx_x86_64}
+          - {os: macos-14, platform: macosx_arm64}
+        python: [cp39, cp310, cp311, cp312, cp313, cp314]
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Install Fortran compiler (Linux)
+        if: runner.os == 'Linux'
+        run: echo 'CIBW_BEFORE_ALL_LINUX=yum install -y gcc-gfortran' >> "$GITHUB_ENV"
+
+      - name: Install Fortran compiler (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          brew install gcc
+          FC="$(find "$(brew --prefix gcc)/bin" -name 'gfortran-*' | sort -V | tail -1)"
+          test -n "$FC"
+          echo "FC=$FC" >> "$GITHUB_ENV"
+
+      - name: Build wheel
+        uses: pypa/cibuildwheel@v4.2.1
+        with:
+          output-dir: wheelhouse
+        env:
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.build.platform }}
+          CIBW_SKIP: "*-musllinux*"
+          CIBW_BEFORE_BUILD: python -m pip install meson-python ninja
+          CIBW_ENVIRONMENT_MACOS: FC=${{ env.FC }} F77=${{ env.FC }} F90=${{ env.FC }}
+          CIBW_TEST_COMMAND: python -c "import spharm; print(spharm.__version__)"
+
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: wheels-${{ matrix.python }}-${{ matrix.build.platform }}
+          path: wheelhouse/*.whl
+          if-no-files-found: error
+
+  sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Build sdist
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build --sdist
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub release assets
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: [wheels, sdist]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          pattern: wheels-*
+          path: dist
+          merge-multiple: true
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          name: sdist
+          path: dist
+      - name: Generate checksums
+        working-directory: dist
+        run: sha256sum * > SHA256SUMS.txt
+      - name: Create or update GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" dist/* --generate-notes --title "pyspharm ${GITHUB_REF_NAME#v}"
