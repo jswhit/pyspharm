@@ -699,12 +699,12 @@ c     for 2.le.m.le.n and 2.le.n.le.nlat in abel,bbel,cbel
       do 107 m=2,mlim
       imn = indx(m,n)
       if (n.ge.l) imn = imndx(m,n)
-      abel(imn)=sqrt(float((2*n+1)*(m+n-2)*(m+n-3))/
-     1               float(((2*n-3)*(m+n-1)*(m+n))))
-      bbel(imn)=sqrt(float((2*n+1)*(n-m-1)*(n-m))/
-     1               float(((2*n-3)*(m+n-1)*(m+n))))
-      cbel(imn)=sqrt(float((n-m+1)*(n-m+2))/
-     1               float(((n+m-1)*(n+m))))
+      abel(imn)=sqrt((float(2*n+1)*float(m+n-2)*float(m+n-3))/
+     1               (float(2*n-3)*float(m+n-1)*float(m+n)))
+      bbel(imn)=sqrt((float(2*n+1)*float(n-m-1)*float(n-m))/
+     1               (float(2*n-3)*float(m+n-1)*float(m+n)))
+      cbel(imn)=sqrt((float(n-m+1)*float(n-m+2))/
+     1               (float(n+m-1)*float(n+m)))
   107 continue
       return
       end

@@ -234,6 +234,24 @@ def test_gaussian_lats_wts(nlat):
     assert np.sum(weights) == pytest.approx(2)
 
 
+@pytest.mark.parametrize("legfunc", ["stored", "computed"])
+def test_high_resolution_gaussian_vector_workspaces_are_finite(legfunc):
+    """High-resolution Gaussian vector initialization must not produce NaNs."""
+    # The recursion coefficients overflow 32-bit integer intermediates around
+    # this resolution if products are formed before conversion to floating
+    # point.  Keep this focused on initialization to avoid a large transform.
+    transform = spharm.Spharmt(
+        1400, 700, gridtype="gaussian", legfunc=legfunc
+    )
+
+    if legfunc == "stored":
+        assert np.isfinite(transform.wvhags).all()
+        assert np.isfinite(transform.wvhsgs).all()
+    else:
+        assert np.isfinite(transform.wvhagc).all()
+        assert np.isfinite(transform.wvhsgc).all()
+
+
 @pytest.mark.parametrize("ntrunc", NTRUNC)
 def test_getspecindx(ntrunc):
     """Test behavior of getspecindx.
